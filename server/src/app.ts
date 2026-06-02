@@ -1,0 +1,109 @@
+import express from 'express';
+import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import { DATA_LIMIT } from './constants.js';
+import type { Request, Response, NextFunction } from 'express';
+import { ApiError } from './utils/ApiError.js';
+import { generalLimiter } from './middlewares/rateLimiter.middleware.js';
+
+
+
+
+
+const app = express();
+
+// Adds common security related http headers to protect the API from vulnerabilities like XSS, clickjacking, MIME-type sniffing, etc.
+app.use(helmet());
+
+// Remove the X-Powered-By header (i.e. x-powered-by: Express)
+app.disable('x-powered-by');
+
+// Tells Express to trust the X-Forwarded-For headers sent by Render.
+// This ensures express-rate-limit grabs the client's actual IP, not Render's proxy IP.
+app.set('trust proxy', 1);
+
+
+
+
+
+/****************************** MIDDLEWARES SETUP ******************************/
+
+// 1. Allow requests from frontend (CORS setup)
+app.use(cors({
+	origin: process.env.CORS_ORIGIN,
+	// Must be a specific origin (cannot be '*') when credentials are enabled
+
+	credentials: true
+	// Allows browsers to send cookies, authorization headers
+}));
+
+// 2. Parse incoming JSON request bodies (without this req.body would be undefined)
+app.use(express.json({
+	limit: DATA_LIMIT // Prevent very large payloads
+}));
+
+// 3. Parse URL-encoded request bodies
+app.use(express.urlencoded({
+	extended: true,  // Allow nested objects (without this "user[name]=Shiv" would not parse correctly)
+	limit: DATA_LIMIT
+}));
+
+// // 4. Serve static files directly from "public" folder
+// app.use(express.static('public'));
+
+// 5. Middleware that can access cookies from user's browser and set cookies in it
+//    Reads cookies from incoming HTTP requests (without this "req.cookies" would be undefined)
+app.use(cookieParser());
+
+// 6. With rate limiter middleware, restricting client how many max. requests he/she can make to 
+//    our APIs within a time window
+app.use('/api/v1', generalLimiter);
+
+
+
+
+
+/****************************** ROUTES SETUP ******************************/
+
+///// Routes declaration /////
+
+// Here
+
+
+
+
+
+// 404 response for unknown routes
+app.use((req: Request, res: Response) => {
+	return res.status(404).json({
+		statusCode: 404,
+		success: false,
+		message: 'Route not found.'
+	});
+});
+
+// Global error handler (with all 4 parameters for Express to treat it as error handler middleware)
+app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
+	if(err instanceof ApiError) {
+		return res.status(err.statusCode).json({
+			statusCode: err.statusCode,
+			success: false,
+			message: err.message,
+			errors: err.errors
+		});
+	}
+
+	// If any unexpected error occurs such as server crashes, unknown bugs etc.
+	return res.status(500).json({
+		statusCode: 500,
+		success: false,
+		message: err instanceof Error ? err.message : 'Internal Server Error.'
+	});
+});
+
+
+
+
+
+export { app };

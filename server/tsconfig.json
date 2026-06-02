@@ -1,0 +1,130 @@
+{
+  // Visit https://aka.ms/tsconfig to learn more
+  "compilerOptions": {
+
+    // ------ File Layout ------
+
+    // TypeScript source folder
+    "rootDir": "./src",
+
+    // Compiled JavaScript output folder
+    "outDir": "./dist",
+
+
+
+    // ------ Environment Settings ------
+
+    // Use Node.js native ES modules (import/export)
+    // Must match "type": "module" in package.json
+    "module": "NodeNext",
+
+    // Compile to ES2020 JavaScript
+    // Supports async/await, optional chaining (?.),
+    // and nullish coalescing (??) natively
+    // Safe for Node.js v14+
+    "target": "ES2020",
+
+    // Use Node.js module resolution
+    // With NodeNext, imports must include .js extensions
+    "moduleResolution": "NodeNext",
+
+    // "types": [],
+    // For Node.js:
+    // "lib": ["esnext"],
+    // "types": ["node"],
+    // npm install -D @types/node
+
+    // Do NOT add "types": []
+    // Leaving it out lets TypeScript automatically load
+    // installed @types packages like @types/node,
+    // @types/express, etc.
+    // Setting "types": [] disables them all
+    
+
+
+    // ------ Output Files ------
+
+    // Generate .map files for easier debugging
+    // Maps compiled JS back to original TS files
+    "sourceMap": true,
+
+    // Generate .d.ts type declaration files
+    // Useful if this project is published as an npm package
+    "declaration": true,
+
+    // Generate source maps for declaration files
+    // Only useful when declaration is enabled
+    "declarationMap": true,
+
+
+
+    // ------ Extra Type Safety ------
+
+    // Adds 'undefined' when accessing arrays/objects by index
+    // Example:
+    // const arr = [1,2,3];
+    // arr[5] -> number | undefined
+    // Helps catch real bugs
+    "noUncheckedIndexedAccess": true,
+
+    // "exactOptionalPropertyTypes": true,
+
+
+
+    // ------ Style Rules ------
+
+    // "noImplicitReturns": true,
+    // "noImplicitOverride": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+    // "noFallthroughCasesInSwitch": true,
+    // "noPropertyAccessFromIndexSignature": true,
+
+
+
+    // ------ Recommended Options ------
+
+    // Enable all strict type checking rules
+    // Includes strictNullChecks, noImplicitAny, etc.
+    "strict": true,
+
+    // Makes CommonJS imports cleaner
+    // Without:
+    // import * as express from "express"
+    // With:
+    // import express from "express"
+    "esModuleInterop": true,
+
+    // "jsx": "react-jsx",
+
+    // Requires type-only imports to use 'import type'
+    // Example:
+    // import type { User } from "./user.js"
+    // Helps performance and avoids some circular dependencies
+    "verbatimModuleSyntax": true,
+
+    // Treat every file as an isolated module
+    // Prevents module-related edge cases
+    "isolatedModules": true,
+
+    // "noUncheckedSideEffectImports": true,
+
+    // Treat every file as a module, even without imports/exports
+    // Prevents accidental global scope pollution
+    "moduleDetection": "force",
+
+    // Ensures file name casing matches imports
+    // Prevents Windows/Linux deployment issues
+    "forceConsistentCasingInFileNames": true,
+
+    // Skip type checking inside node_modules
+    // Avoids errors from third-party type definitions
+    "skipLibCheck": true
+  },
+
+  // Compile all .ts files inside src and subfolders
+  "include": ["src/**/*"],
+
+  // Ignore dependencies and compiled output
+  "exclude": ["node_modules", "dist"]
+}

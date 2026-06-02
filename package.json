@@ -1,0 +1,39 @@
+{
+  "name": "ai-mock-interview-platform",
+  "version": "1.0.0",
+  "description": "An AI-powered mock interview platform with dynamic feedback. Built using React, Node.js, and PostgreSQL (Drizzle ORM).",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"green,blue\" \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "build": "npm run build --prefix server && npm run build --prefix client",
+    "db:generate": "npm run --prefix server db:generate",
+    "db:migrate": "npm run --prefix server db:migrate",
+    "db:push": "npm run --prefix server db:push",
+    "db:studio": "npm run --prefix server db:studio"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shirsendu1260/ai-mock-interview-platform.git"
+  },
+  "keywords": [
+    "TypeScript",
+    "Node.js",
+    "Express.js",
+    "PostgreSQL",
+    "Drizzle ORM",
+    "React",
+    "AI"
+  ],
+  "author": "Shirsendu Mali",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Shirsendu1260/ai-mock-interview-platform/issues"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.1"
+  }
+}

@@ -1,0 +1,49 @@
+======================================================================
+PERN MONOLITH ROOT SETUP
+======================================================================
+
+Stack: React, Express, Node.js, TypeScript, PostgreSQL, Drizzle ORM
+Structure: /server (Backend) and /client (Frontend)
+
+1. ROOT PACKAGE PURPOSE
+----------------------------------------------------------------------
+The root package.json contains no application code. It acts as a central
+controller for the project, allowing me to manage dependencies, run both
+apps together, and execute common commands from a single place.
+
+2. MAIN CONFIGURATION
+----------------------------------------------------------------------
+* "private": true
+  - Prevents accidental publishing to the npm registry.
+
+* "workspaces": ["server", "client"]
+  - Enables npm workspaces and treats both folders as separate apps
+    inside one repository.
+
+3. CONCURRENTLY
+----------------------------------------------------------------------
+* "concurrently": "^10.0.1"
+  - Runs multiple commands at the same time. This lets me start both
+    the backend and frontend in a single terminal window instead of
+    opening separate tabs.
+
+4. ROOT SCRIPTS
+----------------------------------------------------------------------
+* "install:packages"
+  - Uses '--prefix' to run npm install inside both /server and /client
+    without manually changing directories.
+
+* "dev"
+  - Starts the fullstack application together.
+  - -n "SERVER,CLIENT" adds log labels.
+  - -c "green,blue" color-codes backend and frontend logs.
+  - Runs "npm run dev --prefix server", which executes the server's own
+    dev script and automatically uses the existing nodemon.json config.
+  - Keep this setup unchanged.
+
+* "db:generate" / "db:migrate" / "db:studio"
+  - Forwards Drizzle ORM commands to the server folder.
+  - db:generate: Creates SQL migration files from TypeScript schemas.
+  - db:migrate: Applies migrations to PostgreSQL database.
+  - db:push: Instantly pushes schema changes directly to our Neon database.
+  - db:studio: Opens Drizzle Studio for database inspection.
