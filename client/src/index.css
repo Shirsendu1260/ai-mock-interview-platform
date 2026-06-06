@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@theme {
+	--color-primary: #76ABAE;
+	--color-dark: #303841;
+	--color-accent: #FF5722;
+	--color-background: #F5F5F5;
+}
+
+/*Light Gray ---- #F5F5F5 ---- Background
+Teal ---- #76ABAE ---- Primary Brand Color
+Dark Slate ---- #303841 ---- Text, Navbar, Cards
+Orange ---- #FF5722 ---- CTA Buttons, Highlights*/
+
+/*
+Now Tailwind automatically generates utility classes:
+bg-primary
+bg-dark
+bg-accent
+bg-background
+text-primary
+text-dark
+text-accent
+border-primary
+border-dark
+*/
+
+html,
+body,
+#root {
+	min-height: 100%;
+}
+
+body {
+	background-color: var(--color-background);
+	color: var(--color-dark);
+}
