@@ -1,4 +1,4 @@
-import { FaRobot } from 'react-icons/fa';
+import { PiBriefcaseFill } from "react-icons/pi";
 import type { LogoProps } from '../../types/types.js';
 import { APP_NAME } from '../../constants/design.js';
 
@@ -20,9 +20,9 @@ const Logo = ({ size = "md" }: LogoProps) => {
 	const currentSize = sizeObj[size]; // Contains our preferred icon size and class
 
 	return (
-		<div className="flex items-center gap-3">
+		<div className="flex items-center justify-center gap-3">
 			<div className="flex items-center justify-center rounded-xl bg-primary p-3 text-white">
-				<FaRobot size={currentSize.icon} />
+				<PiBriefcaseFill size={currentSize.icon} />
 			</div>
 			<div>
 				<h1 className={`font-bold text-dark ${currentSize.class}`}>{APP_NAME}</h1>

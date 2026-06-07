@@ -1,29 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import "tailwindcss";
 
 @theme {
-	--color-primary: #76ABAE;
-	--color-dark: #303841;
-	--color-accent: #FF5722;
-	--color-background: #F5F5F5;
+	--font-sans: "Inter", sans-serif;
+
+	--color-primary: #1E3A5F; /* Deep Sapphire Blue */
+	--color-primary-light: #2B4C78;
+
+	--color-dark: #0B1120; /* Rich Midnight */
+	--color-dark-light: #1E293B;
+
+	--color-accent: #7C3AED; /* Premium Violet */
+	--color-accent-light: #A78BFA;
+
+	--color-background: #F8FAFC; /* Soft White */
+
+	--color-border: #E2E8F0;
+	--color-muted: #64748B;
 }
-
-/*Light Gray ---- #F5F5F5 ---- Background
-Teal ---- #76ABAE ---- Primary Brand Color
-Dark Slate ---- #303841 ---- Text, Navbar, Cards
-Orange ---- #FF5722 ---- CTA Buttons, Highlights*/
-
-/*
-Now Tailwind automatically generates utility classes:
-bg-primary
-bg-dark
-bg-accent
-bg-background
-text-primary
-text-dark
-text-accent
-border-primary
-border-dark
-*/
 
 html,
 body,
@@ -32,6 +26,7 @@ body,
 }
 
 body {
+	font-family: var(--font-sans);
 	background-color: var(--color-background);
 	color: var(--color-dark);
 }

@@ -1,17 +1,17 @@
-import { FaGoogle } from "react-icons/fa";
+import { BsMicrosoft } from "react-icons/bs";
 import Button from '../ui/Button.jsx';
 import type { ThirdPartySignInButtonProps } from '../../types/types.js';
 
-const GoogleSignInButton = ({ onClick }: ThirdPartySignInButtonProps) => {
+const MicrosoftSignInButton = ({ onClick }: ThirdPartySignInButtonProps) => {
 	return (
 		<Button
 			className='bg-primary flex items-center justify-center gap-3'
 			onClick={onClick}
 		>
-			<FaGoogle size={20} />
-			<span>Continue with Google</span>
+			<BsMicrosoft size={20} />
+			<span>Continue with Microsoft</span>
 		</Button>
 	)
 }
 
-export default GoogleSignInButton
+export default MicrosoftSignInButton

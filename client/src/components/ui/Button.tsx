@@ -8,8 +8,8 @@ const Button = ({
 }: ButtonProps) => {
 	return (
 		<motion.button
-			whileHover={{ scale: 1.05 }}
-			whileTap={{ scale: 0.95 }}
+			whileHover={{ scale: 1.02 }}
+			whileTap={{ scale: 0.982 }}
 			transition={{
 				type: "spring",
 				stiffness: 400,
@@ -19,12 +19,9 @@ const Button = ({
 				w-full
 				rounded-xl
 				bg-accent
-				px-4
-				py-3
 				font-medium
 				text-white
-				transition
-				hover:opacity-90
+				h-12
 				${className}
 			`}
 

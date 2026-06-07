@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from "react";
+import type { PropsWithChildren, InputHTMLAttributes } from "react";
 import type { HTMLMotionProps } from "motion/react";
 
 type CardProps = PropsWithChildren<{
@@ -46,7 +46,11 @@ Therefore we use HTMLMotionProps instead of ButtonHTMLAttributes
 so that both Motion and native button props are available.
 */
 
-type GoogleSignInButtonProps = {
+type SectionHeadingProps = PropsWithChildren<{
+	description?: string;
+}>;
+
+type ThirdPartySignInButtonProps = {
 	onClick?: () => void
 };
 
@@ -54,10 +58,17 @@ type LogoProps = {
 	size?: "sm" | "md" | "lg";
 };
 
+type InputProps = InputHTMLAttributes<HTMLInputElement> & {
+	label?: string,
+	error?: string
+};
+
 export type {
 	CardProps,
 	PageContainerProps,
 	ButtonProps,
-	GoogleSignInButtonProps,
-	LogoProps
+	SectionHeadingProps,
+	ThirdPartySignInButtonProps,
+	LogoProps,
+	InputProps
 };
