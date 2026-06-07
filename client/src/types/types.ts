@@ -93,6 +93,13 @@ type SpinnerProps = {
 	size?: "sm" | "md" | "lg";
 };
 
+type EmptyStateProps = {
+	title: string,
+	description: string,
+	icon?: ReactNode,
+	action?: ReactNode
+};
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -101,5 +108,6 @@ export type {
 	ThirdPartySignInButtonProps,
 	LogoProps,
 	InputProps,
-	SpinnerProps
+	SpinnerProps,
+	EmptyStateProps
 };
