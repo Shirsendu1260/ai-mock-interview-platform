@@ -3,14 +3,31 @@ import PageContainer from "../components/ui/PageContainer.jsx";
 import GoogleSignInButton from "../components/auth/GoogleSignInButton.jsx";
 import GitHubSignInButton from "../components/auth/GitHubSignInButton.jsx";
 import Logo from "../components/common/Logo.jsx";
+import { signInWithGoogle, signInWithGitHub } from '../utils/firebase.js';
 
 const Auth = () => {
-	const handleGoogleSignIn = () => {
+	const handleGoogleSignIn = async () => {
 		console.log("Google Sign In");
+
+		try {
+			const response = await signInWithGoogle();
+			console.log(response);
+		}
+		catch(error) {
+			console.error(error);
+		}
 	};
 
-	const handleGitHubSignIn = () => {
+	const handleGitHubSignIn = async () => {
 		console.log("GitHub Sign In");
+
+		try {
+			const response = await signInWithGitHub();
+			console.log(response);
+		}
+		catch(error) {
+			console.error(error);
+		}
 	};
 
 	return (

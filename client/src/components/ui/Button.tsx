@@ -21,7 +21,7 @@ const Button = ({
 	return (
 		<motion.button
 			whileHover={!disabled && !isLoading ? { scale: 1.02 } : undefined }
-			whileTap={!disabled && !isLoading ? { scale: 0.982 } : undefined }
+			whileTap={!disabled && !isLoading ? { scale: 0.98 } : undefined }
 			transition={{
 				type: "spring",
 				stiffness: 400,
