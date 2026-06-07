@@ -60,7 +60,12 @@ type LogoProps = {
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
 	label?: string,
-	error?: string
+	error?: string,
+	helperText?: string; // Something like 'Password must contain at least 8 characters'
+};
+
+type SpinnerProps = {
+	size?: "sm" | "md" | "lg";
 };
 
 export type {
@@ -70,5 +75,6 @@ export type {
 	SectionHeadingProps,
 	ThirdPartySignInButtonProps,
 	LogoProps,
-	InputProps
+	InputProps,
+	SpinnerProps
 };
