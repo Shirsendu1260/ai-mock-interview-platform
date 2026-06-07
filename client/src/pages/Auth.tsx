@@ -1,7 +1,7 @@
 import Card from "../components/ui/Card.jsx";
 import PageContainer from "../components/ui/PageContainer.jsx";
 import GoogleSignInButton from "../components/auth/GoogleSignInButton.jsx";
-import MicrosoftSignInButton from "../components/auth/MicrosoftSignInButton.jsx";
+import GitHubSignInButton from "../components/auth/GitHubSignInButton.jsx";
 import Logo from "../components/common/Logo.jsx";
 
 const Auth = () => {
@@ -9,8 +9,8 @@ const Auth = () => {
 		console.log("Google Sign In");
 	};
 
-	const handleMicrosoftSignIn = () => {
-		console.log("Microsoft Sign In");
+	const handleGitHubSignIn = () => {
+		console.log("GitHub Sign In");
 	};
 
 	return (
@@ -30,7 +30,7 @@ const Auth = () => {
 					</section>
 
 					<GoogleSignInButton onClick={handleGoogleSignIn} />
-					<MicrosoftSignInButton onClick={handleMicrosoftSignIn} />
+					<GitHubSignInButton onClick={handleGitHubSignIn} />
 				</div>
 			</Card>
 		</PageContainer>
