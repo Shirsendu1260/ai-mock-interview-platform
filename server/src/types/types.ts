@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { users } from "../db/schema/index.js";
+import type { User } from '../db/schema/users.js';
 
 interface IErrorMessage {
 	[key: string]: string; // key can be ANY string // value must be a string
@@ -13,6 +13,16 @@ type AsyncControllerFunction = (
 	next: NextFunction
 ) => Promise<void> | Promise<Response> | void; 
 // Promise<Response> -> Resolves to standard JSON response
+
+// Express's Request type does not have a 'user' property by default, we add it by ourself
+// 'user' Will be attached by verifyJWT middleware after token verification
+declare global {
+    namespace Express {
+        interface Request {
+            user?: User
+        }
+    }
+}
 
 export type {
 	IErrorMessage,

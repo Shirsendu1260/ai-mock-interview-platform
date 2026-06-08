@@ -1,4 +1,4 @@
-import { pgTable, serial, varchar, integer, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, serial, varchar, integer, text, timestamp } from 'drizzle-orm/pg-core';
 
 // Schema for 'users' table
 export const users = pgTable('users', {
@@ -10,6 +10,9 @@ export const users = pgTable('users', {
 
 	// Email address, max 255 characters, must be unique across the entire table
 	email: varchar('email', { length: 255 }).notNull().unique(),
+
+	// Stores image url coming from Google/GitHub
+	avatarUrl: text('avatar_url'),
 
 	// Credit system for token usage, defaults to 300, cannot be empty
 	credit: integer('credit').default(300).notNull(),

@@ -40,7 +40,12 @@ const oAuthUserLoginOrRegister = asyncHandler(async (req, res) => {
     }
 
     // Collect data verified by Google/GitHub (at this point data is valid)
-	const { name, email } = decodedToken as { name?: string; email?: string };
+	const { name, email, picture } = decodedToken as { 
+        name?: string; 
+        email?: string; 
+        picture?: string
+    };
+    
     if (!email) {
         throw new ApiError(400, 'OAuth provider did not return a valid email.');
     }
@@ -60,6 +65,7 @@ const oAuthUserLoginOrRegister = asyncHandler(async (req, res) => {
         const newUser: NewUser = {
             email,
             fullName: name || 'OAuth User',
+            avatarUrl: picture || null
             // credit is default (300)
             // createdAt/updatedAt handled automatically
         };
