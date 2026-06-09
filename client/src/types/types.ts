@@ -100,6 +100,24 @@ type EmptyStateProps = {
 	action?: ReactNode
 };
 
+interface User {
+	id: number;
+	fullName: string;
+	email: string;
+	avatarUrl: string | null;
+	credit: number;
+};
+
+// Global authentication state for Zustand
+interface AuthState {
+	user: User | null;
+	isAuthenticated: boolean;
+	isLoading: boolean;
+	setUser: (user: User | null) => void;
+	setIsLoading: (flag: boolean) => void;
+	clearUser: () => void;
+}
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -109,5 +127,7 @@ export type {
 	LogoProps,
 	InputProps,
 	SpinnerProps,
-	EmptyStateProps
+	EmptyStateProps,
+	User,
+	AuthState
 };
