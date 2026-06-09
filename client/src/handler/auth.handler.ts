@@ -31,6 +31,7 @@ export const oAuthSignInHandler = async (provider: string): Promise<string> => {
 		// But this file is not a component
 		// So, Zustand provides useAuthStore.getState(), which gives access to the store object anywhere
 		// Now user object is globally available
+		// 'user' object is set and 'isAuthenticated' is set to true 
 		useAuthStore.getState().setUser(user);
 
 		return `Success ${response.data.statusCode}: ${response.data.message || 'Success'}`;
