@@ -15,7 +15,7 @@ const oAuthUserLoginOrRegister = asyncHandler(async (req, res) => {
 	// Frontend: Authenticates with Firebase (Google/GitHub) -> gets an ID Token (a JWT signed by Firebase).
 	// Frontend: Sends that ID Token to our backend in the Authorization header.
 	// Backend: Verifies the ID token using the firebase-admin SDK. If valid, Firebase extracts the 
-	// 		    secure name and email.
+	// 		    secure name, email, and picture.
     // Backend: Checks the database, registers/logs in the user, and 
 	// 		    sets our own session cookie.
 
@@ -64,7 +64,7 @@ const oAuthUserLoginOrRegister = asyncHandler(async (req, res) => {
     if(!userToAuthenticate) {
         const newUser: NewUser = {
             email,
-            fullName: name || 'OAuth User',
+            fullName: name || 'New User',
             avatarUrl: picture || null
             // credit is default (300)
             // createdAt/updatedAt handled automatically
@@ -90,8 +90,16 @@ const oAuthUserLoginOrRegister = asyncHandler(async (req, res) => {
 });
 
 
+//  GET CURRENT AUTHENTICATED USER
+const getAuthUser = asyncHandler(async (req, res) => {
+    return res.status(200).json(
+        new ApiResponse(200, req.user, 'Authenticated user is fetched successfully.')
+    )
+});
+
+
 // USER LOGOUT
-const signOutUser = asyncHandler(async (req, res) => {
+const signOutUser = asyncHandler(async (_, res) => {
     return res.status(200)
                 .clearCookie('accessToken', COOKIE_SEND_OPTIONS)
                 .json(new ApiResponse(200, {}, 'User signed out successfully.')); // {} -> sending empty data
@@ -100,5 +108,6 @@ const signOutUser = asyncHandler(async (req, res) => {
 
 export {
 	oAuthUserLoginOrRegister,
+    getAuthUser,
     signOutUser
 };

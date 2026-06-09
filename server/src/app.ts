@@ -2,6 +2,7 @@ import express from 'express';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import userRouter from './routes/user.routes.js';
 import { DATA_LIMIT } from './constants.js';
 import type { Request, Response, NextFunction } from 'express';
 import { ApiError } from './utils/ApiError.js';
@@ -50,7 +51,7 @@ app.use(express.urlencoded({
 }));
 
 // // 4. Serve static files directly from "public" folder
-// app.use(express.static('public'));
+app.use(express.static('public'));
 
 // 5. Middleware that can access cookies from user's browser and set cookies in it
 //    Reads cookies from incoming HTTP requests (without this "req.cookies" would be undefined)
@@ -68,14 +69,14 @@ app.use('/api/v1', generalLimiter);
 
 ///// Routes declaration /////
 
-// Here
+app.use('/api/v1/user', userRouter);
 
 
 
 
 
 // 404 response for unknown routes
-app.use((req: Request, res: Response) => {
+app.use((_: Request, res: Response) => {
 	return res.status(404).json({
 		statusCode: 404,
 		success: false,

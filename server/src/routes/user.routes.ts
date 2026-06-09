@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { 
 	oAuthUserLoginOrRegister, 
+	getAuthUser,
     signOutUser
 } from '../controllers/user.controller.js';
 // import { upload } from '../middlewares/multer.middleware.js';
@@ -21,6 +22,7 @@ router.route('/sign-in/oauth').post(authLimiter, oAuthUserLoginOrRegister);
 
 ////////////////////////////////  AUTHENTICATED ROUTES  ////////////////////////////////
 
+router.route('/get-auth-user').get(verifyJWT, getAuthUser);
 router.route('/sign-out').post(verifyJWT, signOutUser); 
 
 
