@@ -3,15 +3,16 @@ import PageContainer from "../components/ui/PageContainer.jsx";
 import GoogleSignInButton from "../components/auth/GoogleSignInButton.jsx";
 import GitHubSignInButton from "../components/auth/GitHubSignInButton.jsx";
 import Logo from "../components/common/Logo.jsx";
-import { signInWithGoogle, signInWithGitHub } from '../utils/firebase.js';
+import { oAuthSignInHandler } from '../handler/auth.handler.js';
 
 const Auth = () => {
 	const handleGoogleSignIn = async () => {
+		const provider = 'google';
 		console.log("Google Sign In");
 
 		try {
-			const response = await signInWithGoogle();
-			console.log(response);
+			const result = await oAuthSignInHandler(provider);
+			result.includes('Error') ? console.error(result) : console.log(result);
 		}
 		catch(error) {
 			console.error(error);
@@ -19,11 +20,12 @@ const Auth = () => {
 	};
 
 	const handleGitHubSignIn = async () => {
+		const provider = 'github';
 		console.log("GitHub Sign In");
 
 		try {
-			const response = await signInWithGitHub();
-			console.log(response);
+			const result = await oAuthSignInHandler(provider);
+			result.includes('Error') ? console.error(result) : console.log(result);
 		}
 		catch(error) {
 			console.error(error);

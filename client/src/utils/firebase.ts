@@ -1,6 +1,6 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, GithubAuthProvider, signInWithPopup } from 'firebase/auth';
+import type { UserCredential } from 'firebase/auth';
 
 // Firebase configuration
 const firebaseConfig = {
@@ -19,13 +19,19 @@ const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
 
-// Enable Google auth
+// Enable Google OAuth
+// Opens Google's OAuth popup and returns Firebase's UserCredential object
 const googleAuthProvider = new GoogleAuthProvider();
-const signInWithGoogle = async () => await signInWithPopup(auth, googleAuthProvider);
+const signInWithGoogle = async (): Promise<UserCredential> => {
+  return await signInWithPopup(auth, googleAuthProvider);
+};
 
-// Enable GitHub auth
+// Enable GitHub OAuth
+// Opens GitHub's OAuth popup and returns Firebase's UserCredential object
 const githubAuthProvider = new GithubAuthProvider();
-const signInWithGitHub = async () => await signInWithPopup(auth, githubAuthProvider);
+const signInWithGitHub = async (): Promise<UserCredential> => {
+  return await signInWithPopup(auth, githubAuthProvider);
+};
 
 export {
   signInWithGoogle,
