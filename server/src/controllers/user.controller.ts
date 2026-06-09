@@ -19,6 +19,27 @@ const oAuthUserLoginOrRegister = asyncHandler(async (req, res) => {
     // Backend: Checks the database, registers/logs in the user, and 
 	// 		    sets our own session cookie.
 
+    // Frontend
+    //     V
+    // Firebase Google/GitHub Sign-In
+    //     V
+    // Firebase ID Token
+    //     V
+    // POST /api/v1/user/sign-in/oauth
+    // Authorization: Bearer <firebase-id-token>
+    //     V
+    // Backend verifies token via firebase-admin SDK
+    //     V
+    // Find/Create user
+    //     V
+    // Generate JWT
+    //     V
+    // Set that JWT access token in HTTP-only secure cookie
+    //     V
+    // Frontend receives user data
+    //     V
+    // Store user inside Zustand
+
     // Extract the token from Authorization Header
     const authHeader = req.headers.authorization;
     if(!authHeader || !authHeader.startsWith('Bearer ')) {
