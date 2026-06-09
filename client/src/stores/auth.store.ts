@@ -11,7 +11,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 	// Initially user is not authenticated, that's why they are set as these
 	user: null,
 	isAuthenticated: false,
-	isLoading: false,
+	isLoading: true,
 	// Because when the app starts: App starts -> unknown auth status -> calls /get-auth-user -> cookie
 	// sent automatically -> backend verifies JWT -> returns user -> update Zustand store
 	// Until then, it will show 'Loading ....' with the help of isLoading = true

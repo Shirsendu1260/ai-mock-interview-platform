@@ -3,7 +3,7 @@ import PageContainer from "../components/ui/PageContainer.jsx";
 import GoogleSignInButton from "../components/auth/GoogleSignInButton.jsx";
 import GitHubSignInButton from "../components/auth/GitHubSignInButton.jsx";
 import Logo from "../components/common/Logo.jsx";
-import { oAuthSignInHandler } from '../handler/auth.handler.js';
+import { oAuthSignInHandler } from '../handlers/auth.handler.js';
 
 const Auth = () => {
 	const handleGoogleSignIn = async () => {
