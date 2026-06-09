@@ -118,6 +118,10 @@ interface AuthState {
 	clearUser: () => void;
 }
 
+interface IErrorMessage {
+	[key: string]: string; // key can be ANY string // value must be a string
+};
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -129,5 +133,6 @@ export type {
 	SpinnerProps,
 	EmptyStateProps,
 	User,
-	AuthState
+	AuthState,
+	IErrorMessage
 };

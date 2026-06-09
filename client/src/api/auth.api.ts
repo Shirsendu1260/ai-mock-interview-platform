@@ -1,11 +1,12 @@
 // This file is for raw HTTP calls on auth routes
 
 import { api } from './axios.js';
+import { ApiResponse } from '../utils/ApiResponse.js'
+import type { AxiosResponse } from 'axios';
+import type { User } from '../types/types.js';
 
-const authAPI = {
-	// Send Firebase issued ID Token to Backend, which then verifies the user, issues JWT 
-	// and authenticates him/her
-	signInWithOAuth: (idToken: string) => api.post(
+const signInWithOAuth = (idToken: string): Promise<AxiosResponse<ApiResponse<User>>> => {
+	return api.post(
 		// Route URL
 		'/user/sign-in/oauth',
 
@@ -16,15 +17,42 @@ const authAPI = {
 		{
 			headers: { Authorization: `Bearer ${idToken}` }
 		}
-	),
+	);
+};
 
-	// Fetch currently authenticated user
-	getAuthUser: () => api.get('/user/get-auth-user'),
+/*
+AxiosResponse<ApiResponse<AuthUser>> is:
+{
+    status: 200,
+    headers: {...},
+    config: {...},
 
-	// Logs out that authenticated user
-	signOut: () => api.post('/user/sign-out')
+    // ApiResponse
+    data: {
+        statusCode: 200,
+        success: true,
+        message: "...",
+
+        // AuthUser
+        data: {
+            id: "...",
+            email: "...",
+            ...
+        }
+    }
+}
+*/
+
+const getAuthUser = (): Promise<AxiosResponse<ApiResponse<User>>> => {
+	return api.get('/user/get-auth-user');
+};
+
+const signOut = (): Promise<AxiosResponse<ApiResponse<User>>> => {
+	return api.post('/user/sign-out');
 };
 
 export {
-	authAPI
+	signInWithOAuth,
+	getAuthUser,
+	signOut
 };
