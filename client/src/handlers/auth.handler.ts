@@ -2,8 +2,10 @@ import { signInWithGoogle, signInWithGitHub } from '../utils/firebase.js'
 import { signInWithOAuth } from '../api/auth.api.js';
 import { useAuthStore } from '../stores/auth.store.js';
 import type { UserCredential } from 'firebase/auth';
+import type { OAuthProvider } from '../types/types.js';
+import { ApiError } from '../utils/ApiError.js';
 
-export const oAuthSignInHandler = async (provider: string): Promise<string> => {
+export const oAuthSignInHandler = async (provider: OAuthProvider): Promise<void> => {
 	// Open Google OAuth popup, authenticate with Google/GitHub, and collect returned credential
 	let credential: UserCredential;
 	if(provider === 'google') {
@@ -13,7 +15,7 @@ export const oAuthSignInHandler = async (provider: string): Promise<string> => {
 		credential = await signInWithGitHub();
 	}
 	else {
-		return `Error 400: Invalid provider '${provider}'`;
+		throw new ApiError(400, `Invalid provider '${provider}'`);
 	}
 
 	// Get Firebase ID Token
@@ -33,9 +35,8 @@ export const oAuthSignInHandler = async (provider: string): Promise<string> => {
 		// Now user object is globally available
 		// 'user' object is set and 'isAuthenticated' is set to true 
 		useAuthStore.getState().setUser(user);
-
-		return `Success ${response.data.statusCode}: ${response.data.message || 'Success'}`;
 	}
-
-	return `Error ${response.data.statusCode}: ${response.data.message || 'Something went wrong!'}`;
+	else {
+		throw new ApiError(response.data.statusCode, response.data.message || 'Something went wrong!');
+	}
 };

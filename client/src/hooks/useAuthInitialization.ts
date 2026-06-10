@@ -4,6 +4,7 @@ import { useAuthStore } from '../stores/auth.store.js';
 
 // Runs only when the application starts
 // Calls - GET /get-auth-user
+// Browser sends cookie automatically
 // Backend verifies the JWT stored in secure cookie, then returns 'user' object if the JWT is valid
 // Updates Zustand store
 // From that moment, application knows user is logged in

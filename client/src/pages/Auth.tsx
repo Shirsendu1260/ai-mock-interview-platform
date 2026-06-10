@@ -4,32 +4,19 @@ import GoogleSignInButton from "../components/auth/GoogleSignInButton.jsx";
 import GitHubSignInButton from "../components/auth/GitHubSignInButton.jsx";
 import Logo from "../components/common/Logo.jsx";
 import { oAuthSignInHandler } from '../handlers/auth.handler.js';
+import { tryCatchHandler } from "../utils/tryCatchHandler.js";
 
 const Auth = () => {
 	const handleGoogleSignIn = async () => {
 		const provider = 'google';
 		console.log("Google Sign In");
-
-		try {
-			const result = await oAuthSignInHandler(provider);
-			result.includes('Error') ? console.error(result) : console.log(result);
-		}
-		catch(error) {
-			console.error(error);
-		}
+		await tryCatchHandler(async () => await oAuthSignInHandler(provider));
 	};
 
 	const handleGitHubSignIn = async () => {
 		const provider = 'github';
 		console.log("GitHub Sign In");
-
-		try {
-			const result = await oAuthSignInHandler(provider);
-			result.includes('Error') ? console.error(result) : console.log(result);
-		}
-		catch(error) {
-			console.error(error);
-		}
+		await tryCatchHandler(async () => await oAuthSignInHandler(provider));
 	};
 
 	return (

@@ -122,6 +122,8 @@ interface IErrorMessage {
 	[key: string]: string; // key can be ANY string // value must be a string
 };
 
+type OAuthProvider = 'google' | 'github';
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -134,5 +136,6 @@ export type {
 	EmptyStateProps,
 	User,
 	AuthState,
-	IErrorMessage
+	IErrorMessage,
+	OAuthProvider
 };
