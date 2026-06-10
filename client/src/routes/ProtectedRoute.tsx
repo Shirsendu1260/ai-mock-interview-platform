@@ -13,7 +13,7 @@
 // If loading, show: <Spinner />, because authentication status is unknown
 // If authenticated, allow access using <Outlet />. It is similar to next() from Express middleware
 // which renders thd child routes.
-// If unauthenticated, redirect to /auth. Similarly what we do in Express with res.status(401).
+// If unauthenticated, redirect to /login. Similarly what we do in Express with res.status(401).
 
 import { Navigate, Outlet } from 'react-router-dom';
 import Spinner from '../components/ui/Spinner.jsx';
@@ -31,12 +31,12 @@ const ProtectedRoute = () => {
 		);
 	}
 
-	// Redirect unauthenticated users to /auth
+	// Redirect unauthenticated users to /login
 	// 'replace' attribute will remove current entry (/dashboard for example) in the browser History 
-	// stack, replacing it with a new one (for here, /dashboard replaced by /auth when redirect 
+	// stack, replacing it with a new one (for here, /dashboard replaced by /login when redirect 
 	// happens)
 	if(!isAuthenticated) {
-		return <Navigate to='/auth' replace />
+		return <Navigate to='/login' replace />
 	}
 
 	// Allow authenticated users to access protected routes
