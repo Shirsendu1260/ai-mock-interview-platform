@@ -4,19 +4,28 @@ import GoogleSignInButton from "../components/auth/GoogleSignInButton.jsx";
 import GitHubSignInButton from "../components/auth/GitHubSignInButton.jsx";
 import Logo from "../components/common/Logo.jsx";
 import { oAuthSignInHandler } from '../handlers/auth.handler.js';
-import { tryCatchHandler } from "../utils/tryCatchHandler.js";
+import { useNavigate } from 'react-router-dom';
+import type { OAuthProvider } from '../types/types.js';
+import { ApiError } from '../utils/ApiError.js';
 
 const Auth = () => {
-	const handleGoogleSignIn = async () => {
-		const provider = 'google';
-		console.log("Google Sign In");
-		await tryCatchHandler(async () => await oAuthSignInHandler(provider));
-	};
+	const navigate = useNavigate();
 
-	const handleGitHubSignIn = async () => {
-		const provider = 'github';
-		console.log("GitHub Sign In");
-		await tryCatchHandler(async () => await oAuthSignInHandler(provider));
+	const handleOAuthSignIn = async (provider: OAuthProvider) => {
+		console.log("OAuth sign-in is on progress...");
+
+		try {
+			await oAuthSignInHandler(provider);
+			navigate('/dashbaord'); // Navigate to /dashboard after successful sign-in
+		}
+		catch(error) {
+			if(error instanceof ApiError) {
+				console.error(`Error ${error.statusCode}: ${error.message}`);
+			}
+			else {
+				console.error(error);
+			}
+		}
 	};
 
 	return (
@@ -35,8 +44,8 @@ const Auth = () => {
 						<p className="text-gray-500">Sign in to continue.</p>
 					</section>
 
-					<GoogleSignInButton onClick={handleGoogleSignIn} />
-					<GitHubSignInButton onClick={handleGitHubSignIn} />
+					<GoogleSignInButton onClick={() => handleOAuthSignIn('google')} />
+					<GitHubSignInButton onClick={() => handleOAuthSignIn('github')} />
 				</div>
 			</Card>
 		</PageContainer>
