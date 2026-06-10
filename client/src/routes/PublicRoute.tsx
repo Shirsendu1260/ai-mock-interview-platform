@@ -2,7 +2,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import Spinner from '../components/ui/Spinner.jsx';
 import { useAuthStore } from '../stores/auth.store.js';
 
-// Prevents authenticated users from accessing authentication pages such as /login
+// Prevents authenticated users from accessing authentication pages such as /auth
 // If user is already authenticated, redirect him/her to the dashboard
 const PublicRoute = () => {
 	const { isAuthenticated, isLoading } = useAuthStore();
@@ -25,10 +25,10 @@ const PublicRoute = () => {
 	// User is not authenticated
 	// Render child routes
 	// <Route element={<PublicRoute />}>
-	//   <Route path='/login' element={<Auth />} />
+	//   <Route path='/auth' element={<Auth />} />
 	// </Route>
 	// Flow:
-	// User visits /login -> PublicRoute executes -> User authenticated? -> No -> Render <Outlet/>
+	// User visits /auth -> PublicRoute executes -> User authenticated? -> No -> Render <Outlet/>
 	// -> React Router replaces it with <Auth/>
 	return <Outlet />;
 };
