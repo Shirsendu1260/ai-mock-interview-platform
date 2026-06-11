@@ -22,7 +22,7 @@ app.disable('x-powered-by');
 
 // Tells Express to trust the X-Forwarded-For headers sent by Render.
 // This ensures express-rate-limit grabs the client's actual IP, not Render's proxy IP.
-app.set('trust proxy', 1);
+if(process.env.NODE_ENV === 'production') app.set('trust proxy', 1);
 
 
 

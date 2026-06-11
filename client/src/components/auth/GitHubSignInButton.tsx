@@ -1,15 +1,34 @@
-import { FaGithub } from "react-icons/fa";
+import { BsGithub } from "react-icons/bs";
 import Button from '../ui/Button.jsx';
 import type { ThirdPartySignInButtonProps } from '../../types/types.js';
+import { useAuthStore } from '../../stores/auth.store.js';
+import Spinner from "../ui/Spinner.js";
 
 const GitHubSignInButton = ({ onClick }: ThirdPartySignInButtonProps) => {
+	const isAuthenticating = useAuthStore(state => state.isAuthenticating);
+
 	return (
 		<Button
 			className='bg-primary flex items-center justify-center gap-3'
 			onClick={onClick}
+			disabled={isAuthenticating}
+			isLoading={isAuthenticating}
 		>
-			<FaGithub size={20} />
-			<span>Continue with GitHub</span>
+			{
+				isAuthenticating
+					? (
+						<>
+							<Spinner size="sm" />
+							<span>Signing in with GitHub</span>
+						</>
+					)
+					: (
+						<>
+							<BsGithub size={20} />
+							<span>Continue with GitHub</span>
+						</>
+					)
+			}
 		</Button>
 	)
 }

@@ -7,16 +7,19 @@ import { oAuthSignInHandler } from '../handlers/auth.handler.js';
 import { useNavigate } from 'react-router-dom';
 import type { OAuthProvider } from '../types/types.js';
 import { ApiError } from '../utils/ApiError.js';
+import { useAuthStore } from '../stores/auth.store.js';
 
 const Auth = () => {
 	const navigate = useNavigate();
+	const setIsAuthenticating = useAuthStore(state => state.setIsAuthenticating);
 
 	const handleOAuthSignIn = async (provider: OAuthProvider) => {
-		console.log("OAuth sign-in is on progress...");
+		console.log("OAuth sign-in is in progress...");
 
 		try {
+			setIsAuthenticating(true);
 			await oAuthSignInHandler(provider);
-			navigate('/dashbaord'); // Navigate to /dashboard after successful sign-in
+			navigate('/dashboard'); // Navigate to /dashboard after successful sign-in
 		}
 		catch(error) {
 			if(error instanceof ApiError) {
@@ -25,6 +28,10 @@ const Auth = () => {
 			else {
 				console.error(error);
 			}
+		}
+		finally {
+			// Always reset state whether authentication succeeded or failed
+			setIsAuthenticating(false);
 		}
 	};
 

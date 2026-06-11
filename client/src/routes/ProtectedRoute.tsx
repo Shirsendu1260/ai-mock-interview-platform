@@ -20,7 +20,8 @@ import Spinner from '../components/ui/Spinner.jsx';
 import { useAuthStore } from '../stores/auth.store.js';
 
 const ProtectedRoute = () => {
-	const { isAuthenticated, isLoading } = useAuthStore();
+	const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+	const isLoading = useAuthStore(state => state.isLoading);
 
 	// Show loading spinner while authentication status is being determined
 	if(isLoading) {

@@ -112,11 +112,18 @@ interface User {
 interface AuthState {
 	user: User | null;
 	isAuthenticated: boolean;
+
+	// App loading
 	isLoading: boolean;
+
+	// OAuth login loading, will be set to true when login is in progress
+	isAuthenticating: boolean;
+
 	setUser: (user: User | null) => void;
 	setIsLoading: (flag: boolean) => void;
+	setIsAuthenticating: (flag: boolean) => void;
 	clearUser: () => void;
-}
+};
 
 interface IErrorMessage {
 	[key: string]: string; // key can be ANY string // value must be a string

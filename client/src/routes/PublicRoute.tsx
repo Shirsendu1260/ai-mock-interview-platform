@@ -5,9 +5,10 @@ import { useAuthStore } from '../stores/auth.store.js';
 // Prevents authenticated users from accessing authentication pages such as /auth
 // If user is already authenticated, redirect him/her to the dashboard
 const PublicRoute = () => {
-	const { isAuthenticated, isLoading } = useAuthStore();
-
-	// Authenticatio state is still being restored
+	const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+	const isLoading = useAuthStore(state => state.isLoading);
+ 
+	// Authentication state is still being restored
 	// Example: Browser refresh -> App starts again -> GET /get-auth-user -> waiting....
 	if(isLoading) {
 		return (
@@ -19,7 +20,7 @@ const PublicRoute = () => {
 
 	// Prevents showing login screen again
 	if(isAuthenticated) {
-		<Navigate to='/dashbaord' replace />
+		return <Navigate to='/dashboard' replace />
 	}
 
 	// User is not authenticated

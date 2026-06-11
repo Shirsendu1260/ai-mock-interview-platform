@@ -8,6 +8,13 @@
       "when": 1780469878365,
       "tag": "0000_stiff_chronomancer",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1781113829807,
+      "tag": "0001_steep_lord_tyger",
+      "breakpoints": true
     }
   ]
 }

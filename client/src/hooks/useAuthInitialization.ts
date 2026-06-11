@@ -9,12 +9,15 @@ import { useAuthStore } from '../stores/auth.store.js';
 // Updates Zustand store
 // From that moment, application knows user is logged in
 // This prevents unnecessary login screens after page refreshes
-const useAuthInitialization = async () => {
-	const { setUser, setIsLoading, clearUser } = useAuthStore();
+const useAuthInitialization = () => {
+	const setUser = useAuthStore(state => state.setUser);
+	const setIsLoading = useAuthStore(state => state.setIsLoading);
+	const clearUser = useAuthStore(state => state.clearUser);
 
 	useEffect(() => {
 		const initAuth = async () => {
 			try {
+				setIsLoading(true);
 				const response = await getAuthUser();
 
 				if(response.data.success) {

@@ -1,6 +1,5 @@
 import type { ButtonProps } from '../../types/types.js';
-import { motion } from "motion/react"
-import Spinner from "./Spinner.jsx";
+import { motion } from "motion/react";
 
 const Button = ({
 	children,
@@ -41,7 +40,7 @@ const Button = ({
 				flex
 				items-center
 				justify-center
-				gap-2
+				gap-3
 				disabled:cursor-not-allowed
 				disabled:opacity-60
 				${variantClass}
@@ -52,7 +51,6 @@ const Button = ({
 			{...props}
 		>
 			{children}
-			{isLoading && (<Spinner size="sm" />)}
 		</motion.button>
 	)
 }
