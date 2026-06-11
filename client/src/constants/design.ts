@@ -20,4 +20,7 @@ export const LAYOUT = {
 
 	// Horizontal padding for responsive layouts
 	paddingX: 'px-4 sm:px-6 lg:px-8',
+
+	// Vertical padding for responsive layouts between sections
+	paddingY: 'py-18 md:py-26'
 };

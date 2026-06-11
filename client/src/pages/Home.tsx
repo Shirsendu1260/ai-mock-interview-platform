@@ -1,8 +1,16 @@
+import HeroSection from '../components/sections/HeroSection.jsx';
+import FeaturesSection from '../components/sections/FeaturesSection.jsx';
+import HowItWorksSection from '../components/sections/HowItWorksSection.jsx';
+import StartNow from '../components/sections/StartNow.jsx';
+
 const Home = () => {
 	return (
-		<div>
-			Home Page
-		</div>
+		<>
+			<HeroSection/>
+			<FeaturesSection/>
+			<HowItWorksSection/>
+			<StartNow/>
+		</>
 	)
 }
 
