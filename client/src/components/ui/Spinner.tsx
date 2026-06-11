@@ -3,9 +3,9 @@ import type { SpinnerProps } from "../../types/types.js";
 
 const Spinner = ({ size = 'md' }: SpinnerProps) => {
 	const sizeObj = {
-		sm: "h-4 w-4",
-		md: "h-6 w-6",
-		lg: "h-9 w-9",
+		sm: "h-6 w-6",
+		md: "h-9 w-9",
+		lg: "h-12 w-12",
 	};
 
 	const sizeClass = sizeObj[size];
@@ -18,7 +18,7 @@ const Spinner = ({ size = 'md' }: SpinnerProps) => {
 				duration: 1,
 				ease: 'linear'
 			}}
-			className={`rounded-full border-3 border-border border-t-accent ${sizeClass}`}
+			className={`rounded-full border-4 border-border border-t-accent ${sizeClass}`}
 		/>
 	)
 }

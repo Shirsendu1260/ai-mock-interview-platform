@@ -12,12 +12,14 @@ import { useAuthStore } from '../stores/auth.store.js';
 const Auth = () => {
 	const navigate = useNavigate();
 	const setIsAuthenticating = useAuthStore(state => state.setIsAuthenticating);
+	const setOAuthProvider = useAuthStore(state => state.setOAuthProvider);
 
 	const handleOAuthSignIn = async (provider: OAuthProvider) => {
 		console.log("OAuth sign-in is in progress...");
 
 		try {
 			setIsAuthenticating(true);
+			setOAuthProvider(provider);
 			await oAuthSignInHandler(provider);
 			navigate('/dashboard'); // Navigate to /dashboard after successful sign-in
 		}
@@ -32,6 +34,8 @@ const Auth = () => {
 		finally {
 			// Always reset state whether authentication succeeded or failed
 			setIsAuthenticating(false);
+
+			setOAuthProvider(null);
 		}
 	};
 

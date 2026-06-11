@@ -108,9 +108,10 @@ interface User {
 	credit: number;
 };
 
-// Global authentication state for Zustand
+// Global authentication state interface for Zustand
 interface AuthState {
 	user: User | null;
+	oAuthProvider: OAuthProvider | null;
 	isAuthenticated: boolean;
 
 	// App loading
@@ -120,6 +121,7 @@ interface AuthState {
 	isAuthenticating: boolean;
 
 	setUser: (user: User | null) => void;
+	setOAuthProvider: (provider: OAuthProvider | null) => void;
 	setIsLoading: (flag: boolean) => void;
 	setIsAuthenticating: (flag: boolean) => void;
 	clearUser: () => void;

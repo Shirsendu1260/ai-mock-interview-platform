@@ -6,16 +6,17 @@ import Spinner from "../ui/Spinner.js";
 
 const GitHubSignInButton = ({ onClick }: ThirdPartySignInButtonProps) => {
 	const isAuthenticating = useAuthStore(state => state.isAuthenticating);
+	const oAuthProvider = useAuthStore(state => state.oAuthProvider);
 
 	return (
 		<Button
 			className='bg-primary flex items-center justify-center gap-3'
 			onClick={onClick}
 			disabled={isAuthenticating}
-			isLoading={isAuthenticating}
+			isLoading={isAuthenticating && oAuthProvider === 'github'}
 		>
 			{
-				isAuthenticating
+				isAuthenticating && oAuthProvider === 'github'
 					? (
 						<>
 							<Spinner size="sm" />
