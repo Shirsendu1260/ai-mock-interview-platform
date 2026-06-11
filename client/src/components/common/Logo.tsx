@@ -1,6 +1,6 @@
 import { PiBriefcaseFill } from "react-icons/pi";
 import type { LogoProps } from '../../types/types.js';
-import { APP_NAME } from '../../constants/design.js';
+import { APP_NAME } from '../../constants/app.js';
 
 /*
 Shared brand logo component used throughout the project.

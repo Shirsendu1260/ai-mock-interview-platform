@@ -1,8 +1,9 @@
 import type { PageContainerProps } from '../../types/types.js';
+import { LAYOUT } from "../../constants/design.js";
 
 const PageContainer = ({ children }: PageContainerProps) => {
 	return (
-		<div className={`min-h-screen bg-background px-4 sm:px-6 lg:px-8 flex items-center justify-center`}>
+		<div className={`min-h-screen bg-background ${LAYOUT.paddingX} flex items-center justify-center`}>
 			{children}
 		</div>
 	)

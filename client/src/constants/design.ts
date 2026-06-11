@@ -1,5 +1,3 @@
-export const APP_NAME = "AI Mock Interviewer";
-
 export const COLORS = {
 	primary: "#1E3A5F", // Deep Sapphire Blue
 	primaryLight: "#2B4C78", // Hover / Secondary Blue
@@ -14,4 +12,12 @@ export const COLORS = {
 
 	border: "#E2E8F0", // Borders, dividers
 	muted: "#64748B", // Secondary text
+};
+
+export const LAYOUT = {
+	// Max width of content containers
+	maxWidth: 'max-w-7xl',
+
+	// Horizontal padding for responsive layouts
+	paddingX: 'px-4 sm:px-6 lg:px-8',
 };
