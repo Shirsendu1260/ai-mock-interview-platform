@@ -45,9 +45,6 @@ const Auth = () => {
 				<div className="space-y-3">
 					<header className="flex justify-center flex-col mb-7">
 						<Logo size="lg" />
-						<p className="mt-3 text-gray-500 text-center">
-							Practice technical interviews with AI.
-						</p>
 					</header>
 
 					<section className="mb-7">

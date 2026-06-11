@@ -1,4 +1,4 @@
-export const APP_NAME = "AI Mock Interviewer";
+export const APP_NAME = "CodeInterviewerAI";
 
 export const SOCIAL_LINKS = {
 	github: 'https://github.com/Shirsendu1260',

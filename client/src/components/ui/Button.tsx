@@ -12,7 +12,7 @@ const Button = ({
 	const variantClasses = {
 		primary: "bg-accent text-white",
 		secondary: "bg-primary text-white",
-		ghost: "border border-border bg-white text-dark",
+		ghost: "border border-border border-2 bg-white text-dark",
 	};
 
 	const variantClass = variantClasses[variant] ?? variantClasses.primary;
@@ -32,17 +32,8 @@ const Button = ({
 			disabled={ disabled || isLoading }
 
 			className={`
-				w-full
-				h-12
-				rounded-xl
-				font-medium
-				transition
-				flex
-				items-center
-				justify-center
-				gap-3
-				disabled:cursor-not-allowed
-				disabled:opacity-60
+				w-full h-12 rounded-xl font-medium transition flex
+				items-center justify-center gap-3 disabled:cursor-not-allowed disabled:opacity-60
 				${variantClass}
 				${className}
 			`}

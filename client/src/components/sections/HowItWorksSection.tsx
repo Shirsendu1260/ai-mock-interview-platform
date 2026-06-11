@@ -9,39 +9,38 @@ import PageContainer from '../ui/PageContainer.jsx';
 import SectionHeading from '../ui/SectionHeading.jsx';
 import { LAYOUT } from '../../constants/design.js';
 
-// This section answers - "How does this platform work?"
 const steps = [
 	{
 		id: 1,
 		icon: FaSignInAlt,
 		title: 'Sign In',
-		description: 'Securely authenticate using your Google or GitHub account.'
+		description: 'Authenticate securely using your Google or GitHub account.'
 	},
 	{
 		id: 2,
 		icon: FaComments,
 		title: 'Start Interview',
-		description: 'Upload your resume, enter role you want to be interviewed for, and begin practicing with AI-powered questions.'
+		description: 'Choose role, upload your resume, and begin answering AI-generated interview questions.'
 	},
 	{
 		id: 3,
 		icon: FaRobot,
-		title: 'Get AI Feedback',
-		description: 'Receive intelligent analysis and improve your interview skills.'
+		title: 'Receive Feedback',
+		description: 'Get intelligent feedback and improve your interview performance.'
 	}
 ];
 
 const HowItWorksSection = () => {
 	return (
-		<section className={`bg-white ${LAYOUT.paddingY}`}>
+		<section className={`border-t border-b border-border ${LAYOUT.paddingY}`}>
 			<PageContainer>
 				<SectionHeading
-					description='Three simple steps to prepare for your dream job.'
+					description='Three simple steps to prepare for your dream role.'
 				>
 					How It Works
 				</SectionHeading>
 
-				<div className='mt-12 grid gap-8 md:grid-cols-3'>
+				<div className='mt-12 mx-auto grid max-w-5xl gap-6 md:grid-cols-3'>
 					{
 						steps.map((step) => {
 							const Icon = step.icon;
@@ -49,32 +48,34 @@ const HowItWorksSection = () => {
 							return (
 								<motion.div
 									key={step.id}
-									initial={{ opacity: 0, y: 30 }} 
-									whileInView={{ opacity: 1, y: 0 }} 
-									viewport={{ once: true }} 
-									transition={{ delay: step.id * 0.15, duration: 0.5 }}
+									initial={{ opacity: 0, y: 20 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									viewport={{ once: true }}
+									transition={{
+										duration: 0.45,
+										delay: step.id * 0.15
+									}}
 								>
-									<Card className='relative h-full'>
-										{/* Step Number */}
+									<Card className='h-full p-7'>
 										<div
 											className='
-												mb-6 flex h-12 w-12
-												items-center justify-center rounded-full
-												bg-accent font-bold text-white
+												flex h-11 w-11 items-center justify-center mb-5
+												rounded-3xl bg-accent font-semibold text-white
 											'
 										>
 											{step.id}
 										</div>
 
-										<div className='mb-5 text-4xl text-primary'>
-											<Icon />
+										<div className='mb-3 flex items-center gap-4'>
+											<div className='text-2xl text-primary'>
+												<Icon />
+											</div>
+											<h3 className='text-lg font-semibold'>
+												{step.title}
+											</h3>
 										</div>
 
-										<h3 className='mb-3 text-xl font-semibold'>
-											{step.title}
-										</h3>
-
-										<p className='leading-7 text-muted'>
+										<p className='text-sm leading-7 text-muted'>
 											{step.description}
 										</p>
 									</Card>

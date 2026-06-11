@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
-import { useNavigate } from 'react-router-dom';
 import { FaArrowRight } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import Button from '../ui/Button.jsx';
 import PageContainer from '../ui/PageContainer.jsx';
 import { LAYOUT } from '../../constants/design.js';
@@ -9,29 +9,29 @@ const StartNow = () => {
 	const navigate = useNavigate();
 
 	return (
-		<section className={LAYOUT.paddingY}>
+		<section className={`${LAYOUT.paddingY} border-t border-border`}>
 			<PageContainer>
 				<motion.div
-					initial={{ opacity: 0, y: 30 }}
+					initial={{ opacity: 0, y: 25 }}
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true }}
-					transition={{ duration: 0.66 }}
-					className='rounded-3xl bg-primary px-8 py-16 text-center text-white'
+					className='
+						rounded-[2rem] border border-border bg-primary
+						px-8 py-16 text-center text-white shadow-xl
+					'
 				>
 					<h2 className='text-3xl font-bold md:text-4xl'>
-						Ready to Ace Your Next Interview?
+						Ready To Ace Your Next Interview?
 					</h2>
 
-					<p className='mx-auto mt-6 max-w-2xl text-lg text-gray-200'>
-						Practice with AI, improve your confidence,
-						and prepare for your dream software engineering role.
+					<p className='mx-auto mt-5 max-w-2xl text-gray-300 leading-8'>
+						Practice with AI-generated interviews, receive feedback,
+						and prepare with confidence for your dream software
+						engineering role.
 					</p>
 
-					<div className='mt-10 flex justify-center'>
-						<Button
-							className='w-auto bg-accent px-8'
-							onClick={() => navigate('/auth')}
-						>
+					<div className='mt-8 flex justify-center'>
+						<Button className='w-auto px-8' onClick={() => navigate('/auth')}>
 							Get Started <FaArrowRight />
 						</Button>
 					</div>

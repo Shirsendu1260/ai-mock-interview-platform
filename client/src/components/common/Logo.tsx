@@ -1,34 +1,63 @@
-import { PiBriefcaseFill } from "react-icons/pi";
+import { PiBriefcaseFill } from 'react-icons/pi';
 import type { LogoProps } from '../../types/types.js';
 import { APP_NAME } from '../../constants/app.js';
 
 /*
-Shared brand logo component used throughout the project.
+Shared brand logo component.
 Examples:
 <Logo />
-<Logo size="sm" />
-<Logo size="lg" />
+<Logo size='sm' />
+<Logo size='lg' />
 */
 
-const Logo = ({ size = "md" }: LogoProps) => {
-	const sizeObj = {
-		sm: { icon: 20, class: 'text-lg' },
-		md: { icon: 28, class: 'text-2xl' },
-		lg: { icon: 36, class: 'text-3xl' }
+const Logo = ({ size = 'md' }: LogoProps) => {
+	const sizeMap = {
+		sm: {
+			icon: 18,
+			box: 'h-10 w-10',
+			titleClass: 'text-lg',
+			subtitleClass: 'text-[11px]'
+		},
+		md: {
+			icon: 22,
+			box: 'h-12 w-12',
+			titleClass: 'text-2xl',
+			subtitleClass: 'text-xs'
+		},
+		lg: {
+			icon: 30,
+			box: 'h-16 w-16',
+			titleClass: 'text-4xl',
+			subtitleClass: 'text-sm'
+		}
 	};
 
-	const currentSize = sizeObj[size]; // Contains our preferred icon size and class
+	const currentSize = sizeMap[size];
 
 	return (
-		<div className="flex items-center justify-center gap-3">
-			<div className="flex items-center justify-center rounded-xl bg-primary p-3 text-white">
+		<div className='flex items-center gap-3'>
+			{/* Brand icon */}
+			<div
+				className={`
+					${currentSize.box}
+					flex items-center justify-center
+					rounded-2xl bg-accent/6 text-primary border border-accent/20
+				`}
+			>
 				<PiBriefcaseFill size={currentSize.icon} />
 			</div>
-			<div>
-				<h1 className={`font-bold text-dark ${currentSize.class}`}>{APP_NAME}</h1>
+
+			{/* Brand text */}
+			<div className='leading-tight'>
+				<h1 className={`font-bold tracking-tight text-dark ${currentSize.titleClass}`}>
+					{APP_NAME}
+				</h1>
+				<p className={`font-medium text-muted ${currentSize.subtitleClass}`}>
+					AI-Powered Interview Practice
+				</p>
 			</div>
 		</div>
-	)
-}
+	);
+};
 
-export default Logo
+export default Logo;

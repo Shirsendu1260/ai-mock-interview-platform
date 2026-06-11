@@ -30,3 +30,8 @@ body {
 	background-color: var(--color-background);
 	color: var(--color-dark);
 }
+
+::selection {
+	background: var(--color-primary-light);
+	color: white;
+}
