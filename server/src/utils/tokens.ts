@@ -3,6 +3,10 @@ import type { Secret, SignOptions } from 'jsonwebtoken';
 import type { StringValue } from "ms";
 import { ApiError } from './ApiError.js';
 import type { User } from '../db/schema/users.js';
+import { db } from '../config/db.js';
+import { users } from '../db/schema/users.js';
+import { eq } from 'drizzle-orm';
+
 
 const generateAccessJWTToken = async function(user: User): Promise<string> {
 	// The payload (data to be embedded)
@@ -37,6 +41,43 @@ const generateRefreshJWTToken = async function(user: User): Promise<string> {
 	};
 
 	return jwt.sign(payload, secret, signOptions);
+};
+
+const generateAccessAndRefreshTokens = async (
+    userId: User['id']
+): Promise<{ accessToken: string, refreshToken: string }> => {
+    try {
+    	// As it returns array, to get first item, we did [user]
+        const [user] = await db.select()
+    							.from(users)
+    							.where(eq(user.id, userId))
+    							.limit(1);
+    	
+    	if (!user) throw new ApiError(404, "User not found.");
+
+        // generate access and refresh JWT token
+        const accessToken = await generateAccessJWTToken();
+        const refreshToken = await generateRefreshJWTToken();
+
+        // Save refresh token in DB
+        const [updatedUser] = await db.update(users)
+        								.set({
+        									refreshToken,
+        									updatedAt: new Date()
+        								})
+        								.where(eq(user.id, userId))
+        								.returning();
+
+        if (!updatedUser) throw new ApiError(404, "User not found.");
+
+        return { accessToken, refreshToken };
+    } catch(error: unknown) {
+        // If what was thrown is already an ApiError (like the 404 above), just re-throw it as-is
+        if(error instanceof ApiError) throw error;
+
+        // Otherwise throw a generic 500
+        throw new ApiError(500, error instanceof Error ? error.message : 'Unable to create access and refresh tokens.');
+    }
 };
 
 export { generateAccessJWTToken, generateRefreshJWTToken };

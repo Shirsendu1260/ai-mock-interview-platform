@@ -17,6 +17,9 @@ export const users = pgTable('users', {
 	// Credit system for token usage, defaults to 300, cannot be empty
 	credit: integer('credit').default(300).notNull(),
 
+	// Saves refresh JWT token string for token rotation
+	refreshToken: text('refresh_token'),
+
 	// Automatically record the exact moment the row is created
 	// We pass withTimezone: true so that no matter where our server runs globally, the time calculations 
 	// never get corrupted.
