@@ -140,6 +140,11 @@ type SidebarLinkProps = {
 	label: string;
 };
 
+type StatsCardProps = {
+	title: string;
+	value: string | number;
+};
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -154,5 +159,6 @@ export type {
 	AuthState,
 	IErrorMessage,
 	OAuthProvider,
-	SidebarLinkProps
+	SidebarLinkProps,
+	StatsCardProps
 };
