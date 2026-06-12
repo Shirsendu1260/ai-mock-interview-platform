@@ -1,9 +1,7 @@
 import { motion } from 'motion/react';
-import {
-	FaComments,
-	FaRobot,
-	FaSignInAlt
-} from 'react-icons/fa';
+import { IoLogIn } from "react-icons/io5";
+import { BiSolidCommentDots } from "react-icons/bi";
+import { RiRobot2Fill } from "react-icons/ri";
 import Card from '../ui/Card.jsx';
 import PageContainer from '../ui/PageContainer.jsx';
 import SectionHeading from '../ui/SectionHeading.jsx';
@@ -12,19 +10,19 @@ import { LAYOUT } from '../../constants/design.js';
 const steps = [
 	{
 		id: 1,
-		icon: FaSignInAlt,
+		icon: IoLogIn,
 		title: 'Sign In',
 		description: 'Authenticate securely using your Google or GitHub account.'
 	},
 	{
 		id: 2,
-		icon: FaComments,
+		icon: BiSolidCommentDots,
 		title: 'Start Interview',
 		description: 'Choose role, upload your resume, and begin answering AI-generated interview questions.'
 	},
 	{
 		id: 3,
-		icon: FaRobot,
+		icon: RiRobot2Fill,
 		title: 'Receive Feedback',
 		description: 'Get intelligent feedback and improve your interview performance.'
 	}
@@ -52,8 +50,8 @@ const HowItWorksSection = () => {
 									whileInView={{ opacity: 1, y: 0 }}
 									viewport={{ once: true }}
 									transition={{
-										duration: 0.45,
-										delay: step.id * 0.15
+										duration: 0.463,
+										delay: step.id * 0.2
 									}}
 								>
 									<Card className='h-full p-7'>

@@ -1,26 +1,29 @@
 import { motion } from 'motion/react';
 import {
 	FaArrowRight,
-	FaRobot,
-	FaChartLine,
-	FaComments
+	FaChartLine
 } from 'react-icons/fa';
+import { BiSolidCommentDots } from "react-icons/bi";
+import { RiRobot2Fill } from "react-icons/ri";
 import { Link } from 'react-router-dom';
 import Button from '../ui/Button.jsx';
 import PageContainer from '../ui/PageContainer.jsx';
 import Logo from '../common/Logo.jsx';
 import { LAYOUT } from '../../constants/design.js';
+import { useAuthStore } from '../../stores/auth.store.js';
 
 const HeroSection = () => {
+	const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+
 	const heroSectionFeatures = [
 		{
 			id: 1,
-			icon: FaComments,
+			icon: BiSolidCommentDots,
 			title: 'Real Questions'
 		},
 		{
 			id: 2,
-			icon: FaRobot,
+			icon: RiRobot2Fill,
 			title: 'AI Feedback'
 		},
 		{
@@ -75,11 +78,22 @@ const HeroSection = () => {
 								</Button>
 							</Link>
 
-							<Link to='/auth'>
-								<Button variant='ghost' className='px-8 sm:w-auto'>
-									Sign In
-								</Button>
-							</Link>
+							{
+								isAuthenticated
+								? (
+									<Link to='/dashboard'>
+										<Button variant='ghost' className='px-8 sm:w-auto'>
+											Dashboard
+										</Button>
+									</Link>
+								) : (
+									<Link to='/auth'>
+										<Button variant='ghost' className='px-8 sm:w-auto'>
+											Sign In
+										</Button>
+									</Link>
+								)
+							}
 						</div>
 					</motion.div>
 

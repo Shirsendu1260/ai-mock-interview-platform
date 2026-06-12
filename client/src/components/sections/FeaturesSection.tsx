@@ -58,8 +58,8 @@ const FeaturesSection = () => {
 									whileInView={{ opacity: 1, y: 0 }}
 									viewport={{ once: true }}
 									transition={{
-										duration: 0.45,
-										delay: feature.id * 0.15
+										duration: 0.463,
+										delay: feature.id * 0.2
 									}}
 								>
 									<Card className='h-full p-7'>
