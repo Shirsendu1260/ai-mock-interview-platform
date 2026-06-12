@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { 
 	oAuthUserLoginOrRegister, 
+	refreshAccessToken,
 	getAuthUser,
     signOutUser
 } from '../controllers/user.controller.js';
@@ -17,6 +18,7 @@ const router = Router();
 ////////////////////////////////  PUBLIC ROUTES  ////////////////////////////////
 
 router.route('/sign-in/oauth').post(authLimiter, oAuthUserLoginOrRegister);
+router.route('/refresh-token').post(authLimiter, refreshAccessToken);
 
 
 

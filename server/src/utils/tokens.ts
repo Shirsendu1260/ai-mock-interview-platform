@@ -48,16 +48,24 @@ const generateAccessAndRefreshTokens = async (
 ): Promise<{ accessToken: string, refreshToken: string }> => {
     try {
     	// As it returns array, to get first item, we did [user]
-        const [user] = await db.select()
+        const [user] = await db.select({
+						        	id: users.id,
+						        	fullName: users.fullName,
+						        	email: users.email,
+						        	avatarUrl: users.avatarUrl,
+						        	credit: users.credit,
+						        	createdAt: users.createdAt,
+						        	updatedAt: users.updatedAt
+						        })
     							.from(users)
-    							.where(eq(user.id, userId))
+    							.where(eq(users.id, userId))
     							.limit(1);
     	
     	if (!user) throw new ApiError(404, "User not found.");
 
         // generate access and refresh JWT token
-        const accessToken = await generateAccessJWTToken();
-        const refreshToken = await generateRefreshJWTToken();
+        const accessToken = await generateAccessJWTToken(user);
+        const refreshToken = await generateRefreshJWTToken(user);
 
         // Save refresh token in DB
         const [updatedUser] = await db.update(users)
@@ -65,8 +73,16 @@ const generateAccessAndRefreshTokens = async (
         									refreshToken,
         									updatedAt: new Date()
         								})
-        								.where(eq(user.id, userId))
-        								.returning();
+        								.where(eq(users.id, userId))
+        								.returning({
+								        	id: users.id,
+								        	fullName: users.fullName,
+								        	email: users.email,
+								        	avatarUrl: users.avatarUrl,
+								        	credit: users.credit,
+								        	createdAt: users.createdAt,
+								        	updatedAt: users.updatedAt
+								        });
 
         if (!updatedUser) throw new ApiError(404, "User not found.");
 
@@ -80,4 +96,4 @@ const generateAccessAndRefreshTokens = async (
     }
 };
 
-export { generateAccessJWTToken, generateRefreshJWTToken };
+export { generateAccessJWTToken, generateRefreshJWTToken, generateAccessAndRefreshTokens };
