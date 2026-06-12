@@ -1,5 +1,6 @@
 import type { PropsWithChildren, InputHTMLAttributes, ReactNode } from "react";
 import type { HTMLMotionProps } from "motion/react";
+import type { IconType } from 'react-icons';
 
 type CardProps = PropsWithChildren<{
 	className?: string;
@@ -133,6 +134,12 @@ interface IErrorMessage {
 
 type OAuthProvider = 'google' | 'github';
 
+type SidebarLinkProps = {
+	to: string; // Sidebar url
+	icon: IconType;
+	label: string;
+};
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -146,5 +153,6 @@ export type {
 	User,
 	AuthState,
 	IErrorMessage,
-	OAuthProvider
+	OAuthProvider,
+	SidebarLinkProps
 };

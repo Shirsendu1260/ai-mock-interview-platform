@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import Logo from '../common/Logo.jsx';
 import { LAYOUT } from '../../constants/design.js';
+import NavbarLinks from './NavbarLinks.jsx';
 
 const Navbar = () => {
 	return (
@@ -30,22 +31,7 @@ const Navbar = () => {
 
 				{/* Right side */}
 				<nav className='flex items-center gap-3 md:gap-5'>
-					<Link
-						to='/'
-						className='text-sm font-medium text-muted transition hover:text-accent'
-					>
-						Home
-					</Link>
-
-					<Link
-						to='/auth'
-						className='
-							rounded-2xl border border-accent bg-accent px-5 py-2 text-sm
-							font-medium text-white transition hover:opacity-90
-						'
-					>
-						Sign In
-					</Link>
+					<NavbarLinks/>
 				</nav>
 			</div>
 		</motion.header>
