@@ -43,16 +43,23 @@ AxiosResponse<ApiResponse<AuthUser>> is:
 }
 */
 
+const refreshAccessToken = (): Promise<AxiosResponse<ApiResponse<{ 
+	accessToken: string, refreshToken: string 
+}>>> => {
+    return api.post('/user/refresh-token');
+};
+
 const getAuthUser = (): Promise<AxiosResponse<ApiResponse<User>>> => {
 	return api.get('/user/get-auth-user');
 };
 
-const signOut = (): Promise<AxiosResponse<ApiResponse<User>>> => {
+const signOut = (): Promise<AxiosResponse<ApiResponse<{}>>> => {
 	return api.post('/user/sign-out');
 };
 
 export {
 	signInWithOAuth,
+	refreshAccessToken,
 	getAuthUser,
 	signOut
 };
