@@ -18,8 +18,8 @@ const DashboardWelcomeCard = () => {
 					</p>
 				</div>
 
-				<div className='hidden rounded-3xl bg-accent p-5 text-white md:block'>
-					<RiRobot2Fill size={35} />
+				<div className='hidden rounded-3xl bg-accent p-4 text-white md:block'>
+					<RiRobot2Fill size={31} />
 				</div>
 			</div>
 		</Card>

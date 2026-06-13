@@ -44,7 +44,7 @@ const QuickActions = () => {
 							whileHover={{ y: -3 }}
 						>
 							<Link to={action.link}>
-								<Card className='max-w-full p-6'>
+								<Card className='max-w-full p-5'>
 									<div className='space-y-4'>
 										<div
 											className='

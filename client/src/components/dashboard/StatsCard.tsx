@@ -4,7 +4,7 @@ import type { StatsCardProps } from '../../types/types/js';
 // For showing stats such as credits, interviews created etc. 
 const StatsCard = ({ title, value }: StatsCardProps) => {
 	return (
-		<Card className='max-w-full p-6'>
+		<Card className='max-w-full p-5'>
 			<p className='text-sm text-muted'>
 				{title}
 			</p>

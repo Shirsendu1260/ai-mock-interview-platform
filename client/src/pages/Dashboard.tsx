@@ -8,7 +8,7 @@ const Dashboard = () => {
 	const user = useAuthStore(state => state.user);
 
 	return (
-		<div className='space-y-7'>
+		<div className='space-y-6'>
 			<DashboardWelcomeCard/>
 			
 			<div className='grid gap-5 md:grid-cols-2'>

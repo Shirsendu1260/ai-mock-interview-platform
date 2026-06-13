@@ -35,9 +35,10 @@ const NavbarLinks = () => {
 
 						<div
 							className=
-							'rounded-xl border border-border bg-white px-3 py-2 text-sm font-medium'
+							'rounded-xl border border-border bg-white px-3 py-2 text-sm font-medium
+							flex items-center gap-1'
 						>
-							<RiCopperCoinFill size='15' /> {user?.credit}
+							<RiCopperCoinFill size='16' className='text-yellow-400' /> {user?.credit}
 						</div>
 
 						<img

@@ -2,7 +2,9 @@ import { NavLink } from 'react-router-dom';
 import type { SidebarLinkProps } from '../../types/types.js';
 
 // This component renders sidebar links (Profile, history etc.) in dashboard sidebar
-const SidebarLink = ({ to, icon, label }: SidebarLinkProps) => {
+const SidebarLinks = ({ to, icon, label }: SidebarLinkProps) => {
+	const Icon = icon;
+	
 	return (
 		<NavLink
 			to={to}
@@ -25,4 +27,4 @@ const SidebarLink = ({ to, icon, label }: SidebarLinkProps) => {
 	);
 };
 
-export default SidebarLink;
+export default SidebarLinks;
