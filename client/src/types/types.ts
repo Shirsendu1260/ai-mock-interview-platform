@@ -145,6 +145,10 @@ type StatsCardProps = {
 	value: string | number;
 };
 
+type NavbarLinksProps = {
+	isMobile?: boolean;
+};
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -160,5 +164,6 @@ export type {
 	IErrorMessage,
 	OAuthProvider,
 	SidebarLinkProps,
-	StatsCardProps
+	StatsCardProps,
+	NavbarLinksProps
 };

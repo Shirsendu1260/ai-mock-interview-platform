@@ -1,4 +1,4 @@
-import { RiRobot2Fill } from "react-icons/ri";
+import { PiBriefcaseFill } from 'react-icons/pi';
 import Card from '../ui/Card.jsx';
 import { useAuthStore } from '../../stores/auth.store.js';
 
@@ -19,7 +19,7 @@ const DashboardWelcomeCard = () => {
 				</div>
 
 				<div className='hidden rounded-3xl bg-accent p-4 text-white md:block'>
-					<RiRobot2Fill size={31} />
+					<PiBriefcaseFill size={31} />
 				</div>
 			</div>
 		</Card>

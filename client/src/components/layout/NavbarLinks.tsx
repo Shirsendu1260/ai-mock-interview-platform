@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
 import { RiCopperCoinFill } from "react-icons/ri";
 import { useAuthStore } from '../../stores/auth.store.js';
+import type { NavbarLinksProps } from '../../types/types.js';
 
-const NavbarLinks = () => {
+const NavbarLinks = ({ isMobile = false }: NavbarLinksProps) => {
 	const isAuthenticated = useAuthStore(state => state.isAuthenticated);
 	const user = useAuthStore(state => state.user);
 
@@ -23,8 +24,7 @@ const NavbarLinks = () => {
 			</Link>
 
 			{
-				isAuthenticated
-				? (
+				isAuthenticated ? (
 					<>
 						<Link
 							to='/dashboard'
@@ -33,27 +33,34 @@ const NavbarLinks = () => {
 							Dashboard
 						</Link>
 
-						<div
-							className=
-							'rounded-xl border border-border bg-white px-3 py-2 text-sm font-medium
-							flex items-center gap-1'
-						>
-							<RiCopperCoinFill size='16' className='text-yellow-400' /> {user?.credit}
-						</div>
+						{
+							// For large screens
+							!isMobile && (
+								<>
+									<div
+										className='
+											flex items-center gap-1 rounded-xl
+											border border-border bg-white px-3 py-2
+											text-sm font-medium
+										'
+									>
+										<RiCopperCoinFill size={16} className='text-yellow-400' />
+										{user?.credit}
+									</div>
 
-						<img
-							src={user?.avatarUrl ?? ''}
-							alt={user?.fullName}
-							className='h-10 w-10 rounded-full border border-border object-cover'
-						/>
+									<img
+										src={user?.avatarUrl ?? ''}
+										alt={user?.fullName}
+										className='h-10 w-10 rounded-full border border-border object-cover'
+									/>
+								</>
+							)
+						}
 					</>
 				) : (
 					<Link
 						to='/auth'
-						className='
-							rounded-2xl border border-accent bg-accent px-5 py-2 text-sm
-							font-medium text-white transition hover:opacity-90
-						'
+						className='rounded-2xl bg-accent px-5 py-2 text-sm font-medium text-white'
 					>
 						Sign In
 					</Link>
