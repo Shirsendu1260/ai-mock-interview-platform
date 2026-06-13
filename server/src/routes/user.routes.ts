@@ -7,7 +7,7 @@ import {
 } from '../controllers/user.controller.js';
 // import { upload } from '../middlewares/multer.middleware.js';
 import { verifyJWT } from '../middlewares/auth.middleware.js';
-import { authLimiter } from '../middlewares/rateLimiter.middleware.js';
+import { authLimiter, refreshLimiter } from '../middlewares/rateLimiter.middleware.js';
 
 
 
@@ -18,7 +18,7 @@ const router = Router();
 ////////////////////////////////  PUBLIC ROUTES  ////////////////////////////////
 
 router.route('/sign-in/oauth').post(authLimiter, oAuthUserLoginOrRegister);
-router.route('/refresh-token').post(authLimiter, refreshAccessToken);
+router.route('/refresh-token').post(refreshLimiter, refreshAccessToken);
 
 
 

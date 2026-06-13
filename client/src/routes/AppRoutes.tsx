@@ -9,6 +9,7 @@ import History from '../pages/History.jsx';
 import Profile from '../pages/Profile.jsx';
 import PublicRoute from './PublicRoute.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
+import DashboardLayout from '../layouts/DashboardLayout.jsx';
 
 // PublicRoute: Prevents authenticated users from visiting login pages
 // ProtectedRoute: Prevents unauthenticated users from accessing private pages

@@ -42,7 +42,7 @@ export const api = axios.create({
 //   -> 401 comes back
 //   -> axios interceptor silently calls /refresh-token
 //   -> new access token is set in cookie
-//   -> interceptor retries the original request automatically with the new token
+//   -> interceptor retries the original request automatically with the new access token
 //   -> component gets the data it wanted, it never knew anything failed
 // The component never has to handle token refresh. It just works.
 
@@ -81,10 +81,15 @@ api.interceptors.response.use(
         // so we can retry it later
 		const originalRequest = error.config;
 
-		// Only attempt for a refresh, if:
+		// Only attempt for a refresh of token, if:
 		// 1. The error that happened is 401 (unauthorized, token expired or invalid token)
 		// 2. We have not already retried the request yet (prevents infinite loop)
-		if(error.response?.status === 401 && !originalRequest._retry) {
+		// 3. The failed request is not /refresh-token itself (prevents infinite loop)
+		if(
+			error.response?.status === 401 && 
+			!originalRequest._retry &&
+			!originalRequest.url?.includes('/user/refresh-token')
+		) {
 			// Mark this original request as already retried
 			originalRequest._retry = true;
 

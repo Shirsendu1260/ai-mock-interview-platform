@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { RiCopperCoinFill } from "react-icons/ri";
+import { useAuthStore } from '../../stores/auth.store.js';
 
 const NavbarLinks = () => {
 	const isAuthenticated = useAuthStore(state => state.isAuthenticated);
