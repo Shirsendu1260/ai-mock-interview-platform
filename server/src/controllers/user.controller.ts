@@ -193,12 +193,14 @@ const getAuthUser = asyncHandler(async (req, res) => {
 
 // USER LOGOUT
 const signOutUser = asyncHandler(async (req, res) => {
-    await db.update(users)
-            .set({
-                refreshToken: null,
-                updatedAt: new Date()
-            })
-            .where(eq(users.id, req.user?.id));
+    if(req.user) {
+        await db.update(users)
+                .set({
+                    refreshToken: null,
+                    updatedAt: new Date()
+                })
+                .where(eq(users.id, req.user.id));
+    }
 
     return res.status(200)
                 .clearCookie('accessToken', COOKIE_SEND_OPTIONS)
