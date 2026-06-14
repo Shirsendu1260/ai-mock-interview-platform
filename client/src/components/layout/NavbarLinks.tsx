@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { RiCopperCoinFill } from "react-icons/ri";
 import { useAuthStore } from '../../stores/auth.store.js';
 import type { NavbarLinksProps } from '../../types/types.js';
+import UserDropdown from './UserDropdown.jsx';
 
 const NavbarLinks = ({ isMobile = false }: NavbarLinksProps) => {
 	const isAuthenticated = useAuthStore(state => state.isAuthenticated);
@@ -48,11 +49,7 @@ const NavbarLinks = ({ isMobile = false }: NavbarLinksProps) => {
 										{user?.credit}
 									</div>
 
-									<img
-										src={user?.avatarUrl ?? ''}
-										alt={user?.fullName}
-										className='h-10 w-10 rounded-full border border-border object-cover'
-									/>
+									<UserDropdown/>
 								</>
 							)
 						}

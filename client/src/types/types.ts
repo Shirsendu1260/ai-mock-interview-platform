@@ -102,11 +102,13 @@ type EmptyStateProps = {
 };
 
 interface User {
-	id: number;
+	id: number | string;
 	fullName: string;
 	email: string;
 	avatarUrl: string | null;
 	credit: number;
+	createdAt: string | Date;
+	updatedAt: string | Date;
 };
 
 // Global authentication state interface for Zustand

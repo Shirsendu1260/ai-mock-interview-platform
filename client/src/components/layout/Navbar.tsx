@@ -7,11 +7,11 @@ import { useState } from 'react';
 import { RiMenuFill } from 'react-icons/ri';
 import { HiX } from 'react-icons/hi';
 import { useAuthStore } from '../../stores/auth.store.js';
+import UserDropdown from './UserDropdown.jsx';
 
 const Navbar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const isAuthenticated = useAuthStore(state => state.isAuthenticated);
-	const user = useAuthStore(state => state.user);
 
 	return (
 		<motion.header
@@ -35,13 +35,7 @@ const Navbar = () => {
 					{/* Mobile screens, flex initially, else hidden for large screens */}
 					<div className='flex items-center gap-3 md:hidden'>
 						{
-							isAuthenticated && (
-								<img
-									src={user?.avatarUrl ?? ''}
-									alt={user?.fullName}
-									className='h-10 w-10 rounded-full border border-border object-cover'
-								/>
-							)
+							isAuthenticated && (<UserDropdown/>)
 						}
 
 						<button
