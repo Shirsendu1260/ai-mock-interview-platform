@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../stores/auth.store.js';
@@ -30,8 +30,38 @@ const UserDropdown = () => {
         }
     };
 
+    // Refrence to the whole dropdown container
+    // React will put the DOM element into dropdownRef.current
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    // Without this code, dropdown can only be closed when clicking on the user avatar
+    // With this code, dropdown can be closed by clicking anywhere
+    useEffect(() => {
+        // Runs whenever user clicks anywhere in the document
+        const handleClickOutside = (event: MouseEvent) => {
+            // event.target = the element user clicked
+            // dropdownRef.current = dropdown div
+            // contains() checks if the clicked element is inside the dropdown
+            // If not, then closes the menu
+            if(dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsDropdownOpen(false);
+            }
+        }
+
+        // Listen to clicks on whole page
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+        // React saves this function with the help of this 'return' when this useEffect() runs
+        // i.e. when the component mounts
+        // React automatically calls it when the component 'UserDropdown' is removed (unmounted)
+        // This prevents memory leaks and duplicate event listeners
+        // So, mount -> handleClickOutside() with the help of useEffect() runs
+        // unmount -> this cleanup function runs
+    }, []);
+
     return (
-        <div className='relative'>
+        <div className='relative' ref={dropdownRef}>
             <button
                 onClick={() => setIsDropdownOpen(prev => !prev)}
                 className='cursor-pointer'
@@ -45,7 +75,7 @@ const UserDropdown = () => {
 
             {/*AnimatePresence allows components to animate while leaving the DOM.
             Without it:
-            isMenuOpen=false -> React destroys the component immediately.
+            isDropdownOpen=false -> React destroys the component immediately.
             With AnimatePresence:
             React waits until the exit animation finishes and only then removes the component.*/}
             <AnimatePresence>
@@ -60,14 +90,22 @@ const UserDropdown = () => {
                             border-border bg-white p-3 shadow-lg'
                         >
                             <div className='border-b border-border p-2'>
-                                <p className='font-semibold text-dark'>
-                                    {user?.fullName}
-                                </p>
+                                <div className='flex flex-row gap-3 items-center mb-2'>
+                                    <img
+                                        src={user?.avatarUrl ?? ''}
+                                        alt={user?.fullName}
+                                        className='h-9 w-9 rounded-full border border-border
+                                        object-cover'
+                                    />
+                                    <p className='font-semibold text-dark'>
+                                        {user?.fullName}
+                                    </p>
+                                </div>
                                 <p className='mt-1 text-sm text-muted'>
                                     {user?.email}
                                 </p>
                                 <p className='mt-1 mb-2 text-sm text-muted'>
-                                    Joined at {formatDate(user?.createdAt as string)}
+                                    Joined {formatDate(user?.createdAt as string)}
                                 </p>
                             </div>
 
@@ -76,7 +114,7 @@ const UserDropdown = () => {
                                     to='/user/profile'
                                     onClick={() => setIsDropdownOpen(false)}
                                     className='flex items-center gap-2 rounded-2xl px-3 py-2 text-sm
-                                    font-medium transition hover:bg-background'
+                                    font-medium transition hover:bg-background hover:cursor-pointer'
                                 >
                                     <FaUser size={17}/>
                                     Profile
@@ -87,8 +125,9 @@ const UserDropdown = () => {
                                         await handleSignOut();
                                         setIsDropdownOpen(false)
                                     }}
-                                    className='flex items-center gap-2 rounded-2xl px-3 py-2 text-left
-                                    text-sm font-medium text-red-500 transition hover:bg-red-50'
+                                    className='flex items-center gap-2 rounded-2xl px-3 py-2
+                                    text-sm font-medium text-red-500 transition hover:bg-red-50
+                                    hover:cursor-pointer'
                                 >
                                     <IoLogOut size={17}/>
                                     Sign Out
