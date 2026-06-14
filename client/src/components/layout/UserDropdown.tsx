@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../stores/auth.store.js';
 import { IoLogOut } from "react-icons/io5";
-import { MdSpaceDashboard } from 'react-icons/md';
+import { FaUser } from 'react-icons/fa';
 import { signOutHandler } from '../../handlers/auth.handler.js';
 import { ApiError } from '../../utils/ApiError.js';
 import { formatDate } from '../../utils/helpers.js';
@@ -55,7 +55,7 @@ const UserDropdown = () => {
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
-                            transition={{ duration: 0.25 }}
+                            transition={{ duration: 0.13 }}
                             className='absolute right-0 top-14 z-50 w-72 rounded-3xl border
                             border-border bg-white p-3 shadow-lg'
                         >
@@ -73,13 +73,13 @@ const UserDropdown = () => {
 
                             <div className='mt-3 flex flex-col gap-2'>
                                 <Link
-                                    to='/dashboard'
+                                    to='/user/profile'
                                     onClick={() => setIsDropdownOpen(false)}
                                     className='flex items-center gap-2 rounded-2xl px-3 py-2 text-sm
                                     font-medium transition hover:bg-background'
                                 >
-                                    <MdSpaceDashboard size={17}/>
-                                    Dashboard
+                                    <FaUser size={17}/>
+                                    Profile
                                 </Link>
 
                                 <button

@@ -13,7 +13,7 @@ const DashboardSidebar = () => {
 				<SidebarLinks to='/dashboard' icon={FaHome} label='Dashboard' />
 				<SidebarLinks to='/dashboard/create' icon={FaPlusCircle} label='Create Interview' />
 				<SidebarLinks to='/dashboard/history' icon={FaHistory} label='History' />
-				<SidebarLinks to='/dashboard/profile' icon={FaUser} label='Profile' />
+				<SidebarLinks to='/user/profile' icon={FaUser} label='Profile' />
 			</div>
 		</div>
 	);
