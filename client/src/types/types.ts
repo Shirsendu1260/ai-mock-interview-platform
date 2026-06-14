@@ -151,6 +151,10 @@ type NavbarLinksProps = {
 	isMobile?: boolean;
 };
 
+type UserAvatarSizeProps = {
+	size?: number
+}
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -167,5 +171,6 @@ export type {
 	OAuthProvider,
 	SidebarLinkProps,
 	StatsCardProps,
-	NavbarLinksProps
+	NavbarLinksProps,
+	UserAvatarSizeProps
 };

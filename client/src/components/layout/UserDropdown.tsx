@@ -7,6 +7,7 @@ import { FaUser } from 'react-icons/fa';
 import { signOutHandler } from '../../handlers/auth.handler.js';
 import { ApiError } from '../../utils/ApiError.js';
 import { formatDate } from '../../utils/helpers.js';
+import UserAvatar from '../common/UserAvatar.jsx';
 
 const UserDropdown = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -66,11 +67,7 @@ const UserDropdown = () => {
                 onClick={() => setIsDropdownOpen(prev => !prev)}
                 className='cursor-pointer'
             >
-                <img
-                    src={user?.avatarUrl ?? ''}
-                    alt={user?.fullName}
-                    className='h-10 w-10 rounded-full border border-border object-cover'
-                />
+                <UserAvatar size={10} />
             </button>
 
             {/*AnimatePresence allows components to animate while leaving the DOM.
@@ -91,16 +88,12 @@ const UserDropdown = () => {
                         >
                             <div className='border-b border-border p-2'>
                                 <div className='flex flex-row gap-3 items-center mb-2'>
-                                    <img
-                                        src={user?.avatarUrl ?? ''}
-                                        alt={user?.fullName}
-                                        className='h-9 w-9 rounded-full border border-border
-                                        object-cover'
-                                    />
+                                    <UserAvatar size={9} />
                                     <p className='font-semibold text-dark'>
                                         {user?.fullName}
                                     </p>
                                 </div>
+
                                 <p className='mt-1 text-sm text-muted'>
                                     {user?.email}
                                 </p>
