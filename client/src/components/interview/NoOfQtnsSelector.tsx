@@ -13,6 +13,7 @@ const NoOfQtnSelector = () => {
                     focus:border-accent
                 '
             >
+                <option value=''>Select an option</option>
                 {NO_OF_QUESTIONS.map(count => (
                     <option key={count} value={count}>{count}</option>
                 ))}

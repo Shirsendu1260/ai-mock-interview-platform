@@ -13,6 +13,7 @@ const DifficultySelector = () => {
                     focus:border-accent
                 '
             >
+                <option value=''>Select an option</option>
                 {DIFFICULTIES.map(difficulty => (
                         <option key={difficulty} value={difficulty}>{difficulty}</option>
                 ))}

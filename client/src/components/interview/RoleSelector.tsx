@@ -13,6 +13,7 @@ const RoleSelect = () => {
                     focus:border-accent
                 '
             >
+                <option value=''>Select an option</option>
                 {JOB_ROLES.map(role => (
                     <option key={role} value={role}>{role}</option>
                 ))}
