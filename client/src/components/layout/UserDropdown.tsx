@@ -104,7 +104,7 @@ const UserDropdown = () => {
 
                             <div className='mt-3 flex flex-col gap-2'>
                                 <Link
-                                    to='/user/profile'
+                                    to='/dashboard/user/profile'
                                     onClick={() => setIsDropdownOpen(false)}
                                     className='flex items-center gap-2 rounded-2xl px-3 py-2 text-sm
                                     font-medium transition hover:bg-background hover:cursor-pointer'

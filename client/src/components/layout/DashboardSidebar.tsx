@@ -1,21 +1,107 @@
-import {
-	FaHistory,
-	FaPlusCircle,
-	FaUser,
-	FaHome
-} from 'react-icons/fa';
-import SidebarLinks from './SidebarLinks.jsx';
+import { useState } from 'react';
+import { FaHistory, FaPlusCircle, FaUser } from 'react-icons/fa';
+import { GoHomeFill } from 'react-icons/go';
+import { RiMenuFill } from 'react-icons/ri';
+import { HiX } from 'react-icons/hi';
+import SidebarLink from './SidebarLink.jsx';
 
+const sidebarLinks = [
+	{
+		id: 1,
+		to: '/dashboard',
+		icon: GoHomeFill,
+		label: 'Dashboard'
+	},
+	{
+		id: 2,
+		to: '/dashboard/interviews/create',
+		icon: FaPlusCircle,
+		label: 'Create Interview'
+	},
+	{
+		id: 3,
+		to: '/dashboard/interviews/history',
+		icon: FaHistory,
+		label: 'History'
+	},
+	{
+		id: 4,
+		to: '/dashboard/user/profile',
+		icon: FaUser,
+		label: 'Profile'
+	}
+];
+
+// Desktop: Sidebar always visible.
+// Mobile: Sidebar hidden initially, clicking hamburger opens it
 const DashboardSidebar = () => {
+	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
 	return (
-		<div className='w-64 shrink-0 border-r border-border bg-white p-5'>
-			<div className='space-y-3'>
-				<SidebarLinks to='/dashboard' icon={FaHome} label='Dashboard' />
-				<SidebarLinks to='/dashboard/create' icon={FaPlusCircle} label='Create Interview' />
-				<SidebarLinks to='/dashboard/history' icon={FaHistory} label='History' />
-				<SidebarLinks to='/user/profile' icon={FaUser} label='Profile' />
-			</div>
-		</div>
+		<>
+			{/* Mobile hamburger button */}
+			<button
+				onClick={() => setIsSidebarOpen(prev => !prev)}
+				className='fixed left-4 top-22 z-60 rounded-xl border border-border bg-accent/50 p-2
+				text-white shadow-sm font-sm md:hidden'
+			>
+				{
+					isSidebarOpen
+					? <HiX size={22} />
+					: <RiMenuFill size={22} />
+				}
+			</button>
+
+			{/* Dark overlay */}
+			{
+				isSidebarOpen && (
+					<div
+						onClick={() => setIsSidebarOpen(false)}
+						className='fixed inset-0 z-40 bg-black/25 md:hidden'
+					/>
+				)
+			}
+
+			{/* Desktop sidebar */}
+			<aside
+				className='hidden min-h-screen w-64 flex-shrink-0 border-r border-border bg-white py-7 px-4 md:block'
+			>
+				<div className='space-y-3'>
+					{
+						sidebarLinks.map(link => (
+							<SidebarLink
+								key={link.id}
+								to={link.to}
+								icon={link.icon}
+								label={link.label}
+							/>
+						))
+					}
+				</div>
+			</aside>
+
+			{/* Mobile sidebar */}
+			<aside
+				className={`
+					fixed left-0 top-0 z-50 h-screen w-64 border-r border-border bg-white px-4 py-20
+					transition-transform duration-250 md:hidden
+					${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+				`}
+			>
+				<div className='mt-16 space-y-3'>
+					{
+						sidebarLinks.map(link => (
+							<SidebarLink
+								key={link.id}
+								to={link.to}
+								icon={link.icon}
+								label={link.label}
+							/>
+						))
+					}
+				</div>
+			</aside>
+		</>
 	);
 };
 

@@ -4,7 +4,7 @@ import Home from '../pages/Home.jsx';
 import Auth from '../pages/Auth.jsx';
 import Pricing from '../pages/Pricing.jsx';
 import Dashboard from '../pages/Dashboard.jsx';
-import CreateInterview from '../pages/CreateInterview.jsx';
+import StartInterview from '../pages/StartInterview.jsx';
 import History from '../pages/History.jsx';
 import Profile from '../pages/Profile.jsx';
 import PublicRoute from './PublicRoute.jsx';
@@ -27,11 +27,21 @@ const AppRoutes = () => {
 
 		      	{/* -------------------- Protected Routes -------------------- */}
 		      	<Route element={<ProtectedRoute/>}>
-		      		<Route element={<DashboardLayout/>}>
-				        <Route path='/dashboard' element={<Dashboard/>} />
-				        <Route path='/interviews/create' element={<CreateInterview/>} />
-				        <Route path='/history' element={<History/>} />
-				        <Route path='/profile' element={<Profile/>} />
+		      		{/*All child routes get '/dashboard' prefixed*/}
+		      		<Route path='dashboard' element={<DashboardLayout/>}>
+		      			{/*Default page when visiting /dashboard*/}
+				        <Route index={true} element={<Dashboard/>} />
+
+				        {/*interview related pages*/}
+				        <Route path='interviews'>
+				       		<Route path='create' element={<StartInterview/>} />
+				        	<Route path='history' element={<History/>} />
+				        </Route>
+
+				        {/*Profile*/}
+				        <Route path='user'>
+				        	<Route path='profile' element={<Profile/>} />
+				        </Route>
 				    </Route>
 		      	</Route>
 			</Route>

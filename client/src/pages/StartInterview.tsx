@@ -7,6 +7,7 @@ import DifficultySelector from '../components/interview/DifficultySelector.jsx';
 import NoOfQtnsSelector from '../components/interview/NoOfQtnsSelector.jsx';
 import ResumeUploader from '../components/interview/ResumeUploader.jsx';
 import CreditCostCard from '../components/interview/CreditCostCard.jsx';
+import { useState } from "react";
 
 // This page will show the form and ask for required informations from user to start the interview
 const StartInterview = () => {
@@ -20,19 +21,24 @@ const StartInterview = () => {
                 </SectionHeading>
 
                 <Card className='mt-8 max-w-full space-y-6'>
-                    <RoleSelector/>
+                    <div className="grid md:grid-cols-2 gap-5">
+                        <RoleSelector/>
 
-                    <Input
-                        id='yoe-input'
-                        label='Years of Experience'
-                        type='number'
-                        min='0'
-                        step='0.1'
-                        placeholder='Example: 1.5'
-                    />
+                        <Input
+                            id='yoe-input'
+                            label='Years of Experience'
+                            type='number'
+                            min='0'
+                            step='0.1'
+                            placeholder='Example: 1.5'
+                        />
+                    </div>
 
-                    <DifficultySelector/>
-                    <NoOfQtnsSelector/>
+                    <div className="grid md:grid-cols-2 gap-5">
+                        <DifficultySelector/>
+                        <NoOfQtnsSelector/>
+                    </div>
+
                     <ResumeUploader/>
                     <CreditCostCard/>
                 </Card>

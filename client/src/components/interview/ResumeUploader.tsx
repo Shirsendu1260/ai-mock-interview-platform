@@ -19,13 +19,13 @@ const ResumeUploader = () => {
 
     return (
         <div className='space-y-2'>
-            <label className='text-sm font-medium text-dark'>
+            <label className='font-medium text-dark mb-2 block'>
                 Resume (PDF)
             </label>
 
             <motion.div
                 whileHover={{ scale: 1.013456 }}
-                className='cursor-pointer rounded-3xl border-2 border-dashed border-border
+                className='cursor-pointer rounded-xl border-2 border-dashed border-border
                 bg-background p-8 transition'
 
                 // When this div is clicked, trigger click on the hidden file uploader input element too
@@ -41,8 +41,7 @@ const ResumeUploader = () => {
                                 <p className='font-medium text-dark'>{pdfFile.name}</p>
                                 <p className='text-sm text-muted'>
                                     {/*Convert to Bytes to MB*/}
-                                    {(pdfFile.size / 1024 / 1024).toFixed(2)}
-                                    {' '}MB
+                                    {(pdfFile.size / 1024 / 1024).toFixed(2)}{' '}MB
                                 </p>
                             </div>
                         </div>

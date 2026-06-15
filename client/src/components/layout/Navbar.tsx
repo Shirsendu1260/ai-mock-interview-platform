@@ -65,7 +65,7 @@ const Navbar = () => {
 								transition={{ duration: 0.25 }}
 								className='overflow-hidden md:hidden'
 							>
-								<div className='flex flex-col gap-4 border-t border-border py-5'>
+								<div className='flex flex-col gap-4 border-t border-border py-5 text-right'>
 									<NavbarLinks isMobile={true} />
 								</div>
 							</motion.div>

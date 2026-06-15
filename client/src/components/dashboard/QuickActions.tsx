@@ -13,21 +13,21 @@ const actions = [
 		icon: FaPlusCircle,
 		title: 'New Interview',
 		description: 'Create a new mock interview.',
-		link: '/dashboard/create'
+		link: '/dashboard/interviews/create'
 	},
 	{
 		id: 2,
 		icon: FaHistory,
 		title: 'History',
 		description: 'View previous interviews.',
-		link: '/dashboard/history'
+		link: '/dashboard/interviews/history'
 	},
 	{
 		id: 3,
 		icon: FaUser,
 		title: 'Profile',
 		description: 'Manage your account.',
-		link: '/dashboard/profile'
+		link: '/dashboard/user/profile'
 	}
 ];
 
