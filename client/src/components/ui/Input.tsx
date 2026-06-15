@@ -13,18 +13,8 @@ const Input = ({ id, className = '', label, error, ...props }: InputProps) => {
 			<input
 				id={id}
 				className={`
-					h-12 
-					w-full 
-					rounded-xl 
-					border 
-					border-border 
-					bg-white 
-					px-4 
-					text-dark 
-					outline-none 
-					transition
-					focus:border-accent
-					${className}
+					h-12 w-full rounded-xl border border-border bg-white
+					px-4 text-dark outline-none transition focus:border-accent ${className}
 				`}
 
 				// Allow other input props automatically
