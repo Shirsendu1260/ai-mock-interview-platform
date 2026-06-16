@@ -10,6 +10,10 @@ import CreditCostCard from '../components/interview/CreditCostCard.jsx';
 import { useState } from "react";
 import type { Difficulty, IErrorMessage, QuestionsCount } from "../types/types.js";
 import { CREDIT_COST } from "../constants/interview.js";
+import Button from "../components/ui/Button.jsx";
+import { createInterviewHandler } from "../handlers/interview.handler.js";
+import { useNavigate } from "react-router-dom";
+import { ApiError } from "../utils/ApiError.js";
 
 // This page will show the form and ask for required informations from user to start the interview
 const StartInterview = () => {
@@ -29,8 +33,65 @@ const StartInterview = () => {
     //     questionsCount: "Please select number of questions."
     // }
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const navigate = useNavigate();
+
     // Calculate interview cost
     const interviewCost = difficultyState && qtnsCount ? CREDIT_COST[difficultyState] * qtnsCount : 0;
+
+    const handleStartInterview = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+        event.preventDefault();
+        setIsSubmitting(true);
+
+        try {
+            // Create form data (not JSON, because it cannot send file to backend, so we used multipart/form-data)
+            const formData = new FormData();
+            formData.append('role', role);
+            formData.append('yoe', yoe.toString());
+            formData.append('difficulty', difficultyState);
+            formData.append('qtnsCount', qtnsCount.toString());
+            if(resumePdfFile) formData.append('resume', resumePdfFile);
+
+            // Send data to backend
+            const response = await createInterviewHandler(formData);
+            // {
+            //     "success": true,
+            //     "statusCode": 201,
+            //     "message": "Interview created successfully.",
+            //     "data": {
+            //         "id": 15
+            //     }
+            // }
+
+            navigate(`/dashboard/interviews/view/${btoa(response.data.id.toString())}`);
+        }
+        catch(error) {
+            // {
+            //     "success": false,
+            //     "statusCode": 400,
+            //     "message": "Validation failed",
+            //     "errors": [
+            //         {
+            //             "role": "Role is required."
+            //         },
+            //         {
+            //             "yoe": "Experience is required."
+            //         }
+            //     ]
+            // }
+
+            if(error instanceof ApiError) {
+                const validationErrors: IErrorMessage = {};
+                error.errors.forEach(errorObj => Object.assign(validationErrors, errorObj));
+                setErrors(validationErrors);
+            }
+
+        }
+        finally {
+            setIsSubmitting(false);
+        }
+    };
 
     return (
         <PageContainer>
@@ -41,53 +102,60 @@ const StartInterview = () => {
                     Start Interview
                 </SectionHeading>
 
-                <Card className='mt-8 max-w-full space-y-6'>
-                    <div className="grid md:grid-cols-2 gap-5">
-                        <RoleSelector
-                            role={role}
-                            setRole={setRole}
-                            error={errors.role}
+                <Card className='mt-8 max-w-full'>
+                    <form className='space-y-6' onSubmit={handleStartInterview} >
+                        <div className="grid md:grid-cols-2 gap-5">
+                            <RoleSelector
+                                role={role}
+                                setRole={setRole}
+                                error={errors.role}
+                                setErrors={setErrors}
+                            />
+
+                            <Input
+                                id='yoe-input'
+                                label='Years of Experience'
+                                type='number'
+                                min='0'
+                                step='0.1'
+                                placeholder='Example: 1.5'
+                                value={yoe}
+                                onChange={(event) => {
+                                    setYoe(event.target.value === '' ? '' : Number(event.target.value));
+                                    setErrors(prev => ({ ...prev, yoe: '' }));
+                                }}
+                                error={errors.yoe}
+                            />
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-5">
+                            <DifficultySelector
+                                difficulty={difficultyState}
+                                setDifficulty={setDifficultyState}
+                                error={errors.difficulty}
+                                setErrors={setErrors}
+                            />
+                            <NoOfQtnsSelector
+                                qtnsCount={qtnsCount}
+                                setQtnsCount={setQtnsCount}
+                                error={errors.qtnsCount}
+                                setErrors={setErrors}
+                            />
+                        </div>
+
+                        <ResumeUploader
+                            resumePdfFile={resumePdfFile}
+                            setResumePdfFile={setResumePdfFile}
+                            error={errors.resume}
                             setErrors={setErrors}
                         />
 
-                        <Input
-                            id='yoe-input'
-                            label='Years of Experience'
-                            type='number'
-                            min='0'
-                            step='0.1'
-                            placeholder='Example: 1.5'
-                            value={yoe}
-                            onChange={(event) => {
-                                setYoe(event.target.value === '' ? '' : Number(event.target.value));
-                                setErrors(prev => ({ ...prev, yoe: '' }));
-                            }}
-                            error={errors.yoe}
-                        />
-                    </div>
+                        <CreditCostCard interviewCost={interviewCost} />
 
-                    <div className="grid md:grid-cols-2 gap-5">
-                        <DifficultySelector
-                            difficulty={difficultyState}
-                            setDifficulty={setDifficultyState}
-                            error={errors.difficulty}
-                            setErrors={setErrors}
-                        />
-                        <NoOfQtnsSelector
-                            qtnsCount={qtnsCount}
-                            setQtnsCount={setQtnsCount}
-                            error={errors.questionsCount}
-                            setErrors={setErrors}
-                        />
-                    </div>
-
-                    <ResumeUploader
-                        resumePdfFile={resumePdfFile}
-                        setResumePdfFile={setResumePdfFile}
-                        error={errors.resume}
-                        setErrors={setErrors}
-                    />
-                    <CreditCostCard interviewCost={interviewCost} />
+                        <Button type='submit' className='w-full' isLoading={isSubmitting} >
+                            Start Interview
+                        </Button>
+                    </form>
                 </Card>
             </div>
         </PageContainer>

@@ -197,6 +197,10 @@ type CreditCostCardProps = {
 	interviewCost: number;
 };
 
+interface CreateInterviewResponse {
+    id: number | string;
+}
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -221,5 +225,6 @@ export type {
 	DifficultySelectorProps,
 	NoOfQtnsSelectorProps,
 	ResumeUploaderProps,
-	CreditCostCardProps
+	CreditCostCardProps,
+	CreateInterviewResponse
 };
