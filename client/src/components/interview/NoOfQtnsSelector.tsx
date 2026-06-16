@@ -1,7 +1,8 @@
 import { NO_OF_QUESTIONS } from '../../constants/interview.js';
 import { FaChevronDown } from 'react-icons/fa';
+import type { NoOfQtnsSelectorProps, QuestionsCount } from '../../types/types.js';
 
-const NoOfQtnSelector = () => {
+const NoOfQtnsSelector = ({ qtnsCount, setQtnsCount, error, setErrors }: NoOfQtnsSelectorProps) => {
     return (
         <div className='space-y-2'>
             <label className='font-medium text-dark mb-2 block'>
@@ -14,6 +15,11 @@ const NoOfQtnSelector = () => {
                         w-full rounded-xl border border-border bg-white px-4 py-3 outline-none
                         focus:border-accent appearance-none text-sm
                     '
+                    value={qtnsCount}
+                    onChange={(event) => {
+                        setQtnsCount(Number(event.target.value) as QuestionsCount | 0);
+                        setErrors(prev => ({ ...prev, qtnsCount: '' }));
+                    }}
                 >
                     <option value=''>Select</option>
                     {NO_OF_QUESTIONS.map(count => (
@@ -27,8 +33,14 @@ const NoOfQtnSelector = () => {
                     size={14}
                 />
             </div>
+
+            {
+                error && (
+                    <p className='mt-1 text-sm text-red-500'>{error}</p>
+                )
+            }
         </div>
     );
 };
 
-export default NoOfQtnSelector;
+export default NoOfQtnsSelector;

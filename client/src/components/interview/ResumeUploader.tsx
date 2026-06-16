@@ -1,20 +1,34 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { motion } from 'motion/react';
 import { FaCloudArrowUp, FaFilePdf } from 'react-icons/fa6';
+import type { ResumeUploaderProps } from '../../types/types.js';
 
-const ResumeUploader = () => {
-    // State to store uploaded pdf file
-    const [pdfFile, setPdfFile] = useState<File | null>(null); // pdfFile: File | null
-
+const ResumeUploader = ({ resumePdfFile, setResumePdfFile, error, setErrors }: ResumeUploaderProps) => {
     // Reference to the hidden input element (file uploader)
     const pdfUploaderInputRef = useRef<HTMLInputElement>(null);
 
     // Function to set uploaded file to its dedicated state
-    // React.ChangeEvent<HTMLInputElement> -> Event that triggers on an input for an change event
+    // React.ChangeEvent<HTMLInputElement> -> Event that triggers on an input TAG for an change event
     const handleFileUploadState = (event: React.ChangeEvent<HTMLInputElement>): void => {
         const selectedFile = event.target.files?.[0];
+
         if(!selectedFile) return;
-        setPdfFile(selectedFile);
+
+        // Clear previous resume pdf error
+        setErrors(prev => ({ ...prev, resume: '' }));
+
+        if (selectedFile.type !== 'application/pdf') {
+            setErrors(prev => ({ ...prev, resume: 'Only PDF files are allowed.' }));
+            return;
+        }
+
+        if (selectedFile.size > 6 * 1024 * 1024) {
+            setErrors(prev => ({ ...prev, resume: 'Maximum file size is 6 MB.' }));
+            return;
+        }
+
+        setResumePdfFile(selectedFile);
+        setErrors(prev => ({ ...prev, resume: '' }));
     };
 
     return (
@@ -32,18 +46,51 @@ const ResumeUploader = () => {
                 onClick={() => pdfUploaderInputRef.current?.click()}
             >
                 {
-                    pdfFile
+                    resumePdfFile
                     ? (
-                        <div className='flex items-center gap-4'>
-                            <FaFilePdf size={36} className='text-red-500' />
+                        <div className='flex items-center justify-between gap-4'>
+                            {/* File details */}
+                            <div className='flex items-center gap-4'>
+                                <FaFilePdf size={36} className='text-red-500' />
 
-                            <div>
-                                <p className='font-medium text-dark'>{pdfFile.name}</p>
-                                <p className='text-sm text-muted'>
-                                    {/*Convert to Bytes to MB*/}
-                                    {(pdfFile.size / 1024 / 1024).toFixed(2)}{' '}MB
-                                </p>
+                                <div>
+                                    <p className='font-medium text-dark'>
+                                        {resumePdfFile.name}
+                                    </p>
+                                    <p className='text-sm text-muted'>
+                                        {(resumePdfFile.size / 1024 / 1024).toFixed(2)} MB
+                                    </p>
+                                </div>
                             </div>
+
+                            {/* Remove button */}
+                            <button
+                                type='button'
+                                className='rounded-xl border border-red-200 px-4 py-2 text-sm font-medium
+                                text-red-500 transition hover:bg-red-50'
+                                onClick={(event) => {
+                                    // Prevent parent div click from reopening file picker
+                                    event.stopPropagation();
+                                    // Without it, user clicks Remove. Parent <motion.div> also receives the click.
+                                    // File picker opens immediately, which is not desired.
+                                    // stopPropagation() prevents the click from bubbling to the parent.
+
+                                    setResumePdfFile(null);
+                                    setErrors(prev => ({ ...prev, resume: '' }));
+
+                                    // Reset hidden input so same file can be uploaded again
+                                    if (pdfUploaderInputRef.current) {
+                                        pdfUploaderInputRef.current.value = '';
+                                    }
+                                    // User uploads resume.pdf. Removes it.
+                                    // Wants to upload the same resume.pdf again.
+                                    // Browsers will not trigger onChange because technically the file didn't change.
+                                    // pdfUploaderInputRef.current.value = '';
+                                    // forces the browser to treat the next selection as a fresh upload.
+                                }}
+                            >
+                                Remove
+                            </button>
                         </div>
                     )
                     : (
@@ -53,12 +100,18 @@ const ResumeUploader = () => {
                             <div>
                                 <p className='font-medium text-dark'>Upload your resume</p>
                                 <p className='mt-1 text-sm text-muted'>PDF only</p>
-                                <p className='mt-1 text-sm text-muted'>Max size 5 MB</p>
+                                <p className='mt-1 text-sm text-muted'>Max size 6 MB</p>
                             </div>
                         </div>
                     )
                 }
             </motion.div>
+
+            {
+                error && (
+                    <p className='mt-1 text-sm text-red-500'>{error}</p>
+                )
+            }
 
             <input
                 type='file'

@@ -1,6 +1,7 @@
 import type { PropsWithChildren, InputHTMLAttributes, ReactNode } from "react";
 import type { HTMLMotionProps } from "motion/react";
 import type { IconType } from 'react-icons';
+import type { DIFFICULTIES, NO_OF_QUESTIONS } from "../constants/interview.js";
 
 type CardProps = PropsWithChildren<{
 	className?: string;
@@ -11,11 +12,11 @@ type PageContainerProps = PropsWithChildren;
 // type ButtonProps = PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement>>;
 /*
 ButtonHTMLAttributes<HTMLButtonElement>
-→ Includes all native HTML button props
+-> Includes all native HTML button props
 (type, disabled, onClick, autoFocus, aria-*, etc.).
 
 PropsWithChildren<T>
-→ Adds React's children prop to any type (here, <T>).
+-> Adds React's children prop to any type (here, <T>).
 
 So:
 PropsWithChildren<ButtonHTMLAttributes<HTMLButtonElement>>
@@ -111,6 +112,8 @@ interface User {
 	updatedAt: string | Date;
 };
 
+type OAuthProvider = 'google' | 'github';
+
 // Global authentication state interface for Zustand
 interface AuthState {
 	user: User | null;
@@ -131,10 +134,9 @@ interface AuthState {
 };
 
 interface IErrorMessage {
-	[key: string]: string; // key can be ANY string // value must be a string
+	[key: string]: string; // key can be any string // value must be a string
 };
 
-type OAuthProvider = 'google' | 'github';
 
 type SidebarLinkProps = {
 	to: string; // Sidebar url
@@ -155,6 +157,46 @@ type UserAvatarSizeProps = {
 	size?: number
 }
 
+// DIFFICULTIES is declared with 'as const', so TypeScript treats
+// each array element as a literal type ('easy', 'medium', 'hard')
+// instead of just a generic string. [number] means - give the type
+// of any element inside this array. So Difficulty becomes:
+// 'easy' | 'medium' | 'hard' automatically.
+type Difficulty = typeof DIFFICULTIES[number];
+type QuestionsCount = typeof NO_OF_QUESTIONS[number];
+
+type RoleSelectorProps = {
+	role: string;
+	setRole: React.Dispatch<React.SetStateAction<string>>;
+	error?: string;
+	setErrors: React.Dispatch<React.SetStateAction<IErrorMessage>>;
+};
+
+type DifficultySelectorProps = {
+    difficulty: Difficulty | '';
+    setDifficulty: React.Dispatch<React.SetStateAction<Difficulty | ''>>;
+    error?: string;
+	setErrors: React.Dispatch<React.SetStateAction<IErrorMessage>>;
+};
+
+type NoOfQtnsSelectorProps = {
+    qtnsCount: QuestionsCount | 0;
+    setQtnsCount: React.Dispatch<React.SetStateAction<QuestionsCount | 0>>;
+    error?: string;
+	setErrors: React.Dispatch<React.SetStateAction<IErrorMessage>>;
+};
+
+type ResumeUploaderProps = {
+	resumePdfFile: File | null;
+	setResumePdfFile: React.Dispatch<React.SetStateAction<File | null>>;
+	error?: string;
+	setErrors: React.Dispatch<React.SetStateAction<IErrorMessage>>;
+};
+
+type CreditCostCardProps = {
+	interviewCost: number;
+};
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -172,5 +214,12 @@ export type {
 	SidebarLinkProps,
 	StatsCardProps,
 	NavbarLinksProps,
-	UserAvatarSizeProps
+	UserAvatarSizeProps,
+	Difficulty,
+	QuestionsCount,
+	RoleSelectorProps,
+	DifficultySelectorProps,
+	NoOfQtnsSelectorProps,
+	ResumeUploaderProps,
+	CreditCostCardProps
 };

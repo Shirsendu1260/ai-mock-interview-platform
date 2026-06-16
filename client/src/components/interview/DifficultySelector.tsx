@@ -1,7 +1,8 @@
 import { DIFFICULTIES } from '../../constants/interview.js';
 import { FaChevronDown } from 'react-icons/fa';
+import type { Difficulty, DifficultySelectorProps } from '../../types/types.js';
 
-const DifficultySelector = () => {
+const DifficultySelector = ({ difficulty, setDifficulty, error, setErrors }: DifficultySelectorProps) => {
     return (
         <div className='space-y-2'>
             <label className='font-medium text-dark mb-2 block'>
@@ -14,6 +15,11 @@ const DifficultySelector = () => {
                         w-full rounded-xl border border-border bg-white px-4 py-3 outline-none
                         focus:border-accent appearance-none text-sm
                     '
+                    value={difficulty}
+                    onChange={(event)=>{
+                        setDifficulty(event.target.value as Difficulty | '')
+                        setErrors(prev => ({ ...prev, difficulty: '' }));
+                    }}
                 >
                     <option value=''>Select</option>
                     {DIFFICULTIES.map(difficulty => (
@@ -29,6 +35,12 @@ const DifficultySelector = () => {
                     size={14}
                 />
             </div>
+
+            {
+                error && (
+                    <p className='mt-1 text-sm text-red-500'>{error}</p>
+                )
+            }
         </div>
     );
 };
