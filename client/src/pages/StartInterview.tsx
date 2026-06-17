@@ -85,6 +85,10 @@ const StartInterview = () => {
                 const validationErrors: IErrorMessage = {};
                 error.errors.forEach(errorObj => Object.assign(validationErrors, errorObj));
                 setErrors(validationErrors);
+                console.error(`Error ${error.statusCode}: ${error.message}`);
+            }
+            else {
+                console.error(error);
             }
 
         }

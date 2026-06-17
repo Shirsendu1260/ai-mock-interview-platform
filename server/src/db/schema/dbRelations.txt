@@ -1,0 +1,3 @@
+user ------ 1:N ------ interviews
+interviews ------ 1:1 ------ interview_feedbacks
+interviews ------ 1:N ------ interview_questions

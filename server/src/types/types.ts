@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import type { User } from '../db/schema/users.js';
+import type { INTERVIEW_STATUS } from "../constants.js";
 
 interface IErrorMessage {
 	[key: string]: string; // key can be any string // value must be a string
@@ -30,7 +31,10 @@ declare global {
     }
 }
 
+type InterviewStatus = typeof INTERVIEW_STATUS[number];
+
 export type {
 	IErrorMessage,
-	AsyncControllerFunction
+	AsyncControllerFunction,
+	InterviewStatus
 };

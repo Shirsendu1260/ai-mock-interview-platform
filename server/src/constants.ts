@@ -7,3 +7,8 @@ export const COOKIE_SEND_OPTIONS = {
     secure: process.env.NODE_ENV === 'production', // Sent cookie only over HTTPS on production server
     sameSite: 'strict' // Cookie is never sent with cross-site requests (CSRF protection)
 } as const;
+
+export const NO_OF_QUESTIONS = [5, 10, 15, 20] as const;
+export const DIFFICULTIES = ["easy", "medium", "hard"] as const;
+
+export const INTERVIEW_STATUS = ['in_progress', 'completed'] as const;
