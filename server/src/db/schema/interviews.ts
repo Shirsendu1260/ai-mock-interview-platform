@@ -18,10 +18,6 @@ export const interviews = pgTable('interviews', {
     qtnsCount: integer('qtns_count').notNull(),
     creditCost: integer('credit_cost').notNull(),
     status: statusEnum('status').default('in_progress').notNull(),
-
-    // Will be filled after evaluation
-    overallScore: integer('overall_score'),
-
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull()
 });

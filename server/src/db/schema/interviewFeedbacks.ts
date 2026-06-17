@@ -12,6 +12,10 @@ export const interviewFeedbacks = pgTable('interview_feedbacks', {
     weaknesses: text('weaknesses'),
     suggestions: text('suggestions'),
     overallFeedback: text('overall_feedback'),
+
+    // Will be filled after evaluation
+    overallScore: integer('overall_score'),
+
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull()
 });
