@@ -1,9 +1,5 @@
-import { pgTable, serial, varchar, integer, real, timestamp, pgEnum } from 'drizzle-orm/pg-core';
-import { DIFFICULTIES, INTERVIEW_STATUS } from '../../constants.js';
+import { pgTable, serial, varchar, integer, real, timestamp } from 'drizzle-orm/pg-core';
 import { users } from './users.js';
-
-const difficultyEnum = pgEnum('difficulty', DIFFICULTIES);
-const statusEnum = pgEnum('status', INTERVIEW_STATUS);
 
 export const interviews = pgTable('interviews', {
     id: serial('id').primaryKey(),
@@ -14,10 +10,10 @@ export const interviews = pgTable('interviews', {
                                ),
     role: varchar('role', { length: 125 }).notNull(),
     yoe: real('yoe').notNull(),
-    difficulty: difficultyEnum('difficulty').notNull(),
+    difficulty: varchar('difficulty', { length: 10 }).notNull(),
     qtnsCount: integer('qtns_count').notNull(),
     creditCost: integer('credit_cost').notNull(),
-    status: statusEnum('status').default('in_progress').notNull(),
+    status: varchar('status', { length: 20 }).default('in_progress').notNull(),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull()
 });
