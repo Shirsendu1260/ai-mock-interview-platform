@@ -4,7 +4,7 @@ import { interviews } from './interviews.js';
 // Stores individual questions of an interview
 export const interviewQuestions = pgTable('interview_questions', {
     id: uuid('id').defaultRandom().primaryKey(),
-    interviewId: integer('interview_id').notNull()
+    interviewId: uuid('interview_id').notNull()
                                         .references(
                                             () => interviews.id,
                                             { onDelete: 'cascade' }

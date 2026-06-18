@@ -9,6 +9,11 @@ export const COOKIE_SEND_OPTIONS = {
 } as const;
 
 export const NO_OF_QUESTIONS = [5, 10, 15, 20] as const;
-export const DIFFICULTIES = ["easy", "medium", "hard"] as const;
+export const DIFFICULTIES = ['easy', 'medium', 'hard'] as const;
+export const INTERVIEW_STATUS = ['in_progress', 'paused', 'completed'] as const;
 
-export const INTERVIEW_STATUS = ['in_progress', 'completed'] as const;
+export const TIME_PER_QUESTION = {
+    easy: 3, // minutes
+    medium: 4.5,
+    hard: 6
+} as const;

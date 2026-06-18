@@ -3,7 +3,7 @@ import { interviews } from './interviews.js';
 
 export const interviewFeedbacks = pgTable('interview_feedbacks', {
     id: uuid('id').defaultRandom().primaryKey(),
-    interviewId: integer('interview_id').notNull()
+    interviewId: uuid('interview_id').notNull()
                                         .references(
                                             () => interviews.id,
                                             { onDelete: 'cascade' }

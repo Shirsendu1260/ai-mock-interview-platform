@@ -1,5 +1,5 @@
 CREATE TABLE "users" (
-	"id" serial PRIMARY KEY NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"full_name" varchar(125) NOT NULL,
 	"email" varchar(255) NOT NULL,
 	"avatar_url" text,
@@ -11,21 +11,25 @@ CREATE TABLE "users" (
 );
 --> statement-breakpoint
 CREATE TABLE "interviews" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"user_id" integer NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" uuid NOT NULL,
 	"role" varchar(125) NOT NULL,
 	"yoe" real NOT NULL,
 	"difficulty" varchar(10) NOT NULL,
 	"qtns_count" integer NOT NULL,
 	"credit_cost" integer NOT NULL,
 	"status" varchar(20) DEFAULT 'in_progress' NOT NULL,
+	"last_visited_qtn_position" integer DEFAULT 1 NOT NULL,
+	"started_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"ends_at" timestamp with time zone NOT NULL,
+	"completed_at" timestamp with time zone,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "interview_questions" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"interview_id" integer NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"interview_id" uuid NOT NULL,
 	"position" integer NOT NULL,
 	"question" text NOT NULL,
 	"answer" text,
@@ -36,8 +40,8 @@ CREATE TABLE "interview_questions" (
 );
 --> statement-breakpoint
 CREATE TABLE "interview_feedbacks" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"interview_id" integer NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"interview_id" uuid NOT NULL,
 	"strengths" text,
 	"weaknesses" text,
 	"suggestions" text,
