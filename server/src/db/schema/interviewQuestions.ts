@@ -1,9 +1,9 @@
-import { pgTable, serial, integer, text, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, integer, text, timestamp } from 'drizzle-orm/pg-core';
 import { interviews } from './interviews.js';
 
 // Stores individual questions of an interview
 export const interviewQuestions = pgTable('interview_questions', {
-    id: serial('id').primaryKey(),
+    id: uuid('id').defaultRandom().primaryKey(),
     interviewId: integer('interview_id').notNull()
                                         .references(
                                             () => interviews.id,

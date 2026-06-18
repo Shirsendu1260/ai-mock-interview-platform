@@ -1,8 +1,8 @@
-import { pgTable, serial, varchar, integer, real, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, integer, real, timestamp } from 'drizzle-orm/pg-core';
 import { users } from './users.js';
 
 export const interviews = pgTable('interviews', {
-    id: serial('id').primaryKey(),
+    id: uuid('id').defaultRandom().primaryKey(),
     userId: integer('user_id').notNull()
                               .references(
                                   () => users.id,

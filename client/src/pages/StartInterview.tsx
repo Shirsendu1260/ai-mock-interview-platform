@@ -64,7 +64,7 @@ const StartInterview = () => {
             //     }
             // }
 
-            navigate(`/dashboard/interviews/view/${btoa(response.data.id.toString())}`);
+            navigate(`/dashboard/interviews/view/${response.data.id}`);
         }
         catch(error) {
             // {

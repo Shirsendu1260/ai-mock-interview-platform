@@ -103,7 +103,7 @@ type EmptyStateProps = {
 };
 
 interface User {
-	id: number | string;
+	id: string;
 	fullName: string;
 	email: string;
 	avatarUrl: string | null;
@@ -198,7 +198,7 @@ type CreditCostCardProps = {
 };
 
 interface CreateInterviewResponse {
-    id: number | string;
+    id: string;
 }
 
 export type {

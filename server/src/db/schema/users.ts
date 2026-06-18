@@ -1,9 +1,9 @@
-import { pgTable, serial, varchar, integer, text, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, integer, text, timestamp } from 'drizzle-orm/pg-core';
 
 // Schema for 'users' table
 export const users = pgTable('users', {
-	// Primary Key, auto-increments (1, 2, 3...) on every new registration
-	id: serial('id').primaryKey(),
+	// Primary Key, random unique string on every new registration
+	id: uuid('id').defaultRandom().primaryKey(),
 
 	// Full Name, max 125 characters, must not be empty
 	fullName: varchar('full_name', { length: 125 }).notNull(),
