@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import type { OAuthProvider } from '../types/types.js';
 import { ApiError } from '../utils/ApiError.js';
 import { useAuthStore } from '../stores/auth.store.js';
+import { showErrorToast, showSuccessToast } from "../utils/toast.js";
 
 const Auth = () => {
 	const navigate = useNavigate();
@@ -21,14 +22,17 @@ const Auth = () => {
 			setIsAuthenticating(true);
 			setOAuthProvider(provider);
 			await oAuthSignInHandler(provider);
+			showSuccessToast('You are authenticated.');
 			navigate('/dashboard'); // Navigate to /dashboard after successful sign-in
 		}
 		catch(error) {
 			if(error instanceof ApiError) {
 				console.error(`Error ${error.statusCode}: ${error.message}`);
+				showErrorToast(error.message);
 			}
 			else {
 				console.error(error);
+				showErrorToast('Authentication failed.');
 			}
 		}
 		finally {

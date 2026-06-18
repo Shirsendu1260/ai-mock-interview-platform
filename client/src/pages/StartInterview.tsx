@@ -14,6 +14,7 @@ import Button from "../components/ui/Button.jsx";
 import { createInterviewHandler } from "../handlers/interview.handler.js";
 import { useNavigate } from "react-router-dom";
 import { ApiError } from "../utils/ApiError.js";
+import { showErrorToastWithToastId, showLoadingToast, showSuccessToastWithToastId } from "../utils/toast.js";
 
 // This page will show the form and ask for required informations from user to start the interview
 const StartInterview = () => {
@@ -43,6 +44,7 @@ const StartInterview = () => {
     const handleStartInterview = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault();
         setIsSubmitting(true);
+        const toastId = showLoadingToast('Creating interview...');
 
         try {
             // Create form data (not JSON, because it cannot send file to backend, so we used multipart/form-data)
@@ -64,6 +66,7 @@ const StartInterview = () => {
             //     }
             // }
 
+            showSuccessToastWithToastId('Interview created!', toastId);
             navigate(`/dashboard/interviews/view/${response.data.id}`);
         }
         catch(error) {
@@ -85,9 +88,11 @@ const StartInterview = () => {
                 const validationErrors: IErrorMessage = {};
                 error.errors.forEach(errorObj => Object.assign(validationErrors, errorObj));
                 setErrors(validationErrors);
+                showErrorToastWithToastId(error.message, toastId);
                 console.error(`Error ${error.statusCode}: ${error.message}`);
             }
             else {
+                showErrorToastWithToastId('Failed to create interview.', toastId);
                 console.error(error);
             }
 
