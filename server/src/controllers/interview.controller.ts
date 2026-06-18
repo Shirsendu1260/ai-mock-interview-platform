@@ -6,9 +6,9 @@ import { interviews } from '../db/schema/interviews.js';
 import type { NewInterview } from '../db/schema/interviews.js';
 import { eq } from 'drizzle-orm';
 
-// verifyJWT middleware -> multer.single('resume') -> createInterview controller -> JOI validation ->
-// Check credits -> Upload pdf to Cloudinary -> Extract text from pdf -> Delete it from Cloudinary ->
-// Generate AI questions -> DB operations (add to interviews and interview_questions) -> Deduct credits -> return
+// User clicks Start Interview -> Controller -> Authentication check -> Prevent multiple ongoing interviews ->
+// Joi validation -> Calculate interview cost -> Calculate interview duration -> Create interview row ->
+// Generate questions -> Insert interview_questions rows -> Deduct user credits -> Return interview id
 const createInterview = asyncHandler(async (req, res) => {
 
 });
