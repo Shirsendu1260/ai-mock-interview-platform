@@ -1,4 +1,3 @@
-import { PiBriefcaseFill } from 'react-icons/pi';
 import type { LogoProps } from '../../types/types.js';
 import { APP_NAME } from '../../constants/app.js';
 import logo from '../../assets/logo.png';

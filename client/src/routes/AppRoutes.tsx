@@ -5,7 +5,7 @@ import Auth from '../pages/Auth.jsx';
 import Pricing from '../pages/Pricing.jsx';
 import Dashboard from '../pages/Dashboard.jsx';
 import StartInterview from '../pages/StartInterview.jsx';
-import History from '../pages/History.jsx';
+import InterviewHistory from '../pages/InterviewHistory.jsx';
 import Profile from '../pages/Profile.jsx';
 import PublicRoute from './PublicRoute.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
@@ -35,7 +35,7 @@ const AppRoutes = () => {
 				        {/*interview related pages*/}
 				        <Route path='interviews'>
 				       		<Route path='create' element={<StartInterview/>} />
-				        	<Route path='history' element={<History/>} />
+				        	<Route path='history' element={<InterviewHistory/>} />
 				        </Route>
 
 				        {/*Profile*/}

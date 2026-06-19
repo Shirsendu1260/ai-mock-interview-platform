@@ -1,5 +1,5 @@
 import Card from '../ui/Card.jsx';
-import type { StatsCardProps } from '../../types/types/js';
+import type { StatsCardProps } from '../../types/types.js';
 
 // For showing stats such as credits, interviews created etc. 
 const StatsCard = ({ title, value }: StatsCardProps) => {
