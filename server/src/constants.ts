@@ -4,7 +4,7 @@ export const UPLOAD_DIR = '/public/temp';
 export const COOKIE_SEND_OPTIONS = {
     httpOnly: true, // Cookie not accessible via JavaScript in browser (XSS protection)
     secure: process.env.NODE_ENV === 'production', // Sent cookie only over HTTPS on production server
-    sameSite: 'strict' // Cookie is never sent with cross-site requests (CSRF protection)
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict' // Cookie is never sent with cross-site requests (CSRF protection)
 } as const;
 
 export const NO_OF_QUESTIONS = [5, 10, 15, 20] as const;
