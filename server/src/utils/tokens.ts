@@ -54,6 +54,7 @@ const generateAccessAndRefreshTokens = async (
 						        	email: users.email,
 						        	avatarUrl: users.avatarUrl,
 						        	credit: users.credit,
+                                    refreshToken: users.refreshToken,
 						        	createdAt: users.createdAt,
 						        	updatedAt: users.updatedAt
 						        })
@@ -74,15 +75,7 @@ const generateAccessAndRefreshTokens = async (
         									updatedAt: new Date()
         								})
         								.where(eq(users.id, userId))
-        								.returning({
-								        	id: users.id,
-								        	fullName: users.fullName,
-								        	email: users.email,
-								        	avatarUrl: users.avatarUrl,
-								        	credit: users.credit,
-								        	createdAt: users.createdAt,
-								        	updatedAt: users.updatedAt
-								        });
+        								.returning({ id: users.id });
 
         if (!updatedUser) throw new ApiError(404, "User not found.");
 
