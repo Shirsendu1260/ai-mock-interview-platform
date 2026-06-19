@@ -4,8 +4,20 @@ import jwt from 'jsonwebtoken';
 import type { JwtPayload, Secret } from 'jsonwebtoken';
 import { eq } from 'drizzle-orm';
 import { db } from '../config/db.js';
-import { users } from '../db/schema/users.js';
+import { users, type User } from '../db/schema/users.js';
 import type { Request, Response, NextFunction } from 'express';
+
+
+
+// Express's Request type does not have a 'user' property by default, we add it by ourself
+// 'user' Will be attached by verifyJWT middleware after token verification
+declare global {
+    namespace Express {
+        interface Request {
+            user?: User
+        }
+    }
+}
 
 
 
