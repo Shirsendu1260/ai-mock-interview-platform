@@ -20,10 +20,15 @@ const showLoadingToast = (msg: string) => {
     return toast.loading(msg);
 };
 
+const showLoadingToastWithToastId = (msg: string, toastId: string): void => {
+    toast.loading(msg, { id: toastId });
+};
+
 export {
     showSuccessToast,
     showSuccessToastWithToastId,
     showErrorToast,
     showErrorToastWithToastId,
-    showLoadingToast
+    showLoadingToast,
+    showLoadingToastWithToastId
 };

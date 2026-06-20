@@ -9,7 +9,7 @@ const App = () => {
     return (
         <>
             <Toaster
-                position="top-right"
+                position="bottom-right"
                 reverseOrder={true}
                 toastOptions={{
                     duration: 4635,

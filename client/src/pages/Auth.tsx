@@ -8,7 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import type { OAuthProvider } from '../types/types.js';
 import { ApiError } from '../utils/ApiError.js';
 import { useAuthStore } from '../stores/auth.store.js';
-import { showErrorToast, showSuccessToast } from "../utils/toast.js";
+import { showErrorToastWithToastId, showLoadingToast, showSuccessToastWithToastId } from "../utils/toast.js";
+import { FirebaseError } from "firebase/app";
 
 const Auth = () => {
 	const navigate = useNavigate();
@@ -17,22 +18,40 @@ const Auth = () => {
 
 	const handleOAuthSignIn = async (provider: OAuthProvider) => {
 		console.log("OAuth sign-in is in progress...");
+        const toastId = showLoadingToast('Signing in...');
 
 		try {
 			setIsAuthenticating(true);
 			setOAuthProvider(provider);
 			await oAuthSignInHandler(provider);
-			showSuccessToast('You are authenticated.');
+			showSuccessToastWithToastId('Signed in successfully.', toastId);
 			navigate('/dashboard'); // Navigate to /dashboard after successful sign-in
 		}
 		catch(error) {
-			if(error instanceof ApiError) {
+			if(
+				error instanceof FirebaseError &&
+				error.code === 'auth/account-exists-with-different-credential'
+			) {
+				console.error(`Error ${error.code}: ${error.message}`);
+				showErrorToastWithToastId(
+					'This email in already registered using another sign-in method',
+					toastId
+				);
+			}
+			else if(
+				error instanceof FirebaseError &&
+				error.code === 'auth/popup-closed-by-user'
+			) {
+				console.error(`Error ${error.code}: ${error.message}`);
+				showErrorToastWithToastId('Sign-in was cancelled', toastId);
+			}
+			else if(error instanceof ApiError) {
 				console.error(`Error ${error.statusCode}: ${error.message}`);
-				showErrorToast(error.message);
+				showErrorToastWithToastId(error.message, toastId);
 			}
 			else {
 				console.error(error);
-				showErrorToast('Authentication failed.');
+				showErrorToastWithToastId('Authentication failed.', toastId);
 			}
 		}
 		finally {
