@@ -235,6 +235,92 @@ const createInterview = asyncHandler(async (req, res) => {
                 );
 });
 
+// Get interview details
+const getInterview = asyncHandler(async (req, res) => {
+    const { interviewId } = req.params;
+
+
+    // Auth check
+    if(!req.user) {
+        throw new ApiError(401, 'You need to be authenticated to access interview details.');
+    }
+
+    const authUser = req.user;
+
+
+    // Validate interview id
+    const validatorSchema = Joi.object({
+        interviewId: Joi.string()
+                        .uuid()
+                        .required()
+                        .messages({
+                            'string.guid': 'Invalid interview id.',
+                            'any.required': 'Interview id is required.'
+                        })
+    });
+
+    const { error } = validatorSchema.validate(
+        { interviewId },
+        { abortEarly: false }
+    );
+
+    if(error) {
+        const errorsObj: IErrorMessage = {};
+
+        error.details.forEach(detail => {
+            errorsObj[detail.path[0] as string] = detail.message;
+        });
+
+        throw new ApiError(400, 'Failed to validate interview id.', errorsObj);
+    }
+
+
+    // Find interview
+    // User should only be able to access his/her own interview
+    const [interview] = await db.select({
+                                    id: interviews.id,
+                                    role: interviews.role,
+                                    yoe: interviews.yoe,
+                                    difficulty: interviews.difficulty,
+                                    qtnsCount: interviews.qtnsCount,
+                                    status: interviews.status,
+                                    lastVisitedQtnPosition: interviews.lastVisitedQtnPosition,
+                                    startedAt: interviews.startedAt,
+                                    endsAt: interviews.endsAt,
+                                    completedAt: interviews.completedAt
+                                })
+                                .from(interviews)
+                                .where(and(
+                                    eq(interviews.id, interviewId as string),
+                                    eq(interviews.userId, authUser.id)
+                                ))
+                                .limit(1);
+
+    if(!interview) {
+        throw new ApiError(404, 'Interview not found.');
+    }
+
+
+    // Calculate remaining interview time
+    // If interview is already completed, remaining time becomes 0
+    let remainingTimeInSeconds = 0;
+    const remainingTimeInMs = interview.endsAt.getTime() - Date.now();
+
+    if(interview.status === 'in_progress') {
+        remainingTimeInSeconds = Math.max(0, Math.floor(remainingTimeInMs / 1000));
+    }
+
+
+    // Return interview details
+    const interviewData = { ...interview, remainingTimeInSeconds };
+
+    return res.status(200)
+                .json(
+                    new ApiResponse(200, interviewData, 'Interview details fetched successfully.')
+                );
+});
+
 export {
-    createInterview
+    createInterview,
+    getInterview
 };
