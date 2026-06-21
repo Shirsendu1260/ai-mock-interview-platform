@@ -379,6 +379,7 @@ const getInterviewQuestion = asyncHandler(async (req, res) => {
 
 
     // Verify interview ownership
+    // Prevents the user from accessing other users' interviews with this - eq(interviews.userId, authUser.id)
     const [interview] = await db.select({
                                     id: interviews.id,
                                     status: interviews.status,
@@ -427,8 +428,139 @@ const getInterviewQuestion = asyncHandler(async (req, res) => {
                 );
 });
 
+// Save answer of a question
+const saveInterviewQuestionAnswer = asyncHandler(async (req, res) => {
+    const { interviewId, position } = req.params;
+    const { answer } = req.body as { answer: string };
+
+
+    // Auth check
+    if(!req.user) {
+        throw new ApiError(401, 'You need to be authenticated to save interview answers.');
+    }
+
+    const authUser = req.user;
+
+
+    // Validate route params and request body
+    const validatorSchema = Joi.object({
+        interviewId: Joi.string()
+                        .uuid()
+                        .required()
+                        .messages({
+                            'string.guid': 'Invalid interview id.',
+                            'any.required': 'Interview id is required.'
+                        }),
+        position: Joi.number()
+                     .integer()
+                     .min(1)
+                     .required()
+                     .messages({
+                        'number.base': 'Question position must be a number.',
+                        'number.integer': 'Question position must be an integer.',
+                        'number.min': 'Question position must be at least 1.',
+                        'any.required': 'Question position is required.'
+                     }),
+        answer: Joi.string()
+                    .trim()
+                    .allow('')
+                    .max(10000)
+                    .required()
+                    .messages({
+                        'string.base': 'Answer must be a string.',
+                        'any.required': 'Answer is required.',
+                        'string.max': 'Answer cannot exceed 10000 characters.',
+                    })
+    });
+
+
+    const { error } = validatorSchema.validate(
+        {
+            interviewId,
+            position: Number(position),
+            answer
+        },
+        { abortEarly: false }
+    );
+
+    if(error) {
+        const errorsObj: IErrorMessage = {};
+
+        error.details.forEach(detail => {
+            errorsObj[detail.path[0] as string] = detail.message;
+        });
+
+        throw new ApiError(400, 'Failed to validate answer data.', errorsObj);
+    }
+
+
+    // Verify ownership
+    const [interview] = await db.select({
+                                    id: interviews.id,
+                                    qtnsCount: interviews.qtnsCount,
+                                    status: interviews.status
+                                })
+                                .from(interviews)
+                                .where(and(
+                                    eq(interviews.id, interviewId as string),
+                                    eq(interviews.userId, authUser.id)
+                                ))
+                                .limit(1);
+
+    if(!interview) {
+        throw new ApiError(404, 'Interview not found.');
+    }
+
+
+    // If interview is already completed, no need to update its data, and prevention is expected here
+    if(interview.status === 'completed') {
+        throw new ApiError(400, 'Interview has already been completed.');
+    }
+
+
+    // Prevent invalid question positions
+    if(Number(position) > interview.qtnsCount) {
+        throw new ApiError(404, 'Question not found.');
+    }
+
+
+    // Ensures both operations succeed together using transaction
+    await db.transaction(async (tx) => {
+        // Save answer
+        const [updatedQtnAns] = await tx.update(interviewQuestions)
+                                            .set({
+                                                answer,
+                                                updatedAt: new Date()
+                                            })
+                                            .where(and(
+                                                eq(interviewQuestions.interviewId, interviewId as string),
+                                                eq(interviewQuestions.position, Number(position))
+                                            ))
+                                            .returning({ id: interviewQuestions.id });
+
+        if(!updatedQtnAns) {
+            throw new ApiError(500, 'Unable to save answer, please try again.');
+        }
+
+
+        // Store current position
+        // Used for refresh and also for resume after close
+        await tx.update(interviews)
+                .set({
+                    lastVisitedQtnPosition: Number(position),
+                    updatedAt: new Date()
+                })
+                .where(eq(interviews.id, interviewId as string));
+    });
+
+
+    // Return success response
+    return res.status(200).json(new ApiResponse(200, null, 'Answer saved successfully.' ));
+});
+
 export {
     createInterview,
     getInterview,
-    getInterviewQuestion
+    getInterviewQuestion,
+    saveInterviewQuestionAnswer
 };
