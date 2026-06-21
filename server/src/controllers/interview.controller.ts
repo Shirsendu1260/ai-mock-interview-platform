@@ -320,7 +320,115 @@ const getInterview = asyncHandler(async (req, res) => {
                 );
 });
 
+/*
+Get single interview question
+This is for:
+Previous button, Next button, Question number buttons, Refresh, and Browser close and resume
+*/
+const getInterviewQuestion = asyncHandler(async (req, res) => {
+    const { interviewId, position } = req.params;
+
+
+    // Auth check
+    if(!req.user) {
+        throw new ApiError(401, 'You need to be authenticated to access interview questions.');
+    }
+
+    const authUser = req.user;
+
+
+    // Validate route params
+    const validatorSchema = Joi.object({
+        interviewId: Joi.string()
+                        .uuid()
+                        .required()
+                        .messages({
+                            'string.guid': 'Invalid interview id.',
+                            'any.required': 'Interview id is required.'
+                        }),
+        position: Joi.number()
+                     .integer()
+                     .min(1)
+                     .required()
+                     .messages({
+                        'number.base': 'Question position must be a number.',
+                        'number.integer': 'Question position must be an integer.',
+                        'number.min': 'Question position must be at least 1.',
+                        'any.required': 'Question position is required.'
+                     })
+    });
+
+
+    const { error } = validatorSchema.validate(
+        {
+            interviewId,
+            position: Number(position)
+        },
+        { abortEarly: false }
+    );
+
+    if(error) {
+        const errorsObj: IErrorMessage = {};
+
+        error.details.forEach(detail => {
+            errorsObj[detail.path[0] as string] = detail.message;
+        });
+
+        throw new ApiError(400, 'Failed to validate request parameters.', errorsObj);
+    }
+
+
+    // Verify interview ownership
+    const [interview] = await db.select({
+                                    id: interviews.id,
+                                    status: interviews.status,
+                                    qtnsCount: interviews.qtnsCount
+                                })
+                                .from(interviews)
+                                .where(and(
+                                    eq(interviews.id, interviewId as string),
+                                    eq(interviews.userId, authUser.id)
+                                ))
+                                .limit(1);
+
+    if(!interview) {
+        throw new ApiError(404, 'Interview not found.');
+    }
+
+
+    // Prevent invalid question positions
+    if(Number(position) > interview.qtnsCount) {
+        throw new ApiError(404, 'Question not found.');
+    }
+
+
+    // Find question
+    const [question] = await db.select({
+                                    position: interviewQuestions.position,
+                                    question: interviewQuestions.question,
+                                    answer: interviewQuestions.answer
+                                })
+                                .from(interviewQuestions)
+                                .where(and(
+                                    eq(interviewQuestions.interviewId, interviewId as string),
+                                    eq(interviewQuestions.position, Number(position))
+                                ))
+                                .limit(1)
+
+    if(!question) {
+        throw new ApiError(404, 'Question not found.');
+    }
+
+
+    // Return question details
+    return res.status(200)
+                .json(
+                    new ApiResponse(200, question, 'Interview question fetched successfully.')
+                );
+});
+
 export {
     createInterview,
-    getInterview
+    getInterview,
+    getInterviewQuestion
 };
