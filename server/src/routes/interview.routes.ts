@@ -6,7 +6,8 @@ import {
     saveInterviewQuestionAnswer,
     submitInterview,
     getInterviewResult,
-    getOngoingInterview
+    getOngoingInterview,
+    getInterviewHistory
 } from '../controllers/interview.controller.js';
 import { upload } from '../middlewares/multer.middleware.js';
 import { verifyJWT } from '../middlewares/auth.middleware.js';
@@ -26,6 +27,7 @@ router.route('/:interviewId/questions/:position').patch(verifyJWT, saveInterview
 router.route('/:interviewId/submit').post(verifyJWT, submitInterview);
 router.route('/:interviewId/result').get(verifyJWT, getInterviewResult);
 router.route('/ongoing').get(verifyJWT, getOngoingInterview);
+router.route('/history').get(verifyJWT, getInterviewHistory);
 
 
 

@@ -6,7 +6,7 @@ import { interviews } from '../db/schema/interviews.js';
 import type { NewInterview } from '../db/schema/interviews.js';
 import { interviewQuestions, type NewInterviewQuestion, type InterviewQuestion } from '../db/schema/interviewQuestions.js';
 import { interviewFeedbacks, type NewInterviewFeedback } from '../db/schema/interviewFeedbacks.js';
-import { eq, and, asc } from 'drizzle-orm';
+import { eq, and, asc, desc } from 'drizzle-orm';
 import type { AnswerDataOfQuestion, Difficulty, IErrorMessage } from '../types/types.js';
 import Joi from 'joi';
 import { cloudinaryDeleter, cloudinaryUploader } from '../utils/cloudinary.js';
@@ -850,6 +850,39 @@ const getOngoingInterview = asyncHandler(async (req, res) => {
     );
 });
 
+const getInterviewHistory = asyncHandler(async (req, res) => {
+    // Auth check
+    if (!req.user) {
+        throw new ApiError(401, 'You need to be authenticated to view your interview history.');
+    }
+
+    const authUser = req.user;
+
+
+    // Get interviews (all types)
+    const interviewHistory = await db.select({
+                                            id: interviews.id,
+                                            role: interviews.role,
+                                            difficulty: interviews.difficulty,
+                                            qtnsCount: interviews.qtnsCount,
+                                            overallScore: interviewFeedbacks.overallScore,
+                                            completedAt: interviews.completedAt,
+                                            createdAt: interviews.createdAt
+                                        })
+                                        .from(interviews)
+                                        .innerJoin(
+                                            interviewFeedbacks,
+                                            eq(interviewFeedbacks.interviewId, interviews.id)
+                                        )
+                                        .where(eq(interviews.userId, authUser.id))
+                                        .orderBy(desc(interviews.completedAt));
+
+
+    return res.status(200).json(
+        new ApiResponse(200, interviewHistory, 'Interview history fetched successfully.')
+    );
+});
+
 export {
     createInterview,
     getInterview,
@@ -857,5 +890,6 @@ export {
     saveInterviewQuestionAnswer,
     submitInterview,
     getInterviewResult,
-    getOngoingInterview
+    getOngoingInterview,
+    getInterviewHistory
 };
