@@ -679,11 +679,111 @@ const submitInterview = asyncHandler(async (req, res) => {
 
 
     // Return response
-    const { userId, ...rest } = interview; // 'rest' is same as 'interview' but without userId key
-    const finalResponse = { ...rest, overallScore: evaluationResult.overallScore };
+    const finalResponse = {
+        interviewId: interview.id,
+        overallScore: evaluationResult.overallScore
+    };
 
     return res.status(200).json(
         new ApiResponse(200, finalResponse, 'Interview submitted successfully.')
+    );
+});
+
+const getInterviewResult = asyncHandler(async (req, res) => {
+    const { interviewId } = req.params;
+
+
+    // Auth check
+    if(!req.user) {
+        throw new ApiError(401, 'You need to be authenticated to view this interview\'s result.');
+    }
+
+    const authUser = req.user;
+
+
+    // Validate route param
+    const validatorSchema = Joi.object({
+        interviewId: Joi.string()
+                        .uuid()
+                        .required()
+                        .messages({
+                            'string.guid': 'Invalid interview id.',
+                            'any.required': 'Interview id is required.'
+                        })
+    });
+
+
+    const { error } = validatorSchema.validate(
+        { interviewId },
+        { abortEarly: false }
+    );
+
+    if(error) {
+        const errorsObj: IErrorMessage = {};
+
+        error.details.forEach(detail => {
+            errorsObj[detail.path[0] as string] = detail.message;
+        });
+
+        throw new ApiError(400, 'Failed to validate interview id.', errorsObj);
+    }
+
+
+    // Find interview
+    const [interview] = await db.select()
+                                .from(interviews)
+                                .where(and(
+                                    eq(interviews.id, interviewId as string),
+                                    eq(interviews.userId, authUser.id)
+                                ))
+                                .limit(1);
+
+    if(!interview) {
+        throw new ApiError(404, 'Interview not found.');
+    }
+
+
+    // Results should only be visible after interview is completed
+    if (interview.status !== 'completed') {
+        throw new ApiError(400, 'Interview is still in progress.');
+    }
+
+
+    // Get overall feedback
+    const [overallFeedback] = await db.select()
+                                        .from(interviewFeedbacks)
+                                        .where(eq(
+                                            interviewFeedbacks.interviewId, interview.id
+                                        ))
+                                        .limit(1);
+
+    if(!overallFeedback) {
+        throw new ApiError(404, 'Interview feedback not found.');
+    }
+
+
+    // Get question-wise results
+    const questionResults = await db.select()
+                                    .from(interviewQuestions)
+                                    .where(eq(
+                                        interviewFeedbacks.interviewId, interview.id
+                                    ))
+                                    .orderBy(asc(interviewQuestions.position));
+
+
+    // Return response
+    const { userId, ...interviewWithoutUserId } = interview;
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            {
+                interviewWithoutUserId,
+                overallFeedback,
+                questionResults
+            },
+            'Interview result fetched successfully.'
+        )
     );
 });
 
@@ -692,5 +792,6 @@ export {
     getInterview,
     getInterviewQuestion,
     saveInterviewQuestionAnswer,
-    submitInterview
+    submitInterview,
+    getInterviewResult
 };
