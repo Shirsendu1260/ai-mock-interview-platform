@@ -787,11 +787,75 @@ const getInterviewResult = asyncHandler(async (req, res) => {
     );
 });
 
+// App starts, calls /ongoing get endpoint, no interview, show dashboard
+// If ongoing interview exists, redirect user back to that interview
+const getOngoingInterview = asyncHandler(async (req, res) => {
+    // Auth check
+    if(!req.user) {
+        throw new ApiError(401, 'You need to be authenticated.');
+    }
+
+    const authUser = req.user;
+
+
+    // Find ongoing interview
+    const [ongoingInterview] = await db.select()
+                                        .from(interviews)
+                                        .where(and(
+                                            eq(interviews.userId, authUser.id),
+                                            eq(interviews.status, 'in_progress')
+                                        ))
+                                        .limit(1);
+
+    if(!ongoingInterview) {
+        return res.status(200).json(
+            new ApiResponse(200, null, 'No ongoing interview found.')
+        );
+    }
+
+
+    // Calculate remaining interview time
+    const remainingTimeInMs = ongoingInterview.endsAt.getTime() - Date.now();
+    const remainingTimeInSeconds = Math.max(0, Math.floor(remainingTimeInMs / 1000));
+
+
+    // If interview timer is expired already
+    if(remainingTimeInSeconds <= 0) {
+        new ApiResponse(
+            200,
+            {
+                interviewId: ongoingInterview.id,
+                interviewExpired: true
+            },
+            'No ongoing interview found.'
+        )
+    }
+
+
+    // return success response
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            {
+                interviewId: ongoingInterview.id,
+                role: ongoingInterview.role,
+                difficulty: ongoingInterview.difficulty,
+                qtnsCount: ongoingInterview.qtnsCount,
+                lastVisitedQtnPosition: ongoingInterview.lastVisitedQtnPosition,
+                remainingTimeInSeconds,
+                interviewExpired: false
+            },
+            'Ongoing interview fetched successfully.'
+        )
+    );
+});
+
 export {
     createInterview,
     getInterview,
     getInterviewQuestion,
     saveInterviewQuestionAnswer,
     submitInterview,
-    getInterviewResult
+    getInterviewResult,
+    getOngoingInterview
 };
