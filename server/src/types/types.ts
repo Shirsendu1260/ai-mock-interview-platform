@@ -23,9 +23,31 @@ type AsyncControllerFunction = (
 type InterviewStatus = typeof INTERVIEW_STATUS[number];
 type Difficulty = typeof DIFFICULTIES[number];
 
+type AnswerDataOfQuestion = {
+    question: string;
+    answer: string | null;
+};
+
+type AnswerEvaluationOfQuestion = {
+    feedback: string;
+    score: number;
+};
+
+interface IInterviewEvaluationResult {
+    questions: AnswerEvaluationOfQuestion[];
+    strengths: string;
+    weaknesses: string;
+    suggestions: string;
+    overallFeedback: string;
+    overallScore: number;
+};
+
 export type {
 	IErrorMessage,
 	AsyncControllerFunction,
 	InterviewStatus,
-	Difficulty
+	Difficulty,
+	AnswerDataOfQuestion,
+	AnswerEvaluationOfQuestion,
+	IInterviewEvaluationResult
 };

@@ -4,14 +4,16 @@ import { ApiResponse } from '../utils/ApiResponse.js';
 import { db } from '../config/db.js';
 import { interviews } from '../db/schema/interviews.js';
 import type { NewInterview } from '../db/schema/interviews.js';
-import { interviewQuestions, type NewInterviewQuestion } from '../db/schema/interviewQuestions.js';
-import { eq, and } from 'drizzle-orm';
-import type { Difficulty, IErrorMessage } from '../types/types.js';
+import { interviewQuestions, type NewInterviewQuestion, type InterviewQuestion } from '../db/schema/interviewQuestions.js';
+import { interviewFeedbacks, type NewInterviewFeedback } from '../db/schema/interviewFeedbacks.js';
+import { eq, and, asc } from 'drizzle-orm';
+import type { AnswerDataOfQuestion, Difficulty, IErrorMessage } from '../types/types.js';
 import Joi from 'joi';
 import { cloudinaryDeleter, cloudinaryUploader } from '../utils/cloudinary.js';
 import { CREDIT_COST, TIME_PER_QUESTION } from '../constants.js';
 import { generateQuestions } from '../services/ai/generateQuestions.js';
 import { users } from '../db/schema/users.js';
+import { evaluateInterview } from '../services/ai/evaluateInterview.js';
 
 const createInterview = asyncHandler(async (req, res) => {
     const { role, yoe, difficulty, qtnsCount } = req.body as {
@@ -558,9 +560,137 @@ const saveInterviewQuestionAnswer = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, null, 'Answer saved successfully.' ));
 });
 
+const submitInterview = asyncHandler(async (req, res) => {
+    const { interviewId } = req.params;
+
+    // Auth check
+    if(!req.user) {
+        throw new ApiError(401, 'You need to be authenticated to submit interview answers.');
+    }
+
+    const authUser = req.user;
+
+
+    // Validate route param
+    const validatorSchema = Joi.object({
+        interviewId: Joi.string()
+                        .uuid()
+                        .required()
+                        .messages({
+                            'string.guid': 'Invalid interview id.',
+                            'any.required': 'Interview id is required.'
+                        })
+    });
+
+
+    const { error } = validatorSchema.validate(
+        { interviewId },
+        { abortEarly: false }
+    );
+
+    if(error) {
+        const errorsObj: IErrorMessage = {};
+
+        error.details.forEach(detail => {
+            errorsObj[detail.path[0] as string] = detail.message;
+        });
+
+        throw new ApiError(400, 'Failed to validate interview id.', errorsObj);
+    }
+
+
+    // Find interview
+    const [interview] = await db.select()
+                                .from(interviews)
+                                .where(and(
+                                    eq(interviews.id, interviewId as string),
+                                    eq(interviews.userId, authUser.id)
+                                ))
+                                .limit(1);
+
+    if(!interview) {
+        throw new ApiError(404, 'Interview not found.');
+    }
+
+
+    // Prevent duplicate submission
+    if(interview.status === 'completed') {
+        throw new ApiError(400, 'Interview is already completed.');
+    }
+
+
+    // Get all questions
+    const allQtns = await db.select()
+                            .from(interviewQuestions)
+                            .where(eq(interviewQuestions.interviewId, interviewId as string))
+                            .orderBy(asc(interviewQuestions.position));
+
+    if(allQtns.length === 0) {
+        throw new ApiError(404, 'Interview questions not found.')
+    }
+
+
+    // Evaluate interview using AI
+    const answerDataOfQtns: AnswerDataOfQuestion[] = allQtns.map((qtn) => ({
+        question: qtn.question,
+        answer: qtn.answer // At this point, if user have answered all, all are saved
+    }));
+
+    const evaluationResult = await evaluateInterview(answerDataOfQtns);
+
+
+    // Either everything succeeds together or nothing gets saved
+    await db.transaction(async (tx) => {
+        // Update feedback and score of every question
+        for(const index in allQtns) {
+            const currentQtnRow = allQtns[index] as InterviewQuestion;
+            const currentQtnEvaluation = evaluationResult.questions[index];
+
+            await tx.update(interviewQuestions)
+                    .set({
+                        feedback: currentQtnEvaluation?.feedback,
+                        score: currentQtnEvaluation?.score,
+                        updatedAt: new Date()
+                    })
+                    .where(eq(interviewQuestions.id, currentQtnRow.id))
+        }
+
+        // Create interview feedback row
+        const newInterviewFeedback: NewInterviewFeedback = {
+            interviewId: interview.id,
+            strengths: evaluationResult.strengths,
+            weaknesses: evaluationResult.weaknesses,
+            suggestions: evaluationResult.suggestions,
+            overallFeedback: evaluationResult.overallFeedback,
+            overallScore: evaluationResult.overallScore
+        };
+
+        await tx.insert(interviewFeedbacks).values(newInterviewFeedback);
+
+        // Mark this interview completed
+        await db.update(interviews)
+                .set({
+                    status: 'completed',
+                    completedAt: new Date(),
+                    updatedAt: new Date()
+                })
+                .where(eq(interviews.id, interviewId as string))
+    });
+
+
+    // Return response
+    const { userId, ...rest } = interview; // 'rest' is same as 'interview' but without userId key
+    const finalResponse = { ...rest, overallScore: evaluationResult.overallScore };
+
+    return res.status(200).json(
+        new ApiResponse(200, finalResponse, 'Interview submitted successfully.')
+    );
+});
+
 export {
     createInterview,
     getInterview,
     getInterviewQuestion,
-    saveInterviewQuestionAnswer
+    saveInterviewQuestionAnswer,
+    submitInterview
 };
