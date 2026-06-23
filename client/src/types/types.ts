@@ -219,6 +219,71 @@ type QuestionNavigationProps = {
 	onQtnClick: (position: number) => void;
 };
 
+interface IInterview {
+    id: string;
+    role: string;
+    yoe: number;
+    difficulty: Difficulty;
+    qtnsCount: number;
+    status: 'in_progress' | 'completed';
+    lastVisitedQtnPosition: number;
+    startedAt: string;
+    endsAt: string;
+    completedAt: string | null;
+    remainingTimeInSeconds: number;
+}
+
+interface IInterviewQuestion {
+    position: number;
+    question: string;
+    answer: string | null;
+    feedback?: string | null;
+    score?: number | null;
+}
+
+interface ISaveAnswerPayload {
+    answer: string;
+}
+
+interface ISubmitInterviewResponse {
+    interviewId: string;
+    overallScore: number;
+}
+
+interface IOverallInterviewFeedback {
+    strengths: string;
+    weaknesses: string;
+    suggestions: string;
+    overallFeedback: string;
+    overallScore: number;
+}
+
+interface IInterviewResult {
+    interviewWithoutUserId: IInterview;
+    overallFeedback: IOverallInterviewFeedback;
+    questionResults: IInterviewQuestion[];
+}
+
+interface IOngoingInterview {
+    interviewId: string;
+    role: string;
+    difficulty: Difficulty;
+    qtnsCount: number;
+    lastVisitedQtnPosition: number;
+    remainingTimeInSeconds: number;
+    interviewExpired: boolean;
+}
+
+interface IInterviewHistory {
+    id: string;
+    role: string;
+    difficulty: Difficulty;
+    qtnsCount: number;
+    overallScore: number;
+    completedAt: string | null;
+    createdAt: string;
+}
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -247,5 +312,13 @@ export type {
 	ICreateInterviewResponse,
 	InterviewInfoCardProps,
 	QuestionCardProps,
-	QuestionNavigationProps
+	QuestionNavigationProps,
+	IInterview,
+	IInterviewQuestion,
+	ISaveAnswerPayload,
+	ISubmitInterviewResponse,
+	IOverallInterviewFeedback,
+	IInterviewResult,
+	IOngoingInterview,
+	IInterviewHistory
 };
