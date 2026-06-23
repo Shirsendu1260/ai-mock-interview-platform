@@ -115,7 +115,7 @@ interface User {
 type OAuthProvider = 'google' | 'github';
 
 // Global authentication state interface for Zustand
-interface AuthState {
+interface IAuthState {
 	user: User | null;
 	oAuthProvider: OAuthProvider | null;
 	isAuthenticated: boolean;
@@ -197,9 +197,27 @@ type CreditCostCardProps = {
 	interviewCost: number;
 };
 
-interface CreateInterviewResponse {
+interface ICreateInterviewResponse {
     id: string;
 }
+
+type InterviewInfoCardProps = {
+	role: string;
+	difficulty: string;
+	qtnsCount: number;
+	currentPosition: number;
+};
+
+type QuestionCardProps = {
+	position: number;
+	question: string;
+};
+
+type QuestionNavigationProps = {
+	qtnsCount: number;
+	currentPosition: number;
+	onQtnClick: (position: number) => void;
+};
 
 export type {
 	CardProps,
@@ -212,7 +230,7 @@ export type {
 	SpinnerProps,
 	EmptyStateProps,
 	User,
-	AuthState,
+	IAuthState,
 	IErrorMessage,
 	OAuthProvider,
 	SidebarLinkProps,
@@ -226,5 +244,8 @@ export type {
 	NoOfQtnsSelectorProps,
 	ResumeUploaderProps,
 	CreditCostCardProps,
-	CreateInterviewResponse
+	ICreateInterviewResponse,
+	InterviewInfoCardProps,
+	QuestionCardProps,
+	QuestionNavigationProps
 };

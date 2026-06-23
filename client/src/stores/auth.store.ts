@@ -1,12 +1,12 @@
 import { create } from 'zustand';
-import type { User, AuthState, OAuthProvider } from '../types/types.js';
+import type { User, IAuthState, OAuthProvider } from '../types/types.js';
 
 // Stores authenticated user data globally, so that components can use this centralized data
 // by avoiding prop drilling problem.
 // JWT is not stored here, stored in secure HTTP-only cookie, managed by browser.
 // Cookie = source of truth, Zustand = In-memory cache
 // Every time the app starts: Cookie exists -> /get-auth-user -> Restore Zustand -> App closed -> Zustand store destroyed
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<IAuthState>((set) => ({
 	// Initially user is not authenticated, that's why they are set as these
 	user: null,
 	oAuthProvider: null,
