@@ -11,9 +11,12 @@ const Dashboard = () => {
 		<div className='space-y-6'>
 			<DashboardWelcomeCard/>
 			
-			<div className='grid gap-5 md:grid-cols-2'>
+			<div className='grid gap-5 md:grid-cols-3 justify-start'>
 				<StatsCard title='Credits' value={user?.credit ?? 0} />
 				<StatsCard title='Interviews Created' value={0} />
+				<StatsCard title='Completed Interviews' value={0} />
+				<StatsCard title='Average Score' value={0} />
+				<StatsCard title='Best Score' value={0} />
 			</div>
 
 			<QuickActions/>
