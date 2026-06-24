@@ -1,5 +1,31 @@
+import { useNavigate } from 'react-router-dom';
+import EmptyState from '../components/ui/EmptyState.jsx';
+import PageContainer from '../components/ui/PageContainer.jsx';
+import Button from '../components/ui/Button.jsx';
+import { TbError404 } from 'react-icons/tb';
+
 const NotFound = () => {
-	return <h1>NotFound</h1>;
+    const navigate = useNavigate();
+
+    return (
+        <PageContainer>
+            <div className='w-full max-w-xl'>
+                <EmptyState
+                    title='Page Not Found'
+                    description='The page you are looking for does not exist or may have been removed.'
+                    action={
+                        <Button
+                            className='max-w-xs'
+                            onClick={() => navigate('/')}
+                        >
+                            Go Home
+                        </Button>
+                    }
+                    icon={<TbError404 size={40} />}
+                />
+            </div>
+        </PageContainer>
+    );
 };
 
 export default NotFound;
