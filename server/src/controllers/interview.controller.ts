@@ -766,7 +766,7 @@ const getInterviewResult = asyncHandler(async (req, res) => {
     const questionResults = await db.select()
                                     .from(interviewQuestions)
                                     .where(eq(
-                                        interviewFeedbacks.interviewId, interview.id
+                                        interviewQuestions.interviewId, interview.id
                                     ))
                                     .orderBy(asc(interviewQuestions.position));
 
@@ -821,14 +821,16 @@ const getOngoingInterview = asyncHandler(async (req, res) => {
 
     // If interview timer is expired already
     if(remainingTimeInSeconds <= 0) {
-        new ApiResponse(
-            200,
-            {
-                interviewId: ongoingInterview.id,
-                interviewExpired: true
-            },
-            'No ongoing interview found.'
-        )
+        return res.status(200).json(
+            new ApiResponse(
+                200,
+                {
+                    interviewId: ongoingInterview.id,
+                    interviewExpired: true
+                },
+                'Interview expired.'
+            )
+        );
     }
 
 
