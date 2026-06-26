@@ -6,44 +6,35 @@ import Button from "../ui/Button.jsx";
 
 const QuestionCard = ({ position, question, onReplay, onStop }: QuestionCardProps) => {
     return (
-        <Card className="max-w-full">
-            <div className="rounded-2xl bg-primary/10 p-5">
-                <div className="flex items-center gap-3">
-                    <div className="rounded-full bg-primary p-3 text-white">
-                        <BsRobot size={20}/>
-                    </div>
-
-                    <div className="space-y-7">
-                        <div>
-                            <p className="font-semibold text-dark">AI Interviewer</p>
-                            <p className="text-sm text-muted">
-                                Asking Question {String(position).padStart(2, '0')}
-                            </p>
-                        </div>
-
-                        <div className="flex md:flex-row gap-3">
-                            <Button
-                                variant="ghost"
-                                type="button"
-                                onClick={onReplay}
-                            >
-                                <FaPlay className="text-lg" />
-                                Read Question
-                            </Button>
-
-                            <Button
-                                variant="ghost"
-                                type="button"
-                                onClick={onStop}
-                            >
-                                <FaStop className="text-lg" />
-                                Stop
-                            </Button>
-                        </div>
-                    </div>
+        <Card>
+            <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10">
+                    <BsRobot className="text-2xl text-accent"/>
                 </div>
 
-                <p className="mt-4 text-lg leading-8 text-dark">{question}</p>
+                <div>
+                    <h2 className="text-lg font-semibold text-dark">AI Interviewer is asking...</h2>
+                    <p className="text-sm text-muted">Question {String(position).padStart(2, '0')}</p>
+                </div>
+            </div>
+
+            {/*Divider*/}
+            <div className="my-6 border-t border-border"/>
+
+            {/*Interview question*/}
+            <p className="text-lg leading-8 text-dark">{question}</p>
+
+            {/*Voice controls*/}
+            <div className="mt-8 flex flex-wrap gap-3">
+                <Button type="button" variant="ghost" onClick={onReplay}>
+                    <FaPlay className="text-lg"/>
+                    Read Question
+                </Button>
+
+                <Button type="button" variant="ghost" onClick={onStop}>
+                    <FaStop className="text-lg" />
+                    Stop
+                </Button>
             </div>
         </Card>
     );
