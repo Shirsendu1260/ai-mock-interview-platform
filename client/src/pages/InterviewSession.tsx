@@ -17,10 +17,10 @@ import type { IInterview, IInterviewQuestion } from '../types/types.js';
 import { ApiError } from '../utils/ApiError.js';
 import { showErrorToast, showLoadingToast, showSuccessToastWithToastId } from '../utils/toast.js';
 import { LAYOUT } from '../constants/design.js';
-import { formatRemainingTime } from '../utils/helpers.js';
-import NotFound from './NotFound.js';
+import { formatRemainingTime, speakQuestion, stopSpeaking } from '../utils/helpers.js';
+import NotFound from './NotFound.jsx';
 
-const ViewInterview = () => {
+const InterviewSession = () => {
     const { interviewId } = useParams();
     const navigate = useNavigate();
 
@@ -68,6 +68,9 @@ const ViewInterview = () => {
             const questionData = response.data;
             setQtn(questionData);
             setAns(questionData.answer ?? '');
+
+            // Read the interview question aloud
+            speakQuestion(questionData.question);
         }
         catch(error) {
             if(error instanceof ApiError) {
@@ -126,6 +129,9 @@ const ViewInterview = () => {
         if(currentPosition <= 1) return;
 
         try {
+            // Stop speaking before navigation
+            stopSpeaking();
+
             await saveCurrentAns();
             setCurrentPosition(prev => prev - 1);
         }
@@ -146,6 +152,9 @@ const ViewInterview = () => {
         if(currentPosition >= interview.qtnsCount) return;
 
         try {
+            // Stop speaking before navigation
+            stopSpeaking();
+
             await saveCurrentAns();
             setCurrentPosition(prev => prev + 1);
         }
@@ -167,6 +176,9 @@ const ViewInterview = () => {
         if(position === currentPosition) return;
 
         try {
+            // Stop speaking before navigation
+            stopSpeaking();
+
             await saveCurrentAns();
             setCurrentPosition(position);
         }
@@ -189,6 +201,9 @@ const ViewInterview = () => {
         const toastId = showLoadingToast('Submitting interview...');
 
         try {
+            // Stop speaking after submission
+            stopSpeaking();
+
             setIsSubmitting(true);
             await saveCurrentAns(); // Saves the current selected question's answer (empty or non-empty)
             const response = await submitInterviewHandler(interviewId);
@@ -207,6 +222,12 @@ const ViewInterview = () => {
             setIsSubmitting(false);
         }
     };
+
+
+    // Stop speaking question when component unmounts
+    useEffect(() => {
+        return () => stopSpeaking();
+    }, []);
 
 
     // Countdown timer: decreases every second and stops at 0
@@ -263,11 +284,7 @@ const ViewInterview = () => {
                 />
 
                 {/*Countdown timer*/}
-                <div
-                    className='
-                        mt-4 rounded-2xl border border-border bg-white p-4 text-center
-                    '
-                >
+                <div className='mt-4 rounded-2xl border border-border bg-white p-4 text-center'>
                     <p className='text-sm text-muted'>Remaining Time</p>
                     <p className='mt-1 text-2xl font-bold text-accent'>
                         {formatRemainingTime(remainingTime)}
@@ -294,6 +311,8 @@ const ViewInterview = () => {
                                     <QuestionCard
                                         position={qtn.position}
                                         question={qtn.question}
+                                        onReplay={() => speakQuestion(qtn.question)}
+                                        onStop={() => stopSpeaking()}
                                     />
 
                                     <div className='mt-6'>
@@ -303,9 +322,7 @@ const ViewInterview = () => {
 
                                         <textarea
                                             value={ans}
-                                            onChange={(event) => {
-                                                setAns(event.target.value);
-                                            }}
+                                            onChange={(event) => setAns(event.target.value)}
                                             rows={12}
                                             maxLength={10000}
                                             placeholder='Write your answer here...'
@@ -329,7 +346,7 @@ const ViewInterview = () => {
                                             disabled={currentPosition === 1}
                                             className='sm:w-40'
                                         >
-                                            Previous
+                                            Back
                                         </Button>
 
                                         {
@@ -340,7 +357,7 @@ const ViewInterview = () => {
                                                     onClick={handleNextQtn}
                                                     className='sm:w-40'
                                                 >
-                                                    Next
+                                                    Continue
                                                 </Button>
                                             )
                                         }
@@ -364,4 +381,4 @@ const ViewInterview = () => {
     );
 };
 
-export default ViewInterview;
+export default InterviewSession;

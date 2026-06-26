@@ -211,6 +211,8 @@ type InterviewInfoCardProps = {
 type QuestionCardProps = {
 	position: number;
 	question: string;
+	onReplay: () => void;
+    onStop: () => void;
 };
 
 type QuestionNavigationProps = {

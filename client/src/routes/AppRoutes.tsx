@@ -10,9 +10,9 @@ import Profile from '../pages/Profile.jsx';
 import PublicRoute from './PublicRoute.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import DashboardLayout from '../layouts/DashboardLayout.jsx';
-import ViewInterview from '../pages/ViewInterview.js';
-import InterviewResult from '../pages/InterviewResult.js';
-import NotFound from '../pages/NotFound.js';
+import InterviewSession from '../pages/InterviewSession.jsx';
+import InterviewResult from '../pages/InterviewResult.jsx';
+import NotFound from '../pages/NotFound.jsx';
 
 // PublicRoute: Prevents authenticated users from visiting login pages
 // ProtectedRoute: Prevents unauthenticated users from accessing private pages
@@ -39,7 +39,7 @@ const AppRoutes = () => {
 				        <Route path='interviews'>
 				       		<Route path='create' element={<StartInterview/>} />
 				        	<Route path='history' element={<InterviewHistory/>} />
-				        	<Route path=':interviewId' element={<ViewInterview/>} />
+				        	<Route path=':interviewId' element={<InterviewSession/>} />
 						    <Route path=':interviewId/result' element={<InterviewResult/>} />
 				        </Route>
 
