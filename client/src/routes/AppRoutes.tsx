@@ -39,7 +39,7 @@ const AppRoutes = () => {
 				        <Route path='interviews'>
 				       		<Route path='create' element={<StartInterview/>} />
 				        	<Route path='history' element={<InterviewHistory/>} />
-				        	<Route path=':interviewId' element={<InterviewSession/>} />
+				        	<Route path=':interviewId/session' element={<InterviewSession/>} />
 						    <Route path=':interviewId/result' element={<InterviewResult/>} />
 				        </Route>
 

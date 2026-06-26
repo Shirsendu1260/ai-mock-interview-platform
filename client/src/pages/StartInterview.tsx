@@ -67,7 +67,7 @@ const StartInterview = () => {
             // }
 
             showSuccessToastWithToastId('Interview created!', toastId);
-            navigate(`/dashboard/interviews/view/${response.data.id}`);
+            navigate(`/dashboard/interviews/${response.data.id}/session`);
         }
         catch(error) {
             // {
