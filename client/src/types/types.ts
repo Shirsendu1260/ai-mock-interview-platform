@@ -295,6 +295,17 @@ interface IInterviewHistory {
     createdAt: string;
 }
 
+type ConfirmationModalProps = {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    title: string;
+    description: string;
+    confirmText?: string;
+    cancelText?: string;
+    isLoading?: boolean;
+    onConfirm: () => void;
+};
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -333,5 +344,6 @@ export type {
 	IOverallInterviewFeedback,
 	IInterviewResult,
 	IOngoingInterview,
-	IInterviewHistory
+	IInterviewHistory,
+	ConfirmationModalProps
 };

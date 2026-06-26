@@ -21,6 +21,7 @@ import { formatRemainingTime, speakQuestion, stopSpeaking } from '../utils/helpe
 import NotFound from './NotFound.jsx';
 import ResponseCard from '../components/interview/ResponseCard.jsx';
 import InterviewTimerCard from '../components/interview/InterviewTimerCard.jsx';
+import ConfirmationModal from '../components/ui/ConfirmationModal.jsx';
 
 const InterviewSession = () => {
     const { interviewId } = useParams();
@@ -34,6 +35,7 @@ const InterviewSession = () => {
     const [isChangingQtn, setIsChangingQtn] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [remainingTime, setRemainingTime] = useState(0); // in seconds
+    const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
 
     // get and set interview object
@@ -347,7 +349,7 @@ const InterviewSession = () => {
                                         type='button'
                                         className='sm:w-48'
                                         isLoading={isSubmitting}
-                                        onClick={handleSubmitInterview}
+                                        onClick={() => setIsConfirmationModalOpen(true)}
                                     >
                                         Finish Interview
                                     </Button>
@@ -357,6 +359,24 @@ const InterviewSession = () => {
                     </Card>
                 </div>
             </div>
+
+            {/*Modal for submitting interview*/}
+            <ConfirmationModal
+                open={isConfirmationModalOpen}
+
+                onOpenChange={setIsConfirmationModalOpen}
+                // When we click - Continue button, outside the modal, press Escape
+                // Radix automatically calls - onOpenChange(false);
+                // In our case - onOpenChange={setIsConfirmationModalOpen}
+                // means Radix is literally doing - setIsConfirmationModalOpen(false);
+
+                title='Finish Interview?'
+                description="Once submitted, your answers will be evaluated by AI. You won\'t be able to edit them after submission."
+                confirmText='Finish'
+                cancelText='Continue'
+                isLoading={isSubmitting}
+                onConfirm={handleSubmitInterview}
+            />
         </PageContainer>
     );
 };

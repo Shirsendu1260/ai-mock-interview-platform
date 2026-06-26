@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
+    "@radix-ui/react-dialog": "^1.1.17",
     "@tailwindcss/vite": "^4.3.0",
     "axios": "^1.17.0",
     "date-fns": "^4.4.0",
