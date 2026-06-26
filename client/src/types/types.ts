@@ -221,6 +221,15 @@ type QuestionNavigationProps = {
 	onQtnClick: (position: number) => void;
 };
 
+type ResponseCardProps = {
+    ans: string;
+    onAnsChange: (ans: string) => void;
+};
+
+type InterviewTimerCardProps = {
+    remainingTime: string;
+};
+
 interface IInterview {
     id: string;
     role: string;
@@ -315,6 +324,8 @@ export type {
 	InterviewInfoCardProps,
 	QuestionCardProps,
 	QuestionNavigationProps,
+	ResponseCardProps,
+	InterviewTimerCardProps,
 	IInterview,
 	IInterviewQuestion,
 	ISaveAnswerPayload,

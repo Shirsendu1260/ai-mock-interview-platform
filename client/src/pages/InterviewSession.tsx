@@ -19,6 +19,8 @@ import { showErrorToast, showLoadingToast, showSuccessToastWithToastId } from '.
 import { LAYOUT } from '../constants/design.js';
 import { formatRemainingTime, speakQuestion, stopSpeaking } from '../utils/helpers.js';
 import NotFound from './NotFound.jsx';
+import ResponseCard from '../components/interview/ResponseCard.jsx';
+import InterviewTimerCard from '../components/interview/InterviewTimerCard.jsx';
 
 const InterviewSession = () => {
     const { interviewId } = useParams();
@@ -284,12 +286,9 @@ const InterviewSession = () => {
                 />
 
                 {/*Countdown timer*/}
-                <div className='mt-4 rounded-2xl border border-border bg-white p-4 text-center'>
-                    <p className='text-sm text-muted'>Remaining Time</p>
-                    <p className='mt-1 text-2xl font-bold text-accent'>
-                        {formatRemainingTime(remainingTime)}
-                    </p>
-                </div>
+                <InterviewTimerCard
+                    remainingTime={formatRemainingTime(remainingTime)}
+                />
 
                 <div className='grid gap-6 lg:grid-cols-[280px_1fr]'>
                     <QuestionNavigation
@@ -316,26 +315,7 @@ const InterviewSession = () => {
                                     />
 
                                     <div className='mt-6'>
-                                        <label className='mb-2 block font-medium text-dark'>
-                                            Your Answer
-                                        </label>
-
-                                        <textarea
-                                            value={ans}
-                                            onChange={(event) => setAns(event.target.value)}
-                                            rows={12}
-                                            maxLength={10000}
-                                            placeholder='Write your answer here...'
-                                            className='
-                                                w-full resize-none rounded-xl border
-                                                border-border bg-white p-4 outline-none
-                                                transition focus:border-accent
-                                            '
-                                        />
-
-                                        <p className='mt-2 text-right text-sm text-muted'>
-                                            {ans.length}/10000
-                                        </p>
+                                        <ResponseCard ans={ans} onAnsChange={setAns} />
                                     </div>
 
                                     <div className='mt-8 flex flex-col gap-3 sm:flex-row sm:justify-between'>
@@ -369,7 +349,7 @@ const InterviewSession = () => {
                                         isLoading={isSubmitting}
                                         onClick={handleSubmitInterview}
                                     >
-                                        Submit Interview
+                                        Finish Interview
                                     </Button>
                                 </>
                             )
