@@ -306,6 +306,10 @@ type ConfirmationModalProps = {
     onConfirm: () => void;
 };
 
+type QuestionScoreChartProps = {
+	qtnData: { question: string, score: number }[]
+};
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -345,5 +349,6 @@ export type {
 	IInterviewResult,
 	IOngoingInterview,
 	IInterviewHistory,
-	ConfirmationModalProps
+	ConfirmationModalProps,
+	QuestionScoreChartProps
 };
