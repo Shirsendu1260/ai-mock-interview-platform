@@ -22,3 +22,5 @@ export const TIME_PER_QUESTION = {
     medium: 4.5,
     hard: 6
 } as const;
+
+export const PAGINATION_LIMIT = 4;

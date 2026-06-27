@@ -6,11 +6,11 @@ import { interviews } from '../db/schema/interviews.js';
 import type { NewInterview } from '../db/schema/interviews.js';
 import { interviewQuestions, type NewInterviewQuestion, type InterviewQuestion } from '../db/schema/interviewQuestions.js';
 import { interviewFeedbacks, type NewInterviewFeedback } from '../db/schema/interviewFeedbacks.js';
-import { eq, and, asc, desc } from 'drizzle-orm';
+import { eq, and, asc, desc, count } from 'drizzle-orm';
 import type { AnswerDataOfQuestion, Difficulty, IErrorMessage } from '../types/types.js';
 import Joi from 'joi';
 import { cloudinaryDeleter, cloudinaryUploader } from '../utils/cloudinary.js';
-import { CREDIT_COST, TIME_PER_QUESTION } from '../constants.js';
+import { CREDIT_COST, PAGINATION_LIMIT, TIME_PER_QUESTION } from '../constants.js';
 import { generateQuestions } from '../services/ai/generateQuestions.js';
 import { users } from '../db/schema/users.js';
 import { evaluateInterview } from '../services/ai/evaluateInterview.js';
@@ -861,7 +861,25 @@ const getInterviewHistory = asyncHandler(async (req, res) => {
     const authUser = req.user;
 
 
-    // Get interviews (all types)
+    // For pagination
+    const limit = PAGINATION_LIMIT;
+    const page = Number(req.query.page) || 1;
+    const offset = (page - 1) * limit;
+
+
+    // Count total interviews and total number of pages
+    const [totalInterviewCount] = await db.select({ count: count() })
+                                            .from(interviews)
+                                            .where(eq(interviews.userId, authUser.id));
+
+    if(!totalInterviewCount) {
+        throw new ApiError(500, 'Failed to fetch interview count.');
+    }
+
+    const totalPages = Math.ceil(totalInterviewCount.count / limit);
+
+
+    // Get interviews (all types) for current page
     const interviewHistory = await db.select({
                                             id: interviews.id,
                                             role: interviews.role,
@@ -877,11 +895,21 @@ const getInterviewHistory = asyncHandler(async (req, res) => {
                                             eq(interviewFeedbacks.interviewId, interviews.id)
                                         )
                                         .where(eq(interviews.userId, authUser.id))
-                                        .orderBy(desc(interviews.completedAt));
+                                        .orderBy(desc(interviews.completedAt))
+                                        .limit(limit)
+                                        .offset(offset);
 
 
     return res.status(200).json(
-        new ApiResponse(200, interviewHistory, 'Interview history fetched successfully.')
+        new ApiResponse(
+            200,
+            {
+                interviews: interviewHistory,
+                page: page,
+                hasMore: page < totalPages
+            },
+            'Interview history fetched successfully.'
+        )
     );
 });
 
