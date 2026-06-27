@@ -310,6 +310,10 @@ type QuestionScoreChartProps = {
 	qtnData: { question: string, score: number }[]
 };
 
+type QuestionResultCardProps = {
+    qtnResult: IInterviewQuestion;
+};
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -350,5 +354,6 @@ export type {
 	IOngoingInterview,
 	IInterviewHistory,
 	ConfirmationModalProps,
-	QuestionScoreChartProps
+	QuestionScoreChartProps,
+	QuestionResultCardProps
 };

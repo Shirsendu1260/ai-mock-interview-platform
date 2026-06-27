@@ -69,3 +69,35 @@ export const speakQuestion = (text: string) => {
 export const stopSpeaking = () => {
     window.speechSynthesis.cancel();
 };
+
+export const getPerformance = (score: number) => {
+    if(score >= 90) {
+        return { title: "Outstanding", color: "#16a34a" };
+    }
+
+    if(score >= 75) {
+        return { title: "Excellent", color: "#2563eb" };
+    }
+
+    if(score >= 60) {
+        return { title: "Good", color: "#f59e0b" };
+    }
+
+    if(score >= 40) {
+        return { title: "Needs Improvement", color: "#ea580c" };
+    }
+
+    return { title: "Keep Practicing", color: "#dc2626" };
+};
+
+export const getScoreColor = (score: number) => {
+    if(score >= 8) {
+        return "bg-green-100 text-green-700";
+    }
+
+    if(score >= 5) {
+        return "bg-yellow-100 text-yellow-700";
+    }
+
+    return "bg-red-100 text-red-700";
+};

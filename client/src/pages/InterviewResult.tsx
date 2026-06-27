@@ -8,6 +8,18 @@ import type { IInterviewResult } from '../types/types.js';
 import { ApiError } from '../utils/ApiError.js';
 import { showErrorToast } from '../utils/toast.js';
 import { LAYOUT } from '../constants/design.js';
+import { FaCheckCircle, FaTimesCircle, FaLightbulb, FaHistory } from 'react-icons/fa';
+import SectionHeading from '../components/ui/SectionHeading.jsx';
+import Card from '../components/ui/Card.jsx';
+import QuestionScoreChart from '../components/interview/QuestionScoreChart.jsx';
+import QuestionResultCard from '../components/interview/QuestionResultCard.jsx';
+import { motion } from 'motion/react';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+import { getPerformance } from '../utils/helpers.js';
+import Button from '../components/ui/Button.js';
+import { GoHomeFill } from 'react-icons/go';
+
 
 const InterviewResult = () => {
     const { interviewId } = useParams();
@@ -64,14 +76,168 @@ const InterviewResult = () => {
     }
 
 
+    // Prepare score data of questions for chart
+    const qtnChartData = result.questionResults.map(qtn => ({
+        question: `Q${qtn.position}`,
+        score: qtn.score ?? 0
+    }));
+
+
+    const performance = getPerformance(result.overallFeedback.overallScore);
+
+
     return (
         <PageContainer>
-            <div className={`mx-auto w-full ${LAYOUT.maxWidth} space-y-6`} >
-                {/*Overall score*/}
+            <div className={`space-y-8 ${LAYOUT.maxWidth}`}>
+                <SectionHeading description="AI evaluated every answer individually." >
+                    Interview Result
+                </SectionHeading>
+
+                <Card className="text-center">
+                    <p className="text-sm text-muted">Overall Score</p>
+                    <h2 className="mt-2 text-6xl font-bold text-accent">
+                        {result.overallFeedback.overallScore}
+                        <span className="text-3xl">/100</span>
+                    </h2>
+                </Card>
+
+                {/*Feedback*/}
+                <div className="grid gap-6 lg:grid-cols-3">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.4 }}
+                    >
+                        <Card>
+                            <div className="flex items-center gap-3">
+                                <FaCheckCircle className="text-2xl text-green-600" />
+                                <h3 className="text-lg font-semibold">Strengths</h3>
+                            </div>
+
+                            <p className="mt-4 text-muted leading-7">
+                                {result.overallFeedback.strengths}
+                            </p>
+                        </Card>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.4 }}
+                    >
+                        <Card>
+                            <div className="flex items-center gap-3">
+                                <FaTimesCircle className="text-2xl text-red-500" />
+                                <h3 className="text-lg font-semibold">Weaknesses</h3>
+                            </div>
+
+                            <p className="mt-4 text-muted leading-7">
+                                {result.overallFeedback.weaknesses}
+                            </p>
+                        </Card>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.4 }}
+                    >
+                        <Card>
+                            <div className="flex items-center gap-3">
+                                <FaLightbulb className="text-2xl text-yellow-500" />
+                                <h3 className="text-lg font-semibold">Suggestions</h3>
+                            </div>
+
+                            <p className="mt-4 text-muted leading-7">
+                                {result.overallFeedback.suggestions}
+                            </p>
+                        </Card>
+                    </motion.div>
+                </div>
 
                 {/*Overall feedback*/}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.45 }}
+                >
+                    <Card>
+                        <h2 className="text-xl font-semibold text-dark">Interview Performance</h2>
+                        <div className="mt-8 flex flex-col items-center gap-6 lg:flex-row">
+                            <div className="h-44 w-44">
+                                <CircularProgressbar
+                                    value={result.overallFeedback.overallScore}
+                                    text={`${result.overallFeedback.overallScore}`}
+                                    styles={buildStyles({
+                                        pathColor: performance.color,
+                                        textColor: "#111827",
+                                        trailColor: "#E5E7EB",
+                                        textSize: "20px",
+                                        strokeLinecap: "round"
+                                    })}
+                                />
+                            </div>
 
-                {/*Question-wise results*/}
+                            <div className="flex-1">
+                                <h3 className="text-3xl font-bold" style={{ color: performance.color }} >
+                                    {performance.title}
+                                </h3>
+                                <p className="mt-3 text-muted leading-7">
+                                    {result.overallFeedback.overallFeedback}
+                                </p>
+                            </div>
+                        </div>
+                    </Card>
+                </motion.div>
+
+                {/*Bar chart for question scores*/}
+                <Card>
+                    <h3 className="mb-6 text-xl font-semibold">Question-wise Performance</h3>
+
+                    <QuestionScoreChart qtnData={qtnChartData} />
+
+                    {/*Individual question results*/}
+                    <div className="space-y-6">
+                        <SectionHeading description="Detailed feedback for every interview question.">
+                            Question Analysis
+                        </SectionHeading>
+
+                        {
+                            result.questionResults.map((qtnResult) => (
+                                <motion.div
+                                    key={qtnResult.position}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: qtnResult.position * 0.06345 }}
+                                >
+                                    <QuestionResultCard
+                                        key={qtnResult.position}
+                                        qtnResult={qtnResult}
+                                    />
+                                </motion.div>
+                            ))
+                        }
+                    </div>
+                </Card>
+
+                <div className="mt-10 flex flex-wrap justify-center gap-4">
+                    <Button onClick={() => navigate('/dashboard')}>
+                        <GoHomeFill className="text-lg" />
+                        Dashboard
+                    </Button>
+
+                    <Button
+                        variant="secondary"
+                        onClick={() => navigate('/dashboard/interviews/history')}
+                    >
+                        <FaHistory className="text-base" />
+                        Interview History
+                    </Button>
+                </div>
             </div>
         </PageContainer>
     );
