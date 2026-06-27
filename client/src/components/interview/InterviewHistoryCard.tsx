@@ -1,0 +1,85 @@
+import { motion } from 'motion/react';
+import { useNavigate } from 'react-router-dom';
+import { FaCalendarAlt, FaCheckCircle, FaArrowRight } from 'react-icons/fa';
+import Card from '../ui/Card.jsx';
+import Button from '../ui/Button.jsx';
+import type { InterviewHistoryCardProps } from '../../types/types.js';
+import { formatDate, getScoreColor } from '../../utils/helpers.js';
+
+const InterviewHistoryCard = ({ interview }: InterviewHistoryCardProps) => {
+    const navigate = useNavigate();
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
+        >
+            <Card className="h-full">
+                <div className="flex h-full flex-col">
+                    <div className="flex items-start justify-between gap-4">
+                        <div>
+                            <h2 className="text-xl font-semibold text-dark">{interview.role}</h2>
+                            <p className="mt-1 capitalize text-muted">
+                                {interview.difficulty} &bull; {interview.qtnsCount} Questions
+                            </p>
+                        </div>
+
+                        <div
+                            className={`
+                                rounded-full px-4 py-2 text-lg font-semibold
+                                ${getScoreColor(interview.overallScore ?? 0)}
+                            `}
+                        >
+                            {interview.overallScore ?? 0}/10
+                        </div>
+                    </div>
+
+                    {/*Divider*/}
+                    <div className="my-6 border-t border-border" />
+
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-3 text-muted">
+                            <FaCalendarAlt className="text-accent" />
+                            <span>
+                                Created on{' '}
+                                <span className="font-sm text-dark">
+                                    {formatDate(interview.createdAt)}
+                                </span>
+                            </span>
+                        </div>
+
+                        {
+                            interview.completedAt &&
+                            (
+                                <div className="flex items-center gap-3 text-muted">
+                                    <FaCheckCircle className="text-green-500" />
+                                    <span>
+                                        Completed on{' '}
+                                        <span className="font-sm text-dark">
+                                            {formatDate(interview.completedAt)}
+                                        </span>
+                                    </span>
+                                </div>
+                            )
+                        }
+                    </div>
+
+                    <div className="flex-grow" />
+
+                    <div className="mt-8 flex flex-wrap gap-3">
+                        <Button
+                            variant="ghost"
+                            onClick={() => navigate(`/dashboard/interviews/${interview.id}/result`)}
+                        >
+                            <FaArrowRight />
+                        </Button>
+                    </div>
+                </div>
+            </Card>
+        </motion.div>
+    );
+};
+
+export default InterviewHistoryCard;

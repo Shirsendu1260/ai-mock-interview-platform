@@ -5,6 +5,7 @@ import type { DIFFICULTIES, NO_OF_QUESTIONS } from "../constants/interview.js";
 
 type CardProps = PropsWithChildren<{
 	className?: string;
+	onClick?: () => void
 }>;
 
 type PageContainerProps = PropsWithChildren;
@@ -320,6 +321,10 @@ type QuestionResultCardProps = {
     qtnResult: IInterviewQuestion;
 };
 
+type InterviewHistoryCardProps = {
+    interview: IInterviewHistory;
+};
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -362,5 +367,6 @@ export type {
 	ConfirmationModalProps,
 	QuestionScoreChartProps,
 	QuestionResultCardProps,
-	IInterviewHistoryResponse
+	IInterviewHistoryResponse,
+	InterviewHistoryCardProps
 };
