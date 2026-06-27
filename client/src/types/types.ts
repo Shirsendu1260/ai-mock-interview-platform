@@ -295,6 +295,12 @@ interface IInterviewHistory {
     createdAt: string;
 }
 
+interface IInterviewHistoryResponse {
+    interviews: IInterviewHistory[];
+    page: number;
+    hasMore: boolean;
+}
+
 type ConfirmationModalProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
@@ -355,5 +361,6 @@ export type {
 	IInterviewHistory,
 	ConfirmationModalProps,
 	QuestionScoreChartProps,
-	QuestionResultCardProps
+	QuestionResultCardProps,
+	IInterviewHistoryResponse
 };

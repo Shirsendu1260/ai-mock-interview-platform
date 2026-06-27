@@ -4,7 +4,7 @@ import type { AxiosResponse } from 'axios';
 import type {
     ICreateInterviewResponse,
     IInterview,
-    IInterviewHistory,
+    IInterviewHistoryResponse,
     IInterviewQuestion,
     IInterviewResult,
     IOngoingInterview,
@@ -57,8 +57,11 @@ const getOngoingInterview = (
 };
 
 const getInterviewHistory = (
-): Promise<AxiosResponse<ApiResponse<IInterviewHistory[]>>> => {
-    return api.get('/interviews/history');
+    page: number
+): Promise<AxiosResponse<ApiResponse<IInterviewHistoryResponse>>> => {
+    return api.get('/interviews/history', {
+        params: { page }
+    });
 };
 
 export {

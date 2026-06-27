@@ -108,8 +108,8 @@ const getOngoingInterviewHandler = async () => {
     }
 };
 
-const getInterviewHistoryHandler = async () => {
-    const response = await getInterviewHistory();
+const getInterviewHistoryHandler = async (page: number) => {
+    const response = await getInterviewHistory(page);
 
     if(response.data.success) {
         return response.data;
