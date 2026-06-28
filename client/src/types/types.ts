@@ -323,6 +323,7 @@ type QuestionResultCardProps = {
 
 type InterviewHistoryCardProps = {
     interview: IInterviewHistory;
+    index: number;
 };
 
 export type {

@@ -6,15 +6,15 @@ import Button from '../ui/Button.jsx';
 import type { InterviewHistoryCardProps } from '../../types/types.js';
 import { formatDate, getScoreColor } from '../../utils/helpers.js';
 
-const InterviewHistoryCard = ({ interview }: InterviewHistoryCardProps) => {
+const InterviewHistoryCard = ({ interview, index }: InterviewHistoryCardProps) => {
     const navigate = useNavigate();
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
+            initial={{ opacity: 0, y: 20, scale: 0.98 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ type: 'spring', stiffness: 110, damping: 18, delay: index * 0.06 }}
         >
             <Card className="h-full">
                 <div className="flex h-full flex-col">
@@ -73,7 +73,8 @@ const InterviewHistoryCard = ({ interview }: InterviewHistoryCardProps) => {
                             variant="ghost"
                             onClick={() => navigate(`/dashboard/interviews/${interview.id}/result`)}
                         >
-                            <FaArrowRight />
+                            View Result
+                            <FaArrowRight/>
                         </Button>
                     </div>
                 </div>
