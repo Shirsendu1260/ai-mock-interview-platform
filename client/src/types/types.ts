@@ -109,6 +109,7 @@ interface User {
 	email: string;
 	avatarUrl: string | null;
 	credit: number;
+	oAuthProvider: OAuthProvider;
 	createdAt: string | Date;
 	updatedAt: string | Date;
 };
@@ -333,6 +334,17 @@ type DashboardStatsResponse = {
 	bestScore: number;
 }
 
+type ProfileInfoCardProps = {
+    user: User;
+    provider: OAuthProvider | null;
+};
+
+type ProfileInfoRowProps = {
+    icon: React.ReactNode;
+    label: string;
+    value: string;
+};
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -377,5 +389,7 @@ export type {
 	QuestionResultCardProps,
 	IInterviewHistoryResponse,
 	InterviewHistoryCardProps,
-	DashboardStatsResponse
+	DashboardStatsResponse,
+	ProfileInfoCardProps,
+	ProfileInfoRowProps
 };
