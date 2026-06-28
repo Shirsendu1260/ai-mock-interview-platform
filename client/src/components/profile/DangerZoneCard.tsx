@@ -12,7 +12,7 @@ const DangerZoneCard = () => {
                 This action cannot be undone.
             </p>
 
-            <Button variant="secondary" className="mt-8 w-full text-red-600" >
+            <Button variant="secondary" className="mt-8 w-full" >
                 <TbTrashXFilled/>
                 Delete Account
             </Button>
