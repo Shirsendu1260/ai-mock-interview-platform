@@ -48,6 +48,11 @@ const getInterviewStats = asyncHandler(async (req, res) => {
     */
 
 
+    if(!stats) {
+        throw new ApiError(500, 'Unable to fetch dashboard statistics.');
+    }
+
+
     // return response
     return res.status(200).json(
         new ApiResponse(200, stats, 'Interview statistics fetched successfully.')

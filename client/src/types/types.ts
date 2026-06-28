@@ -326,6 +326,13 @@ type InterviewHistoryCardProps = {
     index: number;
 };
 
+type DashboardStatsResponse = {
+	totalInterviews: number;
+	completedInterviews: number;
+	avgScore: number;
+	bestScore: number;
+}
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -369,5 +376,6 @@ export type {
 	QuestionScoreChartProps,
 	QuestionResultCardProps,
 	IInterviewHistoryResponse,
-	InterviewHistoryCardProps
+	InterviewHistoryCardProps,
+	DashboardStatsResponse
 };
