@@ -8,7 +8,7 @@ const StatsCard = ({ title, value }: StatsCardProps) => {
 			<p className='text-sm text-muted'>
 				{title}
 			</p>
-			<h3 className='mt-2 text-3xl font-bold text-dark'>
+			<h3 className='mt-2 text-3xl font-bold text-accent'>
 				{value}
 			</h3>
 		</Card>
