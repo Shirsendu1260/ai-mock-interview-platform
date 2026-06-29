@@ -17,6 +17,9 @@ export const users = pgTable('users', {
 	// Credit system for token usage, defaults to 300, cannot be empty
 	credit: integer('credit').default(300).notNull(),
 
+	// plan details
+	plan: varchar('plan', { length: 15 }).default('free').notNull(),
+
 	// Saves refresh JWT token string for token rotation
 	refreshToken: text('refresh_token'),
 
@@ -34,3 +37,4 @@ export const users = pgTable('users', {
 // This ensures total type safety when writing in controllers
 export type User = typeof users.$inferSelect; // Type for fetching a user
 export type NewUser = typeof users.$inferInsert; // Type for creating a user
+export type PublicUser = Omit<User, 'refreshToken'>;

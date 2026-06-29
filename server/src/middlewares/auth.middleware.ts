@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import type { JwtPayload, Secret } from 'jsonwebtoken';
 import { eq } from 'drizzle-orm';
 import { db } from '../config/db.js';
-import { users, type User } from '../db/schema/users.js';
+import { users, type PublicUser } from '../db/schema/users.js';
 import type { Request, Response, NextFunction } from 'express';
 
 
@@ -14,7 +14,7 @@ import type { Request, Response, NextFunction } from 'express';
 declare global {
     namespace Express {
         interface Request {
-            user?: User
+            user?: PublicUser
         }
     }
 }
@@ -42,7 +42,16 @@ export const verifyJWT = asyncHandler(async (req: Request, _: Response, next: Ne
 
 		// If it passes, means user provided access token is valid (the user is authorized), 
 		// then the access token payload is captured in 'decodedAccessToken', else it will not be available
-		const result = await db.select()
+		const result = await db.select({
+                                    id: users.id,
+                                    fullName: users.fullName,
+                                    email: users.email,
+                                    avatarUrl: users.avatarUrl,
+                                    credit: users.credit,
+                                    plan: users.plan,
+                                    createdAt: users.createdAt,
+                                    updatedAt: users.updatedAt
+                                })
                                 .from(users)
                                 .where(eq(users.id, decodedAccessToken.id))
                                 .limit(1);
@@ -81,7 +90,16 @@ export const verifyOptionalJWT = asyncHandler(async (req: Request, _: Response, 
 
         // Decodde the payload
         const decodedAccessToken = jwt.verify(accessToken, secret) as JwtPayload;
-        const result = await db.select()
+        const result = await db.select({
+                                    id: users.id,
+                                    fullName: users.fullName,
+                                    email: users.email,
+                                    avatarUrl: users.avatarUrl,
+                                    credit: users.credit,
+                                    plan: users.plan,
+                                    createdAt: users.createdAt,
+                                    updatedAt: users.updatedAt
+                                })
                                 .from(users)
                                 .where(eq(users.id, decodedAccessToken.id))
                                 .limit(1);
