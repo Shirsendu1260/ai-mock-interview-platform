@@ -83,6 +83,7 @@ const oAuthUserLoginOrRegister = asyncHandler(async (req, res) => {
                                         email: users.email,
                                         avatarUrl: users.avatarUrl,
                                         credit: users.credit,
+                                        plan: users.plan,
                                         createdAt: users.createdAt,
                                         updatedAt: users.updatedAt
                                     })
@@ -111,6 +112,7 @@ const oAuthUserLoginOrRegister = asyncHandler(async (req, res) => {
                                             email: users.email,
                                             avatarUrl: users.avatarUrl,
                                             credit: users.credit,
+                                            plan: users.plan,
                                             createdAt: users.createdAt,
                                             updatedAt: users.updatedAt
                                         });
