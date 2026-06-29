@@ -28,6 +28,8 @@ const Auth = () => {
 			navigate('/dashboard'); // Navigate to /dashboard after successful sign-in
 		}
 		catch(error) {
+			setOAuthProvider(null);
+
 			if(
 				error instanceof FirebaseError &&
 				error.code === 'auth/account-exists-with-different-credential'
@@ -57,8 +59,6 @@ const Auth = () => {
 		finally {
 			// Always reset state whether authentication succeeded or failed
 			setIsAuthenticating(false);
-
-			setOAuthProvider(null);
 		}
 	};
 
