@@ -46,7 +46,7 @@ const ProfileInfoCard = ({ user, provider }: ProfileInfoCardProps) => {
                 <ProfileInfoRow
                     icon={<MdVerified />}
                     label="Current Plan"
-                    value={user.plan.charAt(0).toUpperCase() + user.plan.slice(1)}
+                    value={String(user.plan).charAt(0).toUpperCase() + String(user.plan).slice(1)}
                 />
                 <ProfileInfoRow
                     icon={provider === "google" ? <FcGoogle /> : <BsGithub />}
