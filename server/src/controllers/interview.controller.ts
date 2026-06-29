@@ -76,6 +76,7 @@ const createInterview = asyncHandler(async (req, res) => {
                         .valid('easy', 'medium', 'hard')
                         .required()
                         .messages({
+                            'string.empty': 'Difficulty is required.',
                             'any.only': 'Difficulty must be either Easy, Medium, or Hard.',
                             'any.required': 'Difficulty is required.'
                         }),
@@ -83,6 +84,7 @@ const createInterview = asyncHandler(async (req, res) => {
                         .valid(5, 10, 15, 20)
                         .required()
                         .messages({
+                            'string.empty': 'Questions Count is required.',
                             'any.only': 'Questions Count must be either 5, 10, 15, or 20.',
                             'any.required': 'Questions Count is required.'
                         }),

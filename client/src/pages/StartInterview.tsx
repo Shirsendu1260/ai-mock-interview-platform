@@ -44,15 +44,16 @@ const StartInterview = () => {
     const handleStartInterview = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
         event.preventDefault();
         setIsSubmitting(true);
+        setErrors({}); // Clears old errors displayed in HTML
         const toastId = showLoadingToast('Creating interview...');
 
         try {
             // Create form data (not JSON, because it cannot send file to backend, so we used multipart/form-data)
             const formData = new FormData();
-            formData.append('role', role);
-            formData.append('yoe', yoe.toString());
-            formData.append('difficulty', difficultyState);
-            formData.append('qtnsCount', qtnsCount.toString());
+            if(role !== "") formData.append('role', role);
+            if(yoe !== "") formData.append("yoe", String(yoe));
+            if(difficultyState) formData.append("difficulty", difficultyState);
+            if(qtnsCount) formData.append("qtnsCount", String(qtnsCount));
             if(resumePdfFile) formData.append('resume', resumePdfFile);
 
             // Send data to backend
@@ -74,20 +75,16 @@ const StartInterview = () => {
             //     "success": false,
             //     "statusCode": 400,
             //     "message": "Validation failed",
-            //     "errors": [
-            //         {
-            //             "role": "Role is required."
-            //         },
-            //         {
-            //             "yoe": "Experience is required."
-            //         }
-            //     ]
+            //     "errors": {
+            //          "role": "Role is required.",
+            //          "yoe": "Years of experience is required.",
+            //          "difficulty": "Difficulty is required.",
+            //          "questionsCount": "Please select number of questions."
+            //     }
             // }
 
             if(error instanceof ApiError) {
-                const validationErrors: IErrorMessage = {};
-                error.errors.forEach(errorObj => Object.assign(validationErrors, errorObj));
-                setErrors(validationErrors);
+                setErrors(error.errors);
                 showErrorToastWithToastId(error.message, toastId);
                 console.error(`Error ${error.statusCode}: ${error.message}`);
             }

@@ -8,117 +8,89 @@ import {
     getOngoingInterview,
     getInterviewHistory
 } from '../api/interview.api.js';
-import { ApiError } from '../utils/ApiError.js';
+import { handleAxiosError } from '../utils/helpers.js';
 
 const createInterviewHandler = async (formData: FormData) => {
-    const response = await createInterview(formData); // response is a AxiosResponse
-
-    if(response.data.success) {
+    try {
+        const response = await createInterview(formData); // response is a AxiosResponse
         return response.data; // ApiResponse
     }
-    else {
-        throw new ApiError(
-            response.data.statusCode,
-            response.data.message || 'Failed to create interview.'
-        );
+    catch(error) {
+        handleAxiosError(error);
     }
 };
 
 const getInterviewHandler = async (interviewId: string) => {
-    const response = await getInterview(interviewId);
-
-    if(response.data.success) {
-        return response.data;
+    try {
+        const response = await getInterview(interviewId); // response is a AxiosResponse
+        return response.data; // ApiResponse
     }
-    else {
-        throw new ApiError(
-            response.data.statusCode,
-            response.data.message || 'Failed to fetch interview.'
-        );
+    catch(error) {
+        handleAxiosError(error);
     }
 };
 
 const getInterviewQuestionHandler = async (interviewId: string, position: number) => {
-    const response = await getInterviewQuestion(interviewId, position);
-
-    if(response.data.success) {
-        return response.data;
+    try {
+        const response = await getInterviewQuestion(interviewId, position); // response is a AxiosResponse
+        return response.data; // ApiResponse
     }
-    else {
-        throw new ApiError(
-            response.data.statusCode,
-            response.data.message || 'Failed to fetch question.'
-        );
+    catch(error) {
+        handleAxiosError(error);
     }
 };
 
 const saveInterviewAnswerHandler = async (interviewId: string, position: number, answer: string) => {
-    const response = await saveInterviewAnswer(interviewId, position, { answer });
-
-    if(response.data.success) {
-        return response.data;
+    try {
+        const response = await saveInterviewAnswer(
+            interviewId,
+            position,
+            { answer }
+        ); // response is a AxiosResponse
+        return response.data; // ApiResponse
     }
-    else {
-        throw new ApiError(
-            response.data.statusCode,
-            response.data.message || 'Failed to save answer.'
-        );
+    catch(error) {
+        handleAxiosError(error);
     }
 };
 
 const submitInterviewHandler = async (interviewId: string) => {
-    const response = await submitInterview(interviewId);
-
-    if(response.data.success) {
-        return response.data;
+    try {
+        const response = await submitInterview(interviewId); // response is a AxiosResponse
+        return response.data; // ApiResponse
     }
-    else {
-        throw new ApiError(
-            response.data.statusCode,
-            response.data.message || 'Failed to submit interview.'
-        );
+    catch(error) {
+        handleAxiosError(error);
     }
 };
 
 const getInterviewResultHandler = async (interviewId: string) => {
-    const response = await getInterviewResult(interviewId);
-
-    if(response.data.success) {
-        return response.data;
+    try {
+        const response = await getInterviewResult(interviewId); // response is a AxiosResponse
+        return response.data; // ApiResponse
     }
-    else {
-        throw new ApiError(
-            response.data.statusCode,
-            response.data.message || 'Failed to fetch result.'
-        );
+    catch(error) {
+        handleAxiosError(error);
     }
 };
 
 const getOngoingInterviewHandler = async () => {
-    const response = await getOngoingInterview();
-
-    if(response.data.success) {
-        return response.data;
+    try {
+        const response = await getOngoingInterview(); // response is a AxiosResponse
+        return response.data; // ApiResponse
     }
-    else {
-        throw new ApiError(
-            response.data.statusCode,
-            response.data.message || 'Failed to fetch ongoing interview.'
-        );
+    catch(error) {
+        handleAxiosError(error);
     }
 };
 
 const getInterviewHistoryHandler = async (page: number) => {
-    const response = await getInterviewHistory(page);
-
-    if(response.data.success) {
-        return response.data;
+    try {
+        const response = await getInterviewHistory(page); // response is a AxiosResponse
+        return response.data; // ApiResponse
     }
-    else {
-        throw new ApiError(
-            response.data.statusCode,
-            response.data.message || 'Failed to fetch interview history.'
-        );
+    catch(error) {
+        handleAxiosError(error);
     }
 };
 

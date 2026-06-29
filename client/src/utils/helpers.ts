@@ -1,4 +1,6 @@
+import { AxiosError } from 'axios';
 import { format, formatDistanceToNow } from 'date-fns';
+import { ApiError } from './ApiError';
 
 export const formatDate = (date: Date | string) => {
     const joinedDate = new Date(date);
@@ -100,4 +102,16 @@ export const getScoreColor = (score: number) => {
     }
 
     return "bg-red-100 text-red-700";
+};
+
+export const handleAxiosError = (error: unknown): never => {
+    if(error instanceof AxiosError && error.response) {
+        throw new ApiError(
+            error.response.data.statusCode,
+            error.response.data.message,
+            error.response.data.errors
+        );
+    }
+
+    throw error;
 };

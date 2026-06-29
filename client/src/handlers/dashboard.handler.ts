@@ -1,31 +1,23 @@
 import { getDashboardStats, getRecentInterviews } from "../api/dashboard.api.js";
-import { ApiError } from "../utils/ApiError.js";
+import { handleAxiosError } from "../utils/helpers.js";
 
 const getRecentInterviewsHandler = async () => {
-    const response = await getRecentInterviews();
-
-    if(response.data.success) {
-        return response.data;
+    try {
+        const response = await getRecentInterviews(); // response is a AxiosResponse
+        return response.data; // ApiResponse
     }
-    else {
-        throw new ApiError(
-            response.data.statusCode,
-            response.data.message || 'Failed to recent interviews.'
-        );
+    catch(error) {
+        handleAxiosError(error);
     }
 };
 
 const getDashboardStatsHandler = async () => {
-    const response = await getDashboardStats();
-
-    if(response.data.success) {
-        return response.data;
+    try {
+        const response = await getDashboardStats(); // response is a AxiosResponse
+        return response.data; // ApiResponse
     }
-    else {
-        throw new ApiError(
-            response.data.statusCode,
-            response.data.message || 'Failed to dashboard statistics.'
-        );
+    catch(error) {
+        handleAxiosError(error);
     }
 };
 
