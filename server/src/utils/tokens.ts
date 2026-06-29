@@ -54,6 +54,7 @@ const generateAccessAndRefreshTokens = async (
 						        	email: users.email,
 						        	avatarUrl: users.avatarUrl,
 						        	credit: users.credit,
+                                    plan: users.plan,
                                     refreshToken: users.refreshToken,
 						        	createdAt: users.createdAt,
 						        	updatedAt: users.updatedAt
