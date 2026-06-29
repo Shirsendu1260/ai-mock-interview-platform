@@ -1,5 +1,5 @@
 import { signInWithGoogle, signInWithGitHub } from '../utils/firebase.js'
-import { signInWithOAuth, signOut } from '../api/auth.api.js';
+import { signInWithOAuth, signOut, deleteAccount } from '../api/auth.api.js';
 import { useAuthStore } from '../stores/auth.store.js';
 import type { UserCredential } from 'firebase/auth';
 import type { OAuthProvider } from '../types/types.js';
@@ -37,7 +37,7 @@ export const oAuthSignInHandler = async (provider: OAuthProvider): Promise<void>
 		useAuthStore.getState().setUser(user);
 	}
 	else {
-		throw new ApiError(response.data.statusCode, response.data.message || 'Something went wrong!');
+		throw new ApiError(response.data.statusCode, response.data.message || 'Failed to authenticate user.');
 	}
 };
 
@@ -50,6 +50,19 @@ export const signOutHandler = async () => {
 		useAuthStore.getState().clearUser();
 	}
 	else {
-		throw new ApiError(response.data.statusCode, response.data.message || 'Something went wrong!');
+		throw new ApiError(response.data.statusCode, response.data.message || 'Failed to unauthenticate user.');
+	}
+};
+
+export const deleteAccountHandler = async () => {
+	const response = await deleteAccount();
+
+	if(response.data.success) {
+		// Access & refresh token are already cleared from cookie by backend
+		// Now just clear the Zustand 'user' state to completely sign out the user
+		useAuthStore.getState().clearUser();
+	}
+	else {
+		throw new ApiError(response.data.statusCode, response.data.message || 'Failed to delete account.');
 	}
 };

@@ -112,7 +112,6 @@ interface User {
 	email: string;
 	avatarUrl: string | null;
 	credit: number;
-	oAuthProvider: OAuthProvider;
 	plan: UserPlan;
 	createdAt: string | Date;
 	updatedAt: string | Date;

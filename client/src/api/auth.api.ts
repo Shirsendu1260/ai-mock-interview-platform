@@ -57,9 +57,14 @@ const signOut = (): Promise<AxiosResponse<ApiResponse<{}>>> => {
 	return api.post('/user/sign-out');
 };
 
+const deleteAccount = (): Promise<AxiosResponse<ApiResponse<{}>>> => {
+    return api.delete('/user/delete-account');
+};
+
 export {
 	signInWithOAuth,
 	refreshAccessToken,
 	getAuthUser,
-	signOut
+	signOut,
+    deleteAccount
 };
