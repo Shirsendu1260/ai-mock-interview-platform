@@ -3,7 +3,8 @@ import {
 	oAuthUserLoginOrRegister, 
 	refreshAccessToken,
 	getAuthUser,
-    signOutUser
+    signOutUser,
+    deleteAccount
 } from '../controllers/user.controller.js';
 // import { upload } from '../middlewares/multer.middleware.js';
 import { verifyJWT } from '../middlewares/auth.middleware.js';
@@ -26,6 +27,7 @@ router.route('/refresh-token').post(refreshLimiter, refreshAccessToken);
 
 router.route('/get-auth-user').get(verifyJWT, getAuthUser);
 router.route('/sign-out').post(verifyJWT, signOutUser); 
+router.route('/delete-account').delete(verifyJWT, deleteAccount);
 
 
 

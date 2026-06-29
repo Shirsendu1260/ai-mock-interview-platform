@@ -10,6 +10,7 @@ import { admin } from '../config/firebaseAdmin.config.js';
 import { generateAccessAndRefreshTokens } from '../utils/tokens.js';
 import jwt from 'jsonwebtoken';
 import type { JwtPayload, Secret } from 'jsonwebtoken';
+import { interviews } from '../db/schema/interviews.js';
 
 
 // LOGIN OR REGISTER USER VIA OAUTH
@@ -209,9 +210,39 @@ const signOutUser = asyncHandler(async (req, res) => {
 });
 
 
+// DELETE ACCOUNT
+const deleteAccount = asyncHandler(async (req, res) => {
+    // Auth check
+    if(!req.user) {
+        throw new ApiError(401, 'You need to be authenticated to delete your account.');
+    }
+
+    const authUser = req.user;
+
+
+    // Using transaction to get success for all of the below db operations together
+    await db.transaction(async (tx) => {
+        // Delete every interview of this user
+        // As ON DELETE CASCADE is set, interview_questions and interview_feedbacks of the related interviews
+        // are automatically deleted
+        await tx.delete(interviews).where(eq(interviews.userId, authUser.id));
+
+        // Finally delete the user account.
+        await tx.delete(users).where(eq(users.id, authUser.id));
+    });
+
+
+    return res.status(200)
+                .clearCookie('accessToken', COOKIE_SEND_OPTIONS)
+                .clearCookie('refreshToken', COOKIE_SEND_OPTIONS)
+                .json(new ApiResponse(200, {}, 'Account deleted successfully.'));
+});
+
+
 export {
 	oAuthUserLoginOrRegister,
     refreshAccessToken,
     getAuthUser,
-    signOutUser
+    signOutUser,
+    deleteAccount
 };
