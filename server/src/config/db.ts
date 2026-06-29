@@ -1,14 +1,23 @@
-import { neon } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-http';
+import { Pool, neonConfig } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
+import ws from 'ws';
 
-if(!process.env.NEONDB_URI) {
+if (!process.env.NEONDB_URI) {
 	throw new Error('CRITICAL: NEONDB_URI is missing from your environment variables.');
 }
 
-// Create a stateless HTTP client for Neon. Neon treats queries like standard fetch requests,
-// which means we never clog the database or crash from too many open connections.
-const neonSql = neon(process.env.NEONDB_URI);
+// Enable WebSocket support for Node.js
+// Neon uses WebSockets to support PostgreSQL transactions
+neonConfig.webSocketConstructor = ws;
 
-// Initialize the Drizzle runtime interface mapping to that client, which will be used to run SQL queries
-const db = drizzle({ client: neonSql });
+// Create a PostgreSQL connection pool
+// The pool efficiently reuses database connections instead of
+// opening a brand new connection for every query
+const pool = new Pool({
+	connectionString: process.env.NEONDB_URI
+});
+
+// Create Drizzle database instance
+const db = drizzle({ client: pool });
+
 export { db };
