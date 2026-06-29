@@ -2,6 +2,7 @@ import type { PropsWithChildren, InputHTMLAttributes, ReactNode } from "react";
 import type { HTMLMotionProps } from "motion/react";
 import type { IconType } from 'react-icons';
 import type { DIFFICULTIES, NO_OF_QUESTIONS } from "../constants/interview.js";
+import type { USER_PLANS } from "../constants/app.js";
 
 type CardProps = PropsWithChildren<{
 	className?: string;
@@ -103,6 +104,8 @@ type EmptyStateProps = {
 	action?: ReactNode
 };
 
+type UserPlan = typeof USER_PLANS[number];
+
 interface User {
 	id: string;
 	fullName: string;
@@ -110,6 +113,7 @@ interface User {
 	avatarUrl: string | null;
 	credit: number;
 	oAuthProvider: OAuthProvider;
+	plan: UserPlan;
 	createdAt: string | Date;
 	updatedAt: string | Date;
 };
@@ -391,5 +395,6 @@ export type {
 	InterviewHistoryCardProps,
 	DashboardStatsResponse,
 	ProfileInfoCardProps,
-	ProfileInfoRowProps
+	ProfileInfoRowProps,
+	UserPlan
 };

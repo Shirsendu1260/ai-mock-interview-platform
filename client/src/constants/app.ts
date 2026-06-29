@@ -8,3 +8,5 @@ export const SOCIAL_LINKS = {
 export const DEVELOPER = {
 	name: 'Shirsendu Mali'
 } as const;
+
+export const USER_PLANS = ['free', 'pro', 'ultimate'] as const;
