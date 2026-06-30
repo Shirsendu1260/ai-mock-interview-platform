@@ -13,7 +13,7 @@ const PaymentPage = () => {
 
     const handlePurchase = (plan: UserPlan) => {
         console.log(plan);
-        const planStrFormatted = plan.charAt(0).toUpperCase + plan.slice(1);
+        const planStrFormatted = plan.charAt(0).toUpperCase() + plan.slice(1);
         const toastId = showLoadingToast('Opening Razorpay payment gateway...');
 
         try {
@@ -40,7 +40,7 @@ const PaymentPage = () => {
                     Upgrade Plan
                 </SectionHeading>
 
-                <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-7">
+                <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8">
                     {
                         USER_PLANS.map((plan) => (
                             <PlanCard

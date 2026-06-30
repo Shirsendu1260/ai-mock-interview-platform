@@ -46,13 +46,13 @@ const PlanCard = ({ plan, currentPlan, onSelect }: PlanCardProps) => {
                 <div className="flex h-full flex-col">
                     <h2 className="text-2xl font-bold capitalize">{plan}</h2>
                     <p className="mt-5 text-4xl font-bold">₹{USER_PLANS_CREDITS[plan].price / 100}</p>
-                    <p className="mt-2 text-gray-500">{USER_PLANS_CREDITS[plan].credits} Credits</p>
+                    <p className="mt-2 text-gray-600">{USER_PLANS_CREDITS[plan].credits} Credits</p>
                     <div className="mt-8 flex-1">
-                        <ul className="space-y-3 text-sm text-gray-600">
-                            <li>&check; AI Interviews</li>
-                            <li>&check; Resume Based Questions</li>
-                            <li>&check; AI Feedback</li>
-                            <li>&check; AI Based Job Search</li>
+                        <ul className="space-y-2 text-sm text-gray-600">
+                            <li>&#10003; AI Interviews</li>
+                            <li>&#10003; Resume Based Questions</li>
+                            <li>&#10003; AI Feedback</li>
+                            <li>&#10003; AI Based Job Search</li>
                         </ul>
                     </div>
 
