@@ -15,7 +15,9 @@ import type {
 const createInterview = (
     formData: FormData
 ): Promise<AxiosResponse<ApiResponse<ICreateInterviewResponse>>> => {
-    return api.post('/interviews/create', formData);
+    return api.post('/interviews/create', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
 };
 
 const getInterview = (
