@@ -67,7 +67,7 @@ const createInterview = asyncHandler(async (req, res) => {
                     .required()
                     .messages({
                         'number.base': 'Year of Experience must be a real number.',
-                        'number.required': 'Year of Experience is required.',
+                        'any.required': 'Year of Experience is required.',
                         'number.min': 'Year of Experience cannot be a negative number.',
                         'number.max': 'Year of Experience cannot exceed 50.',
                         'number.precision': 'Only 1 decimal place is allowed.',
