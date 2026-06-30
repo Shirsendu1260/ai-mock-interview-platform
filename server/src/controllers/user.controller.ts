@@ -5,24 +5,18 @@ import { COOKIE_SEND_OPTIONS } from '../constants.js';
 import { db } from '../config/db.js';
 import { users } from '../db/schema/users.js';
 import type { NewUser } from '../db/schema/users.js';
-import { eq } from 'drizzle-orm';
+import { eq, or } from 'drizzle-orm';
 import { admin } from '../config/firebaseAdmin.config.js';
 import { generateAccessAndRefreshTokens } from '../utils/tokens.js';
 import jwt from 'jsonwebtoken';
 import type { JwtPayload, Secret } from 'jsonwebtoken';
 import { interviews } from '../db/schema/interviews.js';
+import { signupRewards } from '../db/schema/signupRewards.js';
 
 
 // LOGIN OR REGISTER USER VIA OAUTH
 const oAuthUserLoginOrRegister = asyncHandler(async (req, res) => {
-	// Frontend: Authenticates with Firebase (Google/GitHub) -> gets an ID Token (a JWT signed by Firebase).
-	// Frontend: Sends that ID Token to our backend in the Authorization header.
-	// Backend: Verifies the ID token using the firebase-admin SDK. If valid, Firebase extracts the 
-	// 		    secure name, email, and picture.
-    // Backend: Checks the database, registers/logs in the user, and 
-	// 		    sets our own tokens.
-
-    // Frontend
+	// Frontend
     //     V
     // Firebase Google/GitHub Sign-In
     //     V
@@ -39,7 +33,7 @@ const oAuthUserLoginOrRegister = asyncHandler(async (req, res) => {
     //     V
     // One of them, i.e. refresh token gets saved in db
     //     V
-    // Set those JWT tokens in HTTP-only secure cookie
+    // Set those JWT tokens in HTTP-only secure cookie and send
     //     V
     // Frontend receives user data
     //     V
@@ -66,13 +60,13 @@ const oAuthUserLoginOrRegister = asyncHandler(async (req, res) => {
     }
 
     // Collect data verified by Google/GitHub (at this point data is valid)
-	const { name, email, picture } = decodedToken as { 
-        name?: string; 
-        email?: string; 
+	const { name, email, picture } = decodedToken as {
+        name?: string;
+        email?: string;
         picture?: string
     };
-    
-    if (!email) {
+
+    if(!email) {
         throw new ApiError(400, 'OAuth provider did not return a valid email.');
     }
 
@@ -88,7 +82,7 @@ const oAuthUserLoginOrRegister = asyncHandler(async (req, res) => {
                                         updatedAt: users.updatedAt
                                     })
         							.from(users)
-        							.where(eq(users.email, email))
+        							.where(eq(users.firebaseUid, decodedToken.uid)) // Firebase guarantees unique UID never changes, email can change
         							.limit(1);
 
     let userToAuthenticate = existingUser[0];
@@ -96,28 +90,56 @@ const oAuthUserLoginOrRegister = asyncHandler(async (req, res) => {
     // If user exists, log them in, else register them
     // Register User IF Block
     if(!userToAuthenticate) {
-        const newUser: NewUser = {
-            email,
-            fullName: name || 'New User',
-            avatarUrl: picture || null
-            // credit is default (300)
-            // createdAt/updatedAt handled automatically
-        };
+        userToAuthenticate = await db.transaction(async (tx) => {
+            // Check this user is already rewarded or not
+            // If his/her old account is already registered and gifted 300 credits rewards before
+            // he/she should not be given reward upon new account creation with the same id
+            const [existingSignupReward] = await tx.select({ id: signupRewards.id })
+                                                    .from(signupRewards)
+                                                    .where(or(
+                                                        eq(signupRewards.firebaseUid, decodedToken.uid),
+                                                        eq(signupRewards.email, email)
+                                                    ))
+                                                    .limit(1);
 
-        const insertResult = await db.insert(users)
-                                        .values(newUser)
-                                        .returning({
-                                            id: users.id,
-                                            fullName: users.fullName,
-                                            email: users.email,
-                                            avatarUrl: users.avatarUrl,
-                                            credit: users.credit,
-                                            plan: users.plan,
-                                            createdAt: users.createdAt,
-                                            updatedAt: users.updatedAt
-                                        });
+            const newUser: NewUser = {
+                email,
+                fullName: name || 'New User',
+                avatarUrl: picture || null,
+                firebaseUid: decodedToken.uid
+                // credit is default (150)
+                // createdAt/updatedAt handled automatically
+            };
 
-        userToAuthenticate = insertResult[0];
+            // If user already used our system before, he/she will not be rewarded this time
+            // That reward is only for first time sign-up
+            if(existingSignupReward) {
+                newUser.credit = 0;
+            }
+            else {
+                // If this user isn't rewarded before (new user), give him/her credits
+                await tx.insert(signupRewards).values({
+                    firebaseUid: decodedToken.uid,
+                    email
+                });
+            }
+
+            const insertResult = await tx.insert(users)
+                                            .values(newUser)
+                                            .returning({
+                                                id: users.id,
+                                                fullName: users.fullName,
+                                                email: users.email,
+                                                avatarUrl: users.avatarUrl,
+                                                credit: users.credit,
+                                                plan: users.plan,
+                                                createdAt: users.createdAt,
+                                                updatedAt: users.updatedAt
+                                            });
+
+            return insertResult[0];
+        });
+
 
         if (!userToAuthenticate) {
             throw new ApiError(500, 'Unable to register the user, please try again.');

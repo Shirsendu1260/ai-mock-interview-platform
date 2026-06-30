@@ -6,7 +6,7 @@ export const users = pgTable('users', {
 	id: uuid('id').defaultRandom().primaryKey(),
 
 	// Full Name, max 125 characters, must not be empty
-	fullName: varchar('full_name', { length: 125 }).notNull(),
+	fullName: varchar('full_name', { length: 128 }).notNull(),
 
 	// Email address, max 255 characters, must be unique across the entire table
 	email: varchar('email', { length: 255 }).notNull().unique(),
@@ -23,6 +23,9 @@ export const users = pgTable('users', {
 	// Saves refresh JWT token string for token rotation
 	refreshToken: text('refresh_token'),
 
+	// Firebase UID returned by Firebase
+	firebaseUid: varchar('firebase_uid', { length: 255 }).notNull().unique(),
+
 	// Automatically record the exact moment the row is created
 	// We pass withTimezone: true so that no matter where our server runs globally, the time calculations 
 	// never get corrupted.
@@ -37,4 +40,4 @@ export const users = pgTable('users', {
 // This ensures total type safety when writing in controllers
 export type User = typeof users.$inferSelect; // Type for fetching a user
 export type NewUser = typeof users.$inferInsert; // Type for creating a user
-export type PublicUser = Omit<User, 'refreshToken'>;
+export type PublicUser = Omit<User, 'refreshToken' | 'firebaseUid'>;
