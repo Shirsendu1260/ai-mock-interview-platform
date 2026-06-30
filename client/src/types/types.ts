@@ -348,6 +348,12 @@ type ProfileInfoRowProps = {
     value: string;
 };
 
+type PlanCardProps = {
+    plan: UserPlan;
+    currentPlan: UserPlan;
+    onSelect: (plan: UserPlan) => void;
+}
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -395,5 +401,6 @@ export type {
 	DashboardStatsResponse,
 	ProfileInfoCardProps,
 	ProfileInfoRowProps,
-	UserPlan
+	UserPlan,
+	PlanCardProps
 };
