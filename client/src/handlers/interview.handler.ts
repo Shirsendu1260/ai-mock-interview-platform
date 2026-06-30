@@ -11,10 +11,15 @@ import {
 import type { ICreateInterviewResponse, IInterview, IInterviewHistoryResponse, IInterviewQuestion, IInterviewResult, IOngoingInterview, ISubmitInterviewResponse } from '../types/types.js';
 import type { ApiResponse } from '../utils/ApiResponse.js';
 import { handleAxiosError } from '../utils/helpers.js';
+import { getAuthUserHandler } from './auth.handler.js';
 
 const createInterviewHandler = async (formData: FormData): Promise<ApiResponse<ICreateInterviewResponse>> => {
     try {
         const response = await createInterview(formData); // response is a AxiosResponse
+
+        // Re-sync user Zustand state from backend to make the state up-to-date
+        await getAuthUserHandler();
+
         return response.data; // ApiResponse
     }
     catch(error) {

@@ -32,7 +32,7 @@ const InterviewHistoryCard = ({ interview, index }: InterviewHistoryCardProps) =
                                 ${getScoreColor(interview.overallScore ?? 0)}
                             `}
                         >
-                            {interview.overallScore ?? 0}/10
+                            {interview.overallScore ?? 0}/100
                         </div>
                     </div>
 

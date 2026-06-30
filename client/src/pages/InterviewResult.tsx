@@ -108,8 +108,9 @@ const InterviewResult = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.4 }}
+                        className='h-full'
                     >
-                        <Card>
+                        <Card className='h-full'>
                             <div className="flex items-center gap-3">
                                 <FaCheckCircle className="text-2xl text-green-600" />
                                 <h3 className="text-lg font-semibold">Strengths</h3>
@@ -126,8 +127,9 @@ const InterviewResult = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.4 }}
+                        className='h-full'
                     >
-                        <Card>
+                        <Card className='h-full'>
                             <div className="flex items-center gap-3">
                                 <FaTimesCircle className="text-2xl text-red-500" />
                                 <h3 className="text-lg font-semibold">Weaknesses</h3>
@@ -144,8 +146,9 @@ const InterviewResult = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.4 }}
+                        className='h-full'
                     >
-                        <Card>
+                        <Card className='h-full'>
                             <div className="flex items-center gap-3">
                                 <FaLightbulb className="text-2xl text-yellow-500" />
                                 <h3 className="text-lg font-semibold">Suggestions</h3>

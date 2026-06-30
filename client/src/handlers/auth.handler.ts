@@ -1,5 +1,5 @@
 import { signInWithGoogle, signInWithGitHub } from '../utils/firebase.js'
-import { signInWithOAuth, signOut, deleteAccount } from '../api/auth.api.js';
+import { signInWithOAuth, signOut, deleteAccount, getAuthUser } from '../api/auth.api.js';
 import { useAuthStore } from '../stores/auth.store.js';
 import type { UserCredential } from 'firebase/auth';
 import type { OAuthProvider } from '../types/types.js';
@@ -35,6 +35,17 @@ export const oAuthSignInHandler = async (provider: OAuthProvider): Promise<void>
 		// So, Zustand provides useAuthStore.getState(), which gives access to the store object anywhere
 		// Now user object is globally available
 		// 'user' object is set and 'isAuthenticated' is set to true
+		useAuthStore.getState().setUser(user);
+    }
+    catch(error) {
+        throw handleAxiosError(error);
+    }
+};
+
+export const getAuthUserHandler = async (): Promise<void> => {
+	try {
+        const response = await getAuthUser();
+        const user = response.data.data;
 		useAuthStore.getState().setUser(user);
     }
     catch(error) {
