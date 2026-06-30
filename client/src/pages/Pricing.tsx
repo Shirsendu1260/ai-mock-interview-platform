@@ -10,6 +10,7 @@ import { LAYOUT } from "../constants/design.js";
 
 const PaymentPage = () => {
     const user = useAuthStore((state) => state.user);
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
     const handlePurchase = (plan: UserPlan) => {
         console.log(plan);
@@ -47,6 +48,7 @@ const PaymentPage = () => {
                                 key={plan}
                                 plan={plan}
                                 currentPlan={user?.plan ?? 'free'}
+                                isAuthenticated={isAuthenticated}
                                 onSelect={handlePurchase} // calls handlePurchase(plan) because of the memory reference of onSelect(plan)
                             />
                         ))

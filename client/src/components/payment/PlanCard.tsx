@@ -4,8 +4,8 @@ import type { PlanCardProps } from "../../types/types.js";
 import Button from "../ui/Button.jsx";
 import Card from "../ui/Card.jsx";
 
-const PlanCard = ({ plan, currentPlan, onSelect }: PlanCardProps) => {
-    const isCurrentPlan = currentPlan === plan;
+const PlanCard = ({ plan, currentPlan, isAuthenticated, onSelect }: PlanCardProps) => {
+    const isCurrentPlan = currentPlan === plan && isAuthenticated;
     const isFree = plan === 'free';
     const isPopular = plan === 'pro';
 

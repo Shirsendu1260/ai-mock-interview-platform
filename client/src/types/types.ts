@@ -351,6 +351,7 @@ type ProfileInfoRowProps = {
 type PlanCardProps = {
     plan: UserPlan;
     currentPlan: UserPlan;
+    isAuthenticated: boolean;
     onSelect: (plan: UserPlan) => void;
 }
 
