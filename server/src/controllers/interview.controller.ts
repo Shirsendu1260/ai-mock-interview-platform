@@ -96,9 +96,8 @@ const createInterview = asyncHandler(async (req, res) => {
         { abortEarly: false }
     );
 
-    if (error) {
-        const errorsObj: IErrorMessage = {};
-
+    let errorsObj: IErrorMessage = {};
+    if(error) {
         error.details.forEach(detail => {
             errorsObj[detail.path[0] as string] = detail.message;
         });
@@ -112,22 +111,24 @@ const createInterview = asyncHandler(async (req, res) => {
     const resumePdfOnLocalPath = file?.path;
 
     if(!resumePdfOnLocalPath) {
-        throw new ApiError(400, 'Resume PDF is required.');
+        errorsObj['resume'] = 'Resume PDF file is required.'
+        throw new ApiError(400, 'Resume PDF file is required.');
     }
 
     const resumePdfOnCloudinary = await cloudinaryUploader(resumePdfOnLocalPath);
 
     if(!resumePdfOnCloudinary) {
+        errorsObj['resume'] = 'Unable to upload the Resume PDF, please try again.'
         throw new ApiError(400, 'Unable to upload the Resume PDF, please try again.');
     }
 
 
     // Calculate interview cost
-    const creditCost = CREDIT_COST[difficulty as Difficulty] * qtnsCount;
+    const creditCost = CREDIT_COST[difficulty as Difficulty] * Number(qtnsCount);
 
 
     // Calculate interview duration
-    const interviewDurationInMins = TIME_PER_QUESTION[difficulty as Difficulty] * qtnsCount;
+    const interviewDurationInMins = TIME_PER_QUESTION[difficulty as Difficulty] * Number(qtnsCount);
 
     const interviewDurationInMs = interviewDurationInMins * 60 * 1000; // 1 min = 60 s = 60000 ms
 
@@ -144,13 +145,13 @@ const createInterview = asyncHandler(async (req, res) => {
 
     // Generate questions
     // Here we will extract text from the uploaded pdf, send it to AI, call it, and generate questions
-    const questions = await generateQuestions(role, yoe, difficulty, qtnsCount);
+    const questions = await generateQuestions(role, Number(yoe), difficulty, Number(qtnsCount));
 
     if(questions.length === 0) {
         throw new ApiError(500, 'Unable to generate questions, please try again.');
     }
 
-    if(questions.length !== qtnsCount) {
+    if(questions.length !== Number(qtnsCount)) {
         throw new ApiError(500, 'Unable to generate the required number of questions.');
     }
 
@@ -174,9 +175,9 @@ const createInterview = asyncHandler(async (req, res) => {
         const newInterview: NewInterview = {
             userId: authUser.id,
             role,
-            yoe,
+            yoe: Number(yoe),
             difficulty,
-            qtnsCount,
+            qtnsCount: Number(qtnsCount),
             creditCost,
             status: 'in_progress',
             lastVisitedQtnPosition: 1,
