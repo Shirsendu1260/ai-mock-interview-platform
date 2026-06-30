@@ -4,3 +4,5 @@ export * from './interviews.js';
 export * from './interviewQuestions.js';
 export * from './interviewFeedbacks.js';
 export * from './signupRewards.js';
+export * from './payments.js';
+export * from './creditTransactions.js';
