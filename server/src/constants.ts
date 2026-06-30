@@ -24,3 +24,15 @@ export const TIME_PER_QUESTION = {
 } as const;
 
 export const PAGINATION_LIMIT = 4;
+
+export const USER_PLANS = ['free', 'starter', 'pro', 'ultimate'] as const;
+
+export const USER_PLANS_CREDITS = {
+    free: { credits: 150, price: 0 }, // 0 Rs.
+    starter: { credits: 800, price: 8900 }, // 89 Rs.
+    pro: { credits: 2000, price: 21900 }, // 219 rs.
+    ultimate: { credits: 6000, price: 54900 } // 549 Rs.
+
+    // We set 8900, not 89
+    // Because Razorpay expects paise, not rupees
+};

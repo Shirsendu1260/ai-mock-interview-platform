@@ -14,8 +14,8 @@ export const users = pgTable('users', {
 	// Stores image url coming from Google/GitHub
 	avatarUrl: text('avatar_url'),
 
-	// Credit system for token usage, defaults to 300, cannot be empty
-	credit: integer('credit').default(300).notNull(),
+	// Credit system for token usage, defaults to 150, cannot be empty
+	credit: integer('credit').default(150).notNull(),
 
 	// plan details
 	plan: varchar('plan', { length: 15 }).default('free').notNull(),
