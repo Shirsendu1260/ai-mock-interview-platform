@@ -7,7 +7,6 @@ import { LAYOUT } from "../constants/design.js";
 
 const Profile = () => {
     const user = useAuthStore(state => state.user);
-    const provider = useAuthStore(state => state.oAuthProvider);
 
     if (!user) return null;
 
@@ -17,7 +16,7 @@ const Profile = () => {
                 <SectionHeading description="Manage your account information.">Profile</SectionHeading>
 
                 <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_340px]">
-                    <ProfileInfoCard user={user} provider={provider} />
+                    <ProfileInfoCard user={user} />
                     <DangerZoneCard />
                 </div>
             </div>

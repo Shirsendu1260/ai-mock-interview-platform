@@ -10,10 +10,10 @@ export const oAuthSignInHandler = async (provider: OAuthProvider): Promise<void>
 	try {
         // Open Google OAuth popup, authenticate with Google/GitHub, and collect returned credential
 		let credential: UserCredential;
-		if(provider === 'google') {
+		if(provider === 'Google') {
 			credential = await signInWithGoogle();
 		}
-		else if(provider === 'github') {
+		else if(provider === 'GitHub') {
 			credential = await signInWithGitHub();
 		}
 		else {
