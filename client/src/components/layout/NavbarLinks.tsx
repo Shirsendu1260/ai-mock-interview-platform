@@ -57,7 +57,7 @@ const NavbarLinks = ({ isMobile = false }: NavbarLinksProps) => {
 				) : (
 					<Link
 						to='/auth'
-						className='rounded-2xl bg-accent px-5 py-2 text-sm font-medium text-white'
+						className='rounded-xl bg-accent px-4 py-2 text-sm font-medium text-white'
 					>
 						Sign In
 					</Link>
