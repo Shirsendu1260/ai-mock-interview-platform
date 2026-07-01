@@ -14,6 +14,7 @@ import { FirebaseError } from "firebase/app";
 const Auth = () => {
 	const navigate = useNavigate();
 	const setIsAuthenticating = useAuthStore(state => state.setIsAuthenticating);
+	const setAuthenticatingProvider = useAuthStore(state => state.setAuthenticatingProvider);
 
 	const handleOAuthSignIn = async (provider: OAuthProvider) => {
 		console.log("OAuth sign-in is in progress...");
@@ -21,6 +22,7 @@ const Auth = () => {
 
 		try {
 			setIsAuthenticating(true);
+			setAuthenticatingProvider(provider);
 			await oAuthSignInHandler(provider);
 			showSuccessToastWithToastId('Signed in successfully.', toastId);
 			navigate('/dashboard'); // Navigate to /dashboard after successful sign-in
@@ -55,6 +57,8 @@ const Auth = () => {
 		finally {
 			// Always reset state whether authentication succeeded or failed
 			setIsAuthenticating(false);
+
+			setAuthenticatingProvider(null);
 		}
 	};
 
@@ -71,8 +75,8 @@ const Auth = () => {
 						<p className="text-gray-500">Sign in to continue.</p>
 					</section>
 
-					<GoogleSignInButton onClick={() => handleOAuthSignIn('Google')} provider="Google" />
-					<GitHubSignInButton onClick={() => handleOAuthSignIn('GitHub')} provider="GitHub" />
+					<GoogleSignInButton onClick={() => handleOAuthSignIn('Google')} />
+					<GitHubSignInButton onClick={() => handleOAuthSignIn('GitHub')} />
 				</div>
 			</Card>
 		</PageContainer>

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { User, IAuthState } from '../types/types.js';
+import type { User, IAuthState, OAuthProvider } from '../types/types.js';
 
 // Stores authenticated user data globally, so that components can use this centralized data
 // by avoiding prop drilling problem.
@@ -19,6 +19,8 @@ export const useAuthStore = create<IAuthState>((set) => ({
 
 	isAuthenticating: false,
 
+	authenticatingProvider: null,
+
 	// Updates the user state and marks the application as authenticated
 	setUser: (user: User | null) => set({
 		user,
@@ -31,10 +33,14 @@ export const useAuthStore = create<IAuthState>((set) => ({
 	// Sets the authenticating state when sign-in is in progress
 	setIsAuthenticating: (flag: boolean) => set({ isAuthenticating: flag }),
 
+	// Sets auth provider when clicked in that provider's sign-in button
+	setAuthenticatingProvider: (provider: OAuthProvider | null) => set({ authenticatingProvider: provider }),
+
 	// Clears user state during logout
 	clearUser: () => set({
 		user: null,
 		isAuthenticated: false,
-		isAuthenticating: false
+		isAuthenticating: false,
+		authenticatingProvider: null,
 	})
 }));

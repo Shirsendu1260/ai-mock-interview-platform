@@ -80,8 +80,7 @@ type SectionHeadingProps = PropsWithChildren<{
 }>;
 
 type ThirdPartySignInButtonProps = {
-	onClick?: () => void,
-	provider: OAuthProvider
+	onClick?: () => void
 };
 
 type LogoProps = {
@@ -132,9 +131,12 @@ interface IAuthState {
 	// OAuth login loading, will be set to true when login is in progress
 	isAuthenticating: boolean;
 
+	authenticatingProvider: OAuthProvider | null;
+
 	setUser: (user: User | null) => void;
 	setIsLoading: (flag: boolean) => void;
 	setIsAuthenticating: (flag: boolean) => void;
+	setAuthenticatingProvider: (provider: OAuthProvider | null) => void;
 	clearUser: () => void;
 };
 
