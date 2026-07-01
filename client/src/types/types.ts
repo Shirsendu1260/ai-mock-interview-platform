@@ -80,7 +80,8 @@ type SectionHeadingProps = PropsWithChildren<{
 }>;
 
 type ThirdPartySignInButtonProps = {
-	onClick?: () => void
+	onClick?: () => void,
+	provider: OAuthProvider
 };
 
 type LogoProps = {
@@ -113,16 +114,16 @@ interface User {
 	avatarUrl: string | null;
 	credit: number;
 	plan: UserPlan;
+	authProvider: OAuthProvider;
 	createdAt: string | Date;
 	updatedAt: string | Date;
 };
 
-type OAuthProvider = 'google' | 'github';
+type OAuthProvider = 'Google' | 'GitHub';
 
 // Global authentication state interface for Zustand
 interface IAuthState {
 	user: User | null;
-	oAuthProvider: OAuthProvider | null;
 	isAuthenticated: boolean;
 
 	// App loading
@@ -132,7 +133,6 @@ interface IAuthState {
 	isAuthenticating: boolean;
 
 	setUser: (user: User | null) => void;
-	setOAuthProvider: (provider: OAuthProvider | null) => void;
 	setIsLoading: (flag: boolean) => void;
 	setIsAuthenticating: (flag: boolean) => void;
 	clearUser: () => void;
@@ -339,7 +339,6 @@ type DashboardStatsResponse = {
 
 type ProfileInfoCardProps = {
     user: User;
-    provider: OAuthProvider | null;
 };
 
 type ProfileInfoRowProps = {

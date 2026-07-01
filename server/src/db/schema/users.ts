@@ -26,6 +26,9 @@ export const users = pgTable('users', {
 	// Firebase UID returned by Firebase
 	firebaseUid: varchar('firebase_uid', { length: 255 }).notNull().unique(),
 
+	// Auth provider (Google, GitHub etc.)
+	authProvider: varchar('auth_provider', { length: 20 }).notNull(),
+
 	// Automatically record the exact moment the row is created
 	// We pass withTimezone: true so that no matter where our server runs globally, the time calculations 
 	// never get corrupted.

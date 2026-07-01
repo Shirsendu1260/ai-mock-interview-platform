@@ -14,7 +14,6 @@ import { FirebaseError } from "firebase/app";
 const Auth = () => {
 	const navigate = useNavigate();
 	const setIsAuthenticating = useAuthStore(state => state.setIsAuthenticating);
-	const setOAuthProvider = useAuthStore(state => state.setOAuthProvider);
 
 	const handleOAuthSignIn = async (provider: OAuthProvider) => {
 		console.log("OAuth sign-in is in progress...");
@@ -22,14 +21,11 @@ const Auth = () => {
 
 		try {
 			setIsAuthenticating(true);
-			setOAuthProvider(provider);
 			await oAuthSignInHandler(provider);
 			showSuccessToastWithToastId('Signed in successfully.', toastId);
 			navigate('/dashboard'); // Navigate to /dashboard after successful sign-in
 		}
 		catch(error) {
-			setOAuthProvider(null);
-
 			if(
 				error instanceof FirebaseError &&
 				error.code === 'auth/account-exists-with-different-credential'
@@ -75,8 +71,8 @@ const Auth = () => {
 						<p className="text-gray-500">Sign in to continue.</p>
 					</section>
 
-					<GoogleSignInButton onClick={() => handleOAuthSignIn('google')} />
-					<GitHubSignInButton onClick={() => handleOAuthSignIn('github')} />
+					<GoogleSignInButton onClick={() => handleOAuthSignIn('Google')} provider="Google" />
+					<GitHubSignInButton onClick={() => handleOAuthSignIn('GitHub')} provider="GitHub" />
 				</div>
 			</Card>
 		</PageContainer>

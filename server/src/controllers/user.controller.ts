@@ -102,11 +102,20 @@ const oAuthUserLoginOrRegister = asyncHandler(async (req, res) => {
                                                     ))
                                                     .limit(1);
 
+            // get auth provider from firebase decoded token
+            let authProvider = decodedToken.firebase.sign_in_provider;
+            authProvider = authProvider === 'google.com'
+                                                ? 'Google'
+                                                : authProvider === 'github.com'
+                                                ? 'GitHub'
+                                                : 'Unknown';
+
             const newUser: NewUser = {
                 email,
                 fullName: name || 'New User',
                 avatarUrl: picture || null,
-                firebaseUid: decodedToken.uid
+                firebaseUid: decodedToken.uid,
+                authProvider
                 // credit is default (150)
                 // createdAt/updatedAt handled automatically
             };

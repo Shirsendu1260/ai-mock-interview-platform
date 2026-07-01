@@ -11,7 +11,7 @@ import UserAvatar from "../common/UserAvatar.jsx";
 import { APP_NAME } from "../../constants/app.js";
 import ProfileInfoRow from "./ProfileInfoRow.jsx";
 
-const ProfileInfoCard = ({ user, provider }: ProfileInfoCardProps) => {
+const ProfileInfoCard = ({ user }: ProfileInfoCardProps) => {
     return (
         <Card>
             <div className="flex flex-col items-center">
@@ -23,14 +23,9 @@ const ProfileInfoCard = ({ user, provider }: ProfileInfoCardProps) => {
             <div className="my-8 border-t border-border" />
 
             <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={{
-                    hidden: {},
-                    visible: {
-                        transition: { staggerChildren: 0.08 }
-                    }
-                }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
                 className="space-y-6"
             >
                 <ProfileInfoRow
@@ -49,9 +44,9 @@ const ProfileInfoCard = ({ user, provider }: ProfileInfoCardProps) => {
                     value={String(user.plan).charAt(0).toUpperCase() + String(user.plan).slice(1)}
                 />
                 <ProfileInfoRow
-                    icon={provider === "google" ? <FcGoogle /> : <BsGithub />}
+                    icon={user.authProvider === "Google" ? <FcGoogle /> : <BsGithub />}
                     label="Signed in with"
-                    value={ provider === "google" ? "Google" : "GitHub" }
+                    value={ user.authProvider === "Google" ? "Google" : "GitHub" }
                 />
                 <ProfileInfoRow
                     icon={<FaCalendarAlt />}

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { User, IAuthState, OAuthProvider } from '../types/types.js';
+import type { User, IAuthState } from '../types/types.js';
 
 // Stores authenticated user data globally, so that components can use this centralized data
 // by avoiding prop drilling problem.
@@ -9,7 +9,6 @@ import type { User, IAuthState, OAuthProvider } from '../types/types.js';
 export const useAuthStore = create<IAuthState>((set) => ({
 	// Initially user is not authenticated, that's why they are set as these
 	user: null,
-	oAuthProvider: null,
 	isAuthenticated: false,
 	isLoading: true,
 	// Because when the app starts: App starts -> unknown auth status -> calls /get-auth-user -> cookie
@@ -25,9 +24,6 @@ export const useAuthStore = create<IAuthState>((set) => ({
 		user,
 		isAuthenticated: Boolean(user)
 	}),
-
-	// Sets provider string
-	setOAuthProvider: (provider: OAuthProvider | null) => set({ oAuthProvider: provider }),
 
 	// Sets loading state for API call
 	setIsLoading: (flag: boolean) => set({ isLoading: flag }),

@@ -29,6 +29,20 @@
       "when": 1782831139374,
       "tag": "0003_eager_green_goblin",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1782888256596,
+      "tag": "0004_high_dust",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1782891047213,
+      "tag": "0005_volatile_black_cat",
+      "breakpoints": true
     }
   ]
 }

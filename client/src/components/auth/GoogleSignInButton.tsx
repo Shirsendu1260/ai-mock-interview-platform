@@ -4,19 +4,18 @@ import type { ThirdPartySignInButtonProps } from '../../types/types.js';
 import { useAuthStore } from '../../stores/auth.store.js';
 import Spinner from "../ui/Spinner.js";
 
-const GoogleSignInButton = ({ onClick }: ThirdPartySignInButtonProps) => {
+const GoogleSignInButton = ({ onClick, provider }: ThirdPartySignInButtonProps) => {
 	const isAuthenticating = useAuthStore(state => state.isAuthenticating);
-	const oAuthProvider = useAuthStore(state => state.oAuthProvider);
 
 	return (
 		<Button
 			className='bg-primary flex items-center justify-center gap-3'
 			onClick={onClick}
 			disabled={isAuthenticating}
-			isLoading={isAuthenticating && oAuthProvider === 'google'}
+			isLoading={isAuthenticating && provider === 'Google'}
 		>
 			{
-				isAuthenticating && oAuthProvider === 'google'
+				isAuthenticating && provider === 'Google'
 					? (
 						<>
 							<Spinner size="sm" />

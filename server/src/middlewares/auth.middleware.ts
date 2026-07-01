@@ -49,6 +49,7 @@ export const verifyJWT = asyncHandler(async (req: Request, _: Response, next: Ne
                                     avatarUrl: users.avatarUrl,
                                     credit: users.credit,
                                     plan: users.plan,
+                                    authProvider: users.authProvider,
                                     createdAt: users.createdAt,
                                     updatedAt: users.updatedAt
                                 })
@@ -97,6 +98,7 @@ export const verifyOptionalJWT = asyncHandler(async (req: Request, _: Response, 
                                     avatarUrl: users.avatarUrl,
                                     credit: users.credit,
                                     plan: users.plan,
+                                    authProvider: users.authProvider,
                                     createdAt: users.createdAt,
                                     updatedAt: users.updatedAt
                                 })

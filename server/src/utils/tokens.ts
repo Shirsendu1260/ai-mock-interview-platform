@@ -57,6 +57,7 @@ const generateAccessAndRefreshTokens = async (
                                     plan: users.plan,
                                     firebaseUid: users.firebaseUid,
                                     refreshToken: users.refreshToken,
+                                    authProvider: users.authProvider,
 						        	createdAt: users.createdAt,
 						        	updatedAt: users.updatedAt
 						        })
