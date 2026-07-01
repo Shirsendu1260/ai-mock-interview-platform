@@ -7,7 +7,7 @@ const evaluateInterview = async (
 
     const questionWiseEvaluation = answers.map(() => ({
         feedback: 'Good answer. Try explaining more clearly.',
-        score: 8
+        score: 7
     }));
 
     const evaluationResult: IInterviewEvaluationResult = {
@@ -16,7 +16,7 @@ const evaluateInterview = async (
         weaknesses: 'Could improve error handling.',
         suggestions: 'Practice writing cleaner code.',
         overallFeedback: 'Overall a good performance.',
-        overallScore: 80
+        overallScore: 70
     };
 
     return evaluationResult;
