@@ -4,7 +4,7 @@ import rateLimit from 'express-rate-limit';
 // Prevents server abuse
 export const generalLimiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
-	limit: 30, // Limit each IP to this amount of requests per 'window' (here, per 15 minutes)
+	limit: 60, // Limit each IP to this amount of requests per 'window' (here, per 15 minutes)
 	standardHeaders: 'draft-8', // Sends standard RateLimit headers in response
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 	message: {

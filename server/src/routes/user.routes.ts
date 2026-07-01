@@ -26,7 +26,7 @@ router.route('/refresh-token').post(refreshLimiter, refreshAccessToken);
 ////////////////////////////////  AUTHENTICATED ROUTES  ////////////////////////////////
 
 router.route('/get-auth-user').get(verifyJWT, getAuthUser);
-router.route('/sign-out').post(verifyJWT, signOutUser); 
+router.route('/sign-out').post(verifyJWT, signOutUser);
 router.route('/delete-account').delete(verifyJWT, deleteAccount);
 
 
