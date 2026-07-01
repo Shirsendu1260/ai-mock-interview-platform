@@ -78,6 +78,7 @@ const oAuthUserLoginOrRegister = asyncHandler(async (req, res) => {
                                         avatarUrl: users.avatarUrl,
                                         credit: users.credit,
                                         plan: users.plan,
+                                        authProvider: users.authProvider,
                                         createdAt: users.createdAt,
                                         updatedAt: users.updatedAt
                                     })
@@ -142,6 +143,7 @@ const oAuthUserLoginOrRegister = asyncHandler(async (req, res) => {
                                                 avatarUrl: users.avatarUrl,
                                                 credit: users.credit,
                                                 plan: users.plan,
+                                                authProvider: users.authProvider,
                                                 createdAt: users.createdAt,
                                                 updatedAt: users.updatedAt
                                             });
