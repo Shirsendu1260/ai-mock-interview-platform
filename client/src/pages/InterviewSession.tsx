@@ -34,7 +34,7 @@ const InterviewSession = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isChangingQtn, setIsChangingQtn] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [remainingTime, setRemainingTime] = useState(0); // in seconds
+    const [remainingTime, setRemainingTime] = useState<number | null>(null); // in seconds // 'null' means time not loaded yet
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 
 
@@ -237,10 +237,10 @@ const InterviewSession = () => {
     // Countdown timer: decreases every second and stops at 0
     useEffect(() => {
         // Stop timer when remaining time runs out
-        if(remainingTime <= 0) return;
+        if(remainingTime === null || remainingTime <= 0) return;
 
         const intervalId = setInterval(() => {
-            setRemainingTime(prev => prev - 1); // Decreases time by 1 per second
+            setRemainingTime(prev => prev !== null ? prev - 1 : 0); // Decreases time by 1 per second
         }, 1000);
 
         // Cleanup interval to prevent memory leak
@@ -250,6 +250,9 @@ const InterviewSession = () => {
 
     // For auto submitting when timer reaches 0
     useEffect(() => {
+        // Don't submit until we actually have a valid time in number
+        if(remainingTime === null || remainingTime === undefined) return;
+
         // If timer is not 0 yet, do nothing
         if(remainingTime > 0) return;
 
@@ -288,9 +291,13 @@ const InterviewSession = () => {
                 />
 
                 {/*Countdown timer*/}
-                <InterviewTimerCard
-                    remainingTime={formatRemainingTime(remainingTime)}
-                />
+                {
+                    remainingTime && (
+                        <InterviewTimerCard
+                            remainingTime={formatRemainingTime(remainingTime)}
+                        />
+                    )
+                }
 
                 <div className='grid gap-6 lg:grid-cols-[280px_1fr]'>
                     <QuestionNavigation

@@ -82,7 +82,7 @@ export const getPerformance = (score: number) => {
     }
 
     if(score >= 60) {
-        return { title: "Good", color: "#f59e0b" };
+        return { title: "Good", color: "#f58f0b" };
     }
 
     if(score >= 40) {
@@ -93,15 +93,23 @@ export const getPerformance = (score: number) => {
 };
 
 export const getScoreColor = (score: number) => {
-    if(score >= 8) {
-        return "bg-green-100 text-green-700";
+    if(score >= 9) {
+        return "bg-[#16a34a] text-white";
     }
 
-    if(score >= 5) {
-        return "bg-yellow-100 text-yellow-700";
+    if(score >= 7.5) {
+        return "bg-[#2563eb] text-white";
     }
 
-    return "bg-red-100 text-red-700";
+    if(score >= 6) {
+        return "bg-[#f58f0b] text-white";
+    }
+
+    if(score >= 4) {
+        return "bg-[#ea580c] text-white";
+    }
+
+    return "bg-[#dc2626] text-white";
 };
 
 export const handleAxiosError = (error: unknown): never => {
