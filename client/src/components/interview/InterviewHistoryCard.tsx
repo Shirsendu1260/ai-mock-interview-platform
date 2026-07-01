@@ -28,7 +28,7 @@ const InterviewHistoryCard = ({ interview, index }: InterviewHistoryCardProps) =
 
                         <div
                             className={`
-                                rounded-full px-4 py-2 text-lg font-semibold
+                                rounded-4xl px-4 py-2 text-base font-semibold
                                 ${getScoreColor(interview.overallScore ?? 0)}
                             `}
                         >
