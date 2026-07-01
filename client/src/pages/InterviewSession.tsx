@@ -292,7 +292,7 @@ const InterviewSession = () => {
 
                 {/*Countdown timer*/}
                 {
-                    remainingTime && (
+                    remainingTime !== null && (
                         <InterviewTimerCard
                             remainingTime={formatRemainingTime(remainingTime)}
                         />
@@ -338,9 +338,8 @@ const InterviewSession = () => {
                                             Back
                                         </Button>
 
-                                        {
-                                            currentPosition < interview.qtnsCount
-                                            && (
+                                        <div className='flex gap-3'>
+                                            {currentPosition < interview.qtnsCount && (
                                                 <Button
                                                     type='button'
                                                     onClick={handleNextQtn}
@@ -348,18 +347,18 @@ const InterviewSession = () => {
                                                 >
                                                     Continue
                                                 </Button>
-                                            )
-                                        }
-                                    </div>
+                                            )}
 
-                                    <Button
-                                        type='button'
-                                        className='sm:w-48'
-                                        isLoading={isSubmitting}
-                                        onClick={() => setIsConfirmationModalOpen(true)}
-                                    >
-                                        Finish Interview
-                                    </Button>
+                                            <Button
+                                                type='button'
+                                                className='sm:w-48'
+                                                isLoading={isSubmitting}
+                                                onClick={() => setIsConfirmationModalOpen(true)}
+                                            >
+                                                Finish Interview
+                                            </Button>
+                                        </div>
+                                    </div>
                                 </>
                             )
                         }

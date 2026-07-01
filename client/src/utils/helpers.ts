@@ -13,9 +13,22 @@ export const formatDate = (date: Date | string) => {
 }
 
 export const formatRemainingTime = (totalSeconds: number) => {
-    const minutes = Math.floor(totalSeconds / 60);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
-    return `${minutes}:${String(seconds).padStart(2, '0')}`;
+    const hoursStr = String(hours).padStart(2, '0');
+    const minutesStr = String(minutes).padStart(2, '0');
+    const secondsStr = String(seconds).padStart(2, '0');
+
+    if(hours > 0) {
+        return `${hoursStr}h ${minutesStr}m ${secondsStr}s`;
+    }
+
+    if(minutes > 0) {
+        return `${minutesStr}m ${secondsStr}s`;
+    }
+
+    return `${secondsStr}s`;
 };
 
 // Web Speech API helper used for text-to-speech

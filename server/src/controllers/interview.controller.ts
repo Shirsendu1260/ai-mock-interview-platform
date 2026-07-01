@@ -671,7 +671,7 @@ const submitInterview = asyncHandler(async (req, res) => {
         await tx.insert(interviewFeedbacks).values(newInterviewFeedback);
 
         // Mark this interview completed
-        await db.update(interviews)
+        await tx.update(interviews)
                 .set({
                     status: 'completed',
                     completedAt: new Date(),

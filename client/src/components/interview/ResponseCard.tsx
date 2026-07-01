@@ -12,8 +12,6 @@ const ResponseCard = ({ ans, onAnsChange }: ResponseCardProps) => {
                     <h2 className="text-lg font-semibold text-dark">Your Response</h2>
                     <p className="mt-1 text-sm text-muted">
                         Respond naturally, just as you would in a real interview.
-                    </p>
-                    <p className="text-sm text-muted">
                         Your response is automatically saved whenever you change questions.
                     </p>
                 </div>
