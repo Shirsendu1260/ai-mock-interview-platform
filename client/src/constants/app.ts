@@ -20,3 +20,5 @@ export const USER_PLANS_CREDITS = {
 	// We set 8900, not 89
 	// Because Razorpay expects paise, not rupees
 };
+
+export const PAID_PLANS = USER_PLANS.filter((plan) => plan !== 'free'); // Exclude 'free'

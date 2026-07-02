@@ -7,6 +7,13 @@ import { PAID_PLANS, USER_PLANS_CREDITS } from '../constants.js';
 import { razorpay } from '../config/razorpay.config.js';
 import { payments, type NewPayment } from '../db/schema/payments.js';
 
+// - Frontend
+//   POST /payments/create-order
+// - 'plan' sent in request body
+// - Backend
+//   Receives it and validate
+// - If valid, Razorpay create Order
+// - Backend stores payment data with Razorpay order data with status='created' in 'payments' table
 const createRazorpayOrder = asyncHandler(async (req, res) => {
     // Auth check
     if(!req.user) {
@@ -87,4 +94,15 @@ const createRazorpayOrder = asyncHandler(async (req, res) => {
     );
 });
 
+// - User clicks Purchase
+// - Frontend -> Backend -> Razorpay Order created -> row added in 'payments' with status='created'
+// - Backend sends order ID to Frontend
+// - Frontend opens Razorpay Checkout popup
+// - User pays
+// - Razorpay returns - payment_id, order_id, signature
+// - Frontend sends those to backend
+// - POST /verify-payment
+// - Backend verifies signature
+//      invalid -> reject
+//      valid -> Updates DB, adds credits, updates plan in 'users'
 export { createRazorpayOrder };

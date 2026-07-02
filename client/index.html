@@ -9,5 +9,10 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Razorpay checkout script -->
+    <!-- After this script is loaded in browser, a new global object appears - window.Razorpay -->
+    <!-- This opens the payment popup -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   </body>
 </html>

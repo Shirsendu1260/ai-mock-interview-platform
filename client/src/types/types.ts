@@ -2,7 +2,7 @@ import type { PropsWithChildren, InputHTMLAttributes, ReactNode } from "react";
 import type { HTMLMotionProps } from "motion/react";
 import type { IconType } from 'react-icons';
 import type { DIFFICULTIES, NO_OF_QUESTIONS } from "../constants/interview.js";
-import type { USER_PLANS } from "../constants/app.js";
+import type { PAID_PLANS, USER_PLANS } from "../constants/app.js";
 
 type CardProps = PropsWithChildren<{
 	className?: string;
@@ -105,6 +105,7 @@ type EmptyStateProps = {
 };
 
 type UserPlan = typeof USER_PLANS[number];
+type PaidPlan = typeof PAID_PLANS[number];
 
 interface User {
 	id: string;
@@ -356,6 +357,14 @@ type PlanCardProps = {
     onSelect: (plan: UserPlan) => void;
 }
 
+interface ICreateRazorpayPaymentOrderResponse {
+	id: string;
+	plan: PaidPlan;
+	amount: number;
+	razorpayOrderId: string;
+	currency: string;
+}
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -404,5 +413,7 @@ export type {
 	ProfileInfoCardProps,
 	ProfileInfoRowProps,
 	UserPlan,
-	PlanCardProps
+	PlanCardProps,
+	ICreateRazorpayPaymentOrderResponse,
+	PaidPlan
 };
