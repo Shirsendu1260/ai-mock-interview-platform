@@ -29,7 +29,7 @@ const InterviewHistory = () => {
 
 
     // Loads interviews from the backend based on page number
-    const loadHistory = useCallback(async (pageToLoad: number) => {
+    const loadHistory = useCallback(async () => {
         // Don't send request, when already fetching another page
         if(isFetchingMore) return;
 
@@ -40,13 +40,9 @@ const InterviewHistory = () => {
             setIsFetchingMore(true);
 
             // Load interviews of current page
-            const response = await getInterviewHistoryHandler(pageToLoad);
+            const response = await getInterviewHistoryHandler(page);
 
             // Keep previous interviews and append the new ones
-            // Example:
-            // Old -> [1,2,3,4]
-            // New -> [5,6,7,8]
-            // Final -> [1,2,3,4,5,6,7,8]
             setInterviews(prev => [
                 ...prev,
                 ...response.data.interviews
@@ -55,8 +51,8 @@ const InterviewHistory = () => {
             // Backend tells us whether another page exists or not
             setHasMore(response.data.hasMore);
 
-            // After successfully loading current page of interviews, set next page number for next request
-            setPage(prev => prev + 1);
+            // Only increment page for next request if there is actually more data left to fetch
+            if(response.data.hasMore) setPage(prev => prev + 1);
         }
         catch(error) {
             if(error instanceof ApiError) {
@@ -70,7 +66,7 @@ const InterviewHistory = () => {
             setIsLoading(false);
             setIsFetchingMore(false);
         }
-    }, [hasMore, isFetchingMore]); // Recreate the function in memory only when these values change
+    }, [page, hasMore, isFetchingMore]); // Recreate the function in memory only when these values change
     // useCallback remembers (memoizes) this function between renders.
     // Normally, whenever this component re-renders, React creates a brand new
     // loadHistory() function again. Most of the time that's perfectly fine.
@@ -84,14 +80,14 @@ const InterviewHistory = () => {
     // In short:
     // Same dependencies -> Same function reference
     // Dependency changed -> React creates a new function
+    // And, loadHistory now looks directly at page state variable, because page is in the useCallback
+    // dependency array, it will always look at the correct, real-time page number
 
 
 	// Loads interviews when component loads for the first time
 	useEffect(() => {
-        loadHistory(1); // Loads first set of interviews (now, page = 1)
-    }, [loadHistory]);
-    // loadHistory was added as dependency as it is wrapped by useCallback()
-    // React expects it to be included in the dependency array
+        loadHistory(); // Loads first set of interviews (i.e. page = 1)
+    }, []);
 
 
     // Observe the invisible div placed at the bottom of the page
@@ -105,12 +101,9 @@ const InterviewHistory = () => {
             // CALLBACK
             // Runs when the visibility of the observed element changes (i.e. visible-hidden or hidden-visible)
             (entries) => {
-                // entries[0] is our only target div element
-                const observedElementEntry = entries[0];
-
-                // Element reached the viewport
-                if(observedElementEntry.isIntersecting) {
-                    loadHistory(page);
+                // entries[0] is our only target div element and check if it has reached the viewport
+                if(entries[0].isIntersecting) {
+                    loadHistory(); // it already knows what page to fetch
                 }
             },
 
@@ -127,7 +120,9 @@ const InterviewHistory = () => {
 
         // Disconnect the observer when the component unmounts
         return () => observer.disconnect();
-    }, [page, loadHistory]);
+    }, [loadHistory]);
+    // loadHistory's reference changed means page, hasMore, or isFetchingMore also changed
+    // (hint: useCallback())
 
 
     if(isLoading) {
