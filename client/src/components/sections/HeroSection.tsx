@@ -72,7 +72,7 @@ const HeroSection = () => {
 						<div
 							className='mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center'
 						>
-							<Link to='/dashboard'>
+							<Link to='/dashboard/interviews/create'>
 								<Button className='px-8 sm:w-auto'>
 									Get Started <FaArrowRight />
 								</Button>
