@@ -1,0 +1,1 @@
+ALTER TABLE "payments" ALTER COLUMN "receipt" SET DATA TYPE uuid;

@@ -37,5 +37,7 @@ export const USER_PLANS_CREDITS = {
     // Because Razorpay expects paise, not rupees
 };
 
+export const PAID_PLANS = USER_PLANS.filter((plan) => plan !== 'free'); // Exclude 'free'
+
 export const PAYMENT_STATUS = ["pending", "paid", "failed"] as const;
 export const CREDIT_TRANSACTION_TYPES = ["purchase", "interview", "job_search"] as const;

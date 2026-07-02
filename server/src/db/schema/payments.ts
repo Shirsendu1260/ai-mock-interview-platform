@@ -7,10 +7,12 @@ export const payments = pgTable('payments', {
     razorpayOrderId: varchar('razorpay_order_id', { length: 255 }).notNull().unique(),
     razorpayPaymentId: varchar('razorpay_payment_id', { length: 255 }),
     razorpaySignature: varchar('razorpay_signature', { length: 255 }),
+    receipt: uuid('receipt').notNull().unique(),
     plan: varchar('plan', { length: 20 }).notNull(),
     amount: integer('amount').notNull(),
     status: varchar('status', { length: 20 }).notNull(),
-    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull()
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
 export type NewPayment = typeof payments.$inferInsert;
