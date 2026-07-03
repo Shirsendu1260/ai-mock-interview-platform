@@ -20,7 +20,7 @@ interface RazorpayPaymentSuccessResponse {
 // Settings passed when creating Razorpay checkout
 interface RazorpayOptions {
     // API Key ID from Razorpay Dashboard
-    keyId: string;
+    key: string;
 
     // Amount in paise
     amount: number;

@@ -48,7 +48,7 @@ const openRazorpayCheckout = async ({
 }: IOpenCheckoutProps) => {
     // Checkout config options
     const options: RazorpayOptions = {
-        keyId: import.meta.env.VITE_RAZORPAY_KEY_ID!,
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID!,
         amount,
         currency: 'INR',
         name: APP_NAME,
