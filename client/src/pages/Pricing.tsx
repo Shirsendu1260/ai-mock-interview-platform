@@ -9,17 +9,23 @@ import { ApiError } from "../utils/ApiError.js";
 import { LAYOUT } from "../constants/design.js";
 import { openRazorpayCheckout } from "../utils/razorpay.js";
 import { createRazorpayPaymentOrder } from "../api/payment.api.js";
+import { useNavigate } from "react-router-dom";
 
 const PaymentPage = () => {
     const user = useAuthStore((state) => state.user);
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+    const navigate = useNavigate();
 
     const handlePurchase = async (plan: PaidPlan) => {
-        if(!user) return;
-
         const planStrFormatted = plan.charAt(0).toUpperCase() + plan.slice(1);
         console.log(planStrFormatted);
         const toastId = showLoadingToast(`Initializing payment for ${planStrFormatted} plan...`);
+
+        if(!user) {
+            showErrorToastWithToastId('You need to be authenticated to make payment.', toastId);
+            navigate('/auth');
+            return;
+        }
 
         try {
             const response = await createRazorpayPaymentOrder(plan);
