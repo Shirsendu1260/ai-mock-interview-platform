@@ -8,8 +8,8 @@ import { showErrorToastWithToastId, showLoadingToast, showSuccessToastWithToastI
 import { ApiError } from "../utils/ApiError.js";
 import { LAYOUT } from "../constants/design.js";
 import { openRazorpayCheckout } from "../utils/razorpay.js";
-import { createRazorpayPaymentOrder } from "../api/payment.api.js";
 import { useNavigate } from "react-router-dom";
+import { createRazorpayPaymentOrderHandler } from "../handlers/payment.handler.js";
 
 const PaymentPage = () => {
     const user = useAuthStore((state) => state.user);
@@ -28,14 +28,14 @@ const PaymentPage = () => {
         }
 
         try {
-            const response = await createRazorpayPaymentOrder(plan);
+            const response = await createRazorpayPaymentOrderHandler(plan);
             showSuccessToastWithToastId('Opening Razorpay...', toastId);
 
             // Open Razorpay checkout popup window
             await openRazorpayCheckout({
-                orderId: response.data.data.razorpayOrderId,
-                amount: response.data.data.amount,
-                plan: response.data.data.plan,
+                orderId: response.data.razorpayOrderId,
+                amount: response.data.amount,
+                plan: response.data.plan,
                 fullName: user.fullName,
                 email: user.email,
 

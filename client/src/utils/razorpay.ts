@@ -24,11 +24,12 @@ const loadRazorpay = (): Promise<boolean> => {
         // This opens the payment popup
         script.src = 'https://checkout.razorpay.com/v1/checkout.js';
 
-        // If loaded successfuly
-        script.onload = () => {
-            document.body.appendChild(script); // Add script to HTML body
-            resolve(true);
-        }; // Promise<true>
+        // Add script to HTML body
+        document.body.appendChild(script);
+
+        // After appending in DOM, If the script is loaded successfuly, then fire this
+        // onload can never happen before appending
+        script.onload = () => resolve(true); // Promise<true>
 
         // If error occurred
         script.onerror = () => resolve(false); // Promise<false>
