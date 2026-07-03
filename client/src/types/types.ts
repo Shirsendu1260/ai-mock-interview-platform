@@ -355,7 +355,7 @@ type PlanCardProps = {
     plan: UserPlan;
     currentPlan: UserPlan;
     isAuthenticated: boolean;
-    onSelect: (plan: UserPlan) => void;
+    onClick: (plan: PaidPlan) => void;
 }
 
 interface ICreateRazorpayPaymentOrderResponse {

@@ -4,7 +4,7 @@ import type { PlanCardProps } from "../../types/types.js";
 import Button from "../ui/Button.jsx";
 import Card from "../ui/Card.jsx";
 
-const PlanCard = ({ plan, currentPlan, isAuthenticated, onSelect }: PlanCardProps) => {
+const PlanCard = ({ plan, currentPlan, isAuthenticated, onClick }: PlanCardProps) => {
     const isCurrentPlan = currentPlan === plan && isAuthenticated;
     const isFree = plan === 'free';
     const isPopular = plan === 'pro';
@@ -65,7 +65,10 @@ const PlanCard = ({ plan, currentPlan, isAuthenticated, onSelect }: PlanCardProp
                             <Button
                                 className="mt-8 w-full"
                                 disabled={isCurrentPlan}
-                                onClick={() => onSelect(plan)}
+                                onClick={(event) => {
+                                    event.stopPropagation();
+                                    onClick(plan);
+                                }}
                             >
                                 {
                                     isCurrentPlan ? "Current Plan" : "Purchase"
