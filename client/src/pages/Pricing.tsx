@@ -32,7 +32,7 @@ const PaymentPage = () => {
             showSuccessToastWithToastId('Opening Razorpay...', toastId);
 
             // Open Razorpay checkout popup window
-            openRazorpayCheckout({
+            await openRazorpayCheckout({
                 orderId: response.data.data.razorpayOrderId,
                 amount: response.data.data.amount,
                 plan: response.data.data.plan,
