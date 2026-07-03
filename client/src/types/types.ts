@@ -3,6 +3,7 @@ import type { HTMLMotionProps } from "motion/react";
 import type { IconType } from 'react-icons';
 import type { DIFFICULTIES, NO_OF_QUESTIONS } from "../constants/interview.js";
 import type { PAID_PLANS, USER_PLANS } from "../constants/app.js";
+import type { RazorpayPaymentSuccessResponse } from "./razorpay.js";
 
 type CardProps = PropsWithChildren<{
 	className?: string;
@@ -365,6 +366,16 @@ interface ICreateRazorpayPaymentOrderResponse {
 	currency: string;
 }
 
+interface IOpenCheckoutProps {
+	orderId: string;
+    amount: number;
+    plan: string;
+    fullName: string;
+    email: string;
+    onSuccess: (response: RazorpayPaymentSuccessResponse) => void;
+    onDismiss?: () => void;
+}
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -415,5 +426,6 @@ export type {
 	UserPlan,
 	PlanCardProps,
 	ICreateRazorpayPaymentOrderResponse,
-	PaidPlan
+	PaidPlan,
+	IOpenCheckoutProps
 };
