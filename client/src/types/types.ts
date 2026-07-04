@@ -359,6 +359,7 @@ type PlanCardProps = {
     plan: UserPlan;
     currentPlan: UserPlan;
     isAuthenticated: boolean;
+    isPaymentProcessing: boolean;
     onClick: (plan: PaidPlan) => void;
 }
 

@@ -9,11 +9,15 @@ import { ApiError } from "../utils/ApiError.js";
 import { LAYOUT } from "../constants/design.js";
 import { openRazorpayCheckout } from "../utils/razorpay.js";
 import { useNavigate } from "react-router-dom";
-import { createRazorpayPaymentOrderHandler } from "../handlers/payment.handler.js";
+import { createRazorpayPaymentOrderHandler, verifyRazorpayPaymentHandler } from "../handlers/payment.handler.js";
+import { getAuthUser } from "../api/auth.api.js";
+import { useState } from "react";
 
 const PaymentPage = () => {
     const user = useAuthStore((state) => state.user);
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+    const setUser = useAuthStore((state) => state.setUser);
+    const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
     const navigate = useNavigate();
 
     const handlePurchase = async (plan: PaidPlan) => {
@@ -22,12 +26,18 @@ const PaymentPage = () => {
         const toastId = showLoadingToast(`Initializing payment for ${planStrFormatted} plan...`);
 
         if(!user) {
-            showErrorToastWithToastId('You need to be authenticated to make payment.', toastId);
+            showErrorToastWithToastId('You need to be authenticated to initiate this payment.', toastId);
             navigate('/auth');
             return;
         }
 
+        if(isPaymentProcessing) {
+            showErrorToastWithToastId('Payment is still processing.', toastId);
+            return;
+        }
+
         try {
+            setIsPaymentProcessing(true);
             const response = await createRazorpayPaymentOrderHandler(plan);
             showSuccessToastWithToastId('Opening Razorpay...', toastId);
 
@@ -41,8 +51,19 @@ const PaymentPage = () => {
 
                 // paymentResponse is RazorpayPaymentSuccessResponse which is returned by Razorpay server
                 // contains - razorpay_payment_id, razorpay_order_id, razorpay_signature
-                onSuccess: (paymentResponse) => {
-                    console.log(paymentResponse);
+                onSuccess: async (paymentResponse) => {
+                    // console.log(paymentResponse);
+
+                    // Verify payment signature
+                    await verifyRazorpayPaymentHandler(paymentResponse);
+
+                    // Fetch authenticated user
+                    const authUserResponse = await getAuthUser();
+
+                    // update Zustand store to get latest user state
+                    setUser(authUserResponse.data.data);
+
+                    showSuccessToastWithToastId(`${planStrFormatted} plan purchased successfully.`, toastId);
                 },
 
                 onDismiss: () => {
@@ -59,6 +80,9 @@ const PaymentPage = () => {
                 showErrorToastWithToastId(`Unable to initiate payment for ${planStrFormatted} plan.`, toastId);
                 console.error(error);
             }
+        }
+        finally {
+            setIsPaymentProcessing(false);
         }
     };
 
@@ -78,6 +102,7 @@ const PaymentPage = () => {
                                 key={plan}
                                 plan={plan}
                                 currentPlan={user?.plan ?? 'free'}
+                                isPaymentProcessing={isPaymentProcessing}
                                 isAuthenticated={isAuthenticated}
                                 onClick={handlePurchase} // calls handlePurchase(plan) because of the same memory reference of onClick(plan) prop
                             />
