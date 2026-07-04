@@ -27,52 +27,38 @@ const NavbarLinks = ({ isMobile = false }: NavbarLinksProps) => {
 			</Link>
 
 			{
-				isLoading
-					? <NavbarSkeleton/>
-					: isAuthenticated
-						? (
+				isLoading ? (
+					<NavbarSkeleton isMobile={isMobile} />
+				) : isAuthenticated ? (
+					<>
+						<Link
+							to='/dashboard'
+							className='text-sm font-medium text-muted transition hover:text-accent'
+						>
+							Dashboard
+						</Link>
+
+						{!isMobile && (
 							<>
-								<Link
-									to='/dashboard'
-									className='text-sm font-medium text-muted transition
-									hover:text-accent'
+								<div
+									className='flex items-center gap-1 rounded-xl border border-border
+									bg-surface px-3 py-2 text-sm font-medium'
 								>
-									Dashboard
-								</Link>
-
-								{
-									// For large screens
-									!isMobile && (
-										<>
-											<div
-												className='
-													flex items-center gap-1 rounded-xl
-													border border-border bg-white px-3 py-2
-													text-sm font-medium
-												'
-											>
-												<RiCopperCoinFill
-													size={16}
-													className='text-yellow-400'
-												/>
-												{user?.credit}
-											</div>
-
-											<UserDropdown/>
-										</>
-									)
-								}
+									<RiCopperCoinFill size={16} className='text-yellow-400' />
+									{user?.credit}
+								</div>
+								<UserDropdown />
 							</>
-						)
-						: (
-							<Link
-								to='/auth'
-								className='rounded-xl bg-accent px-4 py-2 text-sm font-medium
-								text-white'
-							>
-								Sign In
-							</Link>
-						)
+						)}
+					</>
+				) : (
+					<Link
+						to='/auth'
+						className='rounded-xl bg-accent px-4 py-2 text-sm font-medium text-white'
+					>
+						Sign In
+					</Link>
+				)
 			}
 		</>
 	);

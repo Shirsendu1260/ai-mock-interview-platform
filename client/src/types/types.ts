@@ -162,6 +162,10 @@ type NavbarLinksProps = {
 	isMobile?: boolean;
 };
 
+type NavbarSkeletonProps = {
+	isMobile?: boolean;
+};
+
 type UserAvatarSizeProps = {
 	size?: number
 }
@@ -427,5 +431,6 @@ export type {
 	PlanCardProps,
 	ICreateRazorpayPaymentOrderResponse,
 	PaidPlan,
-	IOpenCheckoutProps
+	IOpenCheckoutProps,
+	NavbarSkeletonProps
 };
