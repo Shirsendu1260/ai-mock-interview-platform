@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import type { DIFFICULTIES, INTERVIEW_STATUS } from "../constants.js";
+import type { DIFFICULTIES, INTERVIEW_STATUS, PAID_PLANS } from "../constants.js";
 
 interface IErrorMessage {
 	[key: string]: string; // key can be any string // value must be a string
@@ -42,6 +42,8 @@ interface IInterviewEvaluationResult {
     overallScore: number;
 };
 
+type PaidPlan = typeof PAID_PLANS[number];
+
 export type {
 	IErrorMessage,
 	AsyncControllerFunction,
@@ -49,5 +51,6 @@ export type {
 	Difficulty,
 	AnswerDataOfQuestion,
 	AnswerEvaluationOfQuestion,
-	IInterviewEvaluationResult
+	IInterviewEvaluationResult,
+    PaidPlan
 };

@@ -212,10 +212,17 @@ const createInterview = asyncHandler(async (req, res) => {
         await tx.insert(interviewQuestions).values(questionsToInsert);
 
 
-        // Deduct user credits
+        // Deduct user credits from user by fetching him/her first to avoid race condition
+        const [currentUser] = await tx.select({ credit: users.credit })
+                                        .from(users)
+                                        .where(eq(users.id, authUser.id))
+                                        .limit(1);
+        if(!currentUser) {
+            throw new ApiError(404, 'User not found for credit deduction.');
+        }
         const [userCreditsDeducted] = await tx.update(users)
                                                 .set({
-                                                    credit: authUser.credit - creditCost,
+                                                    credit: currentUser.credit - creditCost,
                                                     updatedAt: new Date()
                                                 })
                                                 .where(eq(users.id, authUser.id))

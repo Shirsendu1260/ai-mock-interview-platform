@@ -6,6 +6,11 @@ import { eq } from 'drizzle-orm';
 import { PAID_PLANS, USER_PLANS_CREDITS } from '../constants.js';
 import { razorpay } from '../config/razorpay.config.js';
 import { payments, type NewPayment } from '../db/schema/payments.js';
+import Joi from 'joi';
+import type { IErrorMessage, PaidPlan } from '../types/types.js';
+import crypto from 'crypto';
+import { users } from '../db/schema/users.js';
+import { creditTransactions, type NewCreditTransaction } from '../db/schema/creditTransactions.js';
 
 // - Frontend
 //   POST /payments/create-order
@@ -97,7 +102,7 @@ const createRazorpayOrder = asyncHandler(async (req, res) => {
 // - User clicks Purchase
 // - Frontend -> Backend -> Razorpay Order created -> row added in 'payments' with status='created'
 // - Backend sends order ID to Frontend
-// - Frontend opens Razorpay Checkout popup
+// - Frontend opens Razorpay Checkout popup using that order ID
 // - User pays
 // - Razorpay returns - payment_id, order_id, signature
 // - Frontend sends those to backend
@@ -105,4 +110,160 @@ const createRazorpayOrder = asyncHandler(async (req, res) => {
 // - Backend verifies signature
 //      invalid -> reject
 //      valid -> Updates DB, adds credits, updates plan in 'users'
-export { createRazorpayOrder };
+const verifyRazorpayPayment = asyncHandler(async (req, res) => {
+    // Auth check
+    if(!req.user) {
+        throw new ApiError(401, 'You need to be authenticated to verify this payment.');
+    }
+
+    const authUser = req.user;
+
+
+    // Env variable protection
+    if(!process.env.RAZORPAY_KEY_SECRET) {
+        throw new ApiError(500, 'Razorpay credential is not configured properly.')
+    }
+
+
+    // Collect from request body
+    const {
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature
+    } = req.body;
+
+
+    // Validate incoming data
+    const validatorSchema = Joi.object({
+        razorpay_order_id: Joi.string()
+                                .min(1)
+                                .required()
+                                .messages({
+                                    'string.empty': 'razorpay_order_id is required.',
+                                    'any.required': 'razorpay_order_id is required.',
+                                    'string.min': 'razorpay_order_id must be at least 1 character.'
+                                }),
+        razorpay_payment_id: Joi.string()
+                                .min(1)
+                                .required()
+                                .messages({
+                                    'string.empty': 'razorpay_payment_id is required.',
+                                    'any.required': 'razorpay_payment_id is required.',
+                                    'string.min': 'razorpay_payment_id must be at least 1 character.'
+                                }),
+        razorpay_signature: Joi.string()
+                                .min(1)
+                                .required()
+                                .messages({
+                                    'string.empty': 'razorpay_signature is required.',
+                                    'any.required': 'razorpay_signature is required.',
+                                    'string.min': 'razorpay_signature must be at least 1 character.'
+                                })
+    });
+
+    const { error } = validatorSchema.validate(
+        { razorpay_order_id, razorpay_payment_id, razorpay_signature },
+        { abortEarly: false }
+    );
+
+    let errorsObj: IErrorMessage = {};
+    if(error) {
+        error.details.forEach(detail => {
+            errorsObj[detail.path[0] as string] = detail.message;
+        });
+
+        throw new ApiError(
+            400,
+            'Invalid or missing Razorpay payment data: razorpay_order_id, razorpay_payment_id, razorpay_signature.',
+            errorsObj
+        );
+    }
+
+
+    // Find the existing payment data (created during razorpay create order phase)
+    const [payment] = await db.select()
+                                .from(payments)
+                                .where(eq(
+                                    payments.razorpayOrderId, razorpay_order_id
+                                ))
+                                .limit(1);
+
+    if(!payment) {
+        throw new ApiError(404, 'Payment data not found.');
+    }
+
+
+    // Prevent duplicate verification
+    // Without this, credits could be added twice
+    if(payment.status === 'paid') {
+        throw new ApiError(409, 'Payment already verified.');
+    }
+
+
+    // Generate the expected signature that Razorpay created internally using HMAC SHA256
+    const expectedSignature = crypto.createHmac(
+                                        'sha256', // hashing algorithm
+                                        process.env.RAZORPAY_KEY_SECRET
+                                    )
+                                    .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+                                    .digest('hex');
+
+
+    // Compare Razorpay given signature with our created one to verify
+    if(!crypto.timingSafeEqual(Buffer.from(expectedSignature), Buffer.from(razorpay_signature))) {
+        throw new ApiError(400, 'Payment signature verification failed.');
+    }
+    // Buffer.from(...) converts both signatures into Buffer objects
+    // as crypto.timingSafeEqual() only works with Buffers
+    // crypto.timingSafeEqual(a, b) compares every single character, even if first one is wrong
+    // It always takes the exact same amount of time whether it's 100% wrong or 99% correct
+    // So attackers can't learn anything from how fast/slow it responds
+
+
+    // Store using transaction
+    const purchasedCredits = USER_PLANS_CREDITS[payment.plan as PaidPlan].credits;
+
+    await db.transaction(async (tx) => {
+        // Update payment row
+        await tx.update(payments)
+                .set({
+                    status: 'paid',
+                    razorpayPaymentId: razorpay_payment_id,
+                    razorpaySignature: razorpay_signature,
+                    updatedAt: new Date()
+                })
+                .where(eq(payments.id, payment.id));
+
+        // Add credits to user by fetching user first to avoid race condition
+        const [currentUser] = await tx.select({ credit: users.credit })
+                                        .from(users)
+                                        .where(eq(users.id, authUser.id))
+                                        .limit(1);
+        if(!currentUser) {
+            throw new ApiError(404, 'User not found for credit addition.');
+        }
+        await tx.update(users)
+                .set({
+                    credit: currentUser.credit + purchasedCredits,
+                    plan: payment.plan,
+                    updatedAt: new Date()
+                })
+                .where(eq(users.id, authUser.id));
+
+        // Insert credit transaction
+        const newCreditTransaction: NewCreditTransaction = {
+            userId: authUser.id,
+            credits: purchasedCredits,
+            type: 'purchase'
+        };
+        await tx.insert(creditTransactions).values(newCreditTransaction);
+    });
+
+
+    // Return success plan
+    return res.status(200).json(
+        new ApiResponse(200, {}, 'Payment verified successfully.')
+    );
+});
+
+export { createRazorpayOrder, verifyRazorpayPayment };
