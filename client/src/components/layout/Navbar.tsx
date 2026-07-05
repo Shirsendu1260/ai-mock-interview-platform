@@ -33,7 +33,7 @@ const Navbar = () => {
 					</nav>
 
 					{/* Mobile screens, flex initially, else hidden for large screens */}
-					<div className='flex items-center gap-3 md:hidden'>
+					<div className='flex items-center gap-5 md:hidden'>
 						{
 							isAuthenticated && (<UserDropdown/>)
 						}
@@ -65,7 +65,7 @@ const Navbar = () => {
 								transition={{ duration: 0.25 }}
 								className='overflow-hidden md:hidden'
 							>
-								<div className='flex flex-col gap-4 border-t border-border py-5 text-right'>
+								<div className='flex flex-col gap-5 border-t border-border py-5 text-right'>
 									<NavbarLinks isMobile={true} />
 								</div>
 							</motion.div>
