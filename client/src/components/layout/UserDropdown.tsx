@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../stores/auth.store.js';
 import { IoLogOut } from "react-icons/io5";
-import { FaUser } from 'react-icons/fa';
+import { FaUser, FaRupeeSign } from 'react-icons/fa';
+import { RiCopperCoinFill } from "react-icons/ri";
 import { signOutHandler } from '../../handlers/auth.handler.js';
 import { ApiError } from '../../utils/ApiError.js';
 import { formatDate } from '../../utils/helpers.js';
@@ -111,6 +112,26 @@ const UserDropdown = () => {
                                 >
                                     <FaUser size={17}/>
                                     Profile
+                                </Link>
+
+                                <Link
+                                    to='/dashboard/payments/history'
+                                    onClick={() => setIsDropdownOpen(false)}
+                                    className='flex items-center gap-2 rounded-2xl px-3 py-2 text-sm
+                                    font-medium transition hover:bg-background hover:cursor-pointer'
+                                >
+                                    <FaRupeeSign size={17}/>
+                                    Payments History
+                                </Link>
+
+                                <Link
+                                    to='/dashboard/payments/credit-history'
+                                    onClick={() => setIsDropdownOpen(false)}
+                                    className='flex items-center gap-2 rounded-2xl px-3 py-2 text-sm
+                                    font-medium transition hover:bg-background hover:cursor-pointer'
+                                >
+                                    <RiCopperCoinFill size={17} className='text-yellow-400' />
+                                    Credits History
                                 </Link>
 
                                 <button

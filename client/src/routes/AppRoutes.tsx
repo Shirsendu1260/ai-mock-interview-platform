@@ -13,6 +13,8 @@ import DashboardLayout from '../layouts/DashboardLayout.jsx';
 import InterviewSession from '../pages/InterviewSession.jsx';
 import InterviewResult from '../pages/InterviewResult.jsx';
 import NotFound from '../pages/NotFound.jsx';
+import PaymentHistory from '../pages/PaymentHistory.js';
+import CreditHistory from '../pages/CreditHistory.js';
 
 // PublicRoute: Prevents authenticated users from visiting login pages
 // ProtectedRoute: Prevents unauthenticated users from accessing private pages
@@ -46,6 +48,12 @@ const AppRoutes = () => {
 				        {/*Profile*/}
 				        <Route path='user'>
 				        	<Route path='profile' element={<Profile/>} />
+				        </Route>
+
+				        {/*Payments*/}
+				        <Route path='payments'>
+				        	<Route path='history' element={<PaymentHistory/>} />
+				        	<Route path='credit-history' element={<CreditHistory/>} />
 				        </Route>
 				    </Route>
 		      	</Route>
