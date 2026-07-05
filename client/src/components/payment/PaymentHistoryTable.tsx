@@ -4,7 +4,7 @@ import Card from "../ui/Card";
 
 const PaymentHistoryTable = ({ items, page }: PaymentHistoryTableProps) => {
     return (
-        <Card>
+        <Card className="mt-6">
             <div className="overflow-x-auto rounded-xl border border-slate-200">
                 <table className="w-full min-w-[700px] border-collapse">
                     <thead>

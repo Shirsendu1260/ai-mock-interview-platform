@@ -1,3 +1,4 @@
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi2";
 import type { PaginationProps } from "../../types/types.js";
 import Button from "../ui/Button";
 
@@ -10,12 +11,13 @@ const Pagination = ({
     onNext
 }: PaginationProps) => {
     return (
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-5">
+        <div className="mt-8 flex items-center justify-center gap-4">
             <Button
                 disabled={!hasPreviousPage}
                 onClick={onPrevious}
-                className="disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-inherit"
+                className="flex items-center gap-1.5 px-4 py-2 disabled:cursor-not-allowed disabled:opacity-40"
             >
+                <HiChevronLeft className="h-4 w-4" />
                 Previous
             </Button>
             <span className="min-w-[3.5rem] text-center text-sm font-medium text-slate-600">
@@ -24,9 +26,10 @@ const Pagination = ({
             <Button
                 disabled={!hasNextPage}
                 onClick={onNext}
-                className="disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-inherit"
+                className="flex items-center gap-1.5 px-4 py-2 disabled:cursor-not-allowed disabled:opacity-40"
             >
                 Next
+                <HiChevronRight className="h-4 w-4" />
             </Button>
         </div>
     );

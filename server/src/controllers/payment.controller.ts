@@ -2,7 +2,7 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { db } from '../config/db.js';
-import { eq, desc, count } from 'drizzle-orm';
+import { eq, desc, count, ne, and } from 'drizzle-orm';
 import { PAID_PLANS, USER_PLANS_CREDITS } from '../constants.js';
 import { razorpay } from '../config/razorpay.config.js';
 import { payments, type NewPayment } from '../db/schema/payments.js';
@@ -462,7 +462,10 @@ const getPaymentHistory = asyncHandler(async (req, res) => {
                                 createdAt: payments.createdAt
                             })
                             .from(payments)
-                            .where(eq(payments.userId, authUser.id))
+                            .where(and(
+                                eq(payments.userId, authUser.id),
+                                ne(payments.status, 'created')
+                            ))
                             .orderBy(desc(payments.createdAt))
                             .limit(limit)
                             .offset(offset);
