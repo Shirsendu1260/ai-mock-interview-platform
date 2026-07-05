@@ -11,7 +11,7 @@ const router = Router();
 
 router.route('/create-order').post(verifyJWT, createRazorpayOrder);
 router.route('/verify').post(verifyJWT, verifyRazorpayPayment);
-router.route('/webhook').post(express.raw({ type: 'application/json' }), razorpayWebhook);
+router.route('/webhook').post(razorpayWebhook);
 
 
 export default router;

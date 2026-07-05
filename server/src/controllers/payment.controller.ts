@@ -275,6 +275,8 @@ const verifyRazorpayPayment = asyncHandler(async (req, res) => {
 // i.e. POST /payments/verify. Our backend should be able to handle both. This is called
 // Idempotency.
 const razorpayWebhook = asyncHandler(async (req, res) => {
+    console.log('Razorpay webhook endpoint hit...');
+
     // Razorpay automatically sends a signature inside this header
     // This is generated using: Raw request body + our webhook secret
     // We will generate the same signature and compare them

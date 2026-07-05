@@ -42,25 +42,31 @@ app.use(cors({
 	// Allows browsers to send cookies, authorization headers
 }));
 
-// 2. Parse incoming JSON request bodies (without this req.body would be undefined)
+// 2. Webhook must come before express.json() as it is extracting raw Buffer data
+app.use(
+    '/api/v1/payments/webhook',
+    express.raw({ type: 'application/json' })
+);
+
+// 3. Parse incoming JSON request bodies (without this req.body would be undefined)
 app.use(express.json({
 	limit: DATA_LIMIT // Prevent very large payloads
 }));
 
-// 3. Parse URL-encoded request bodies
+// 4. Parse URL-encoded request bodies
 app.use(express.urlencoded({
 	extended: true,  // Allow nested objects (without this "user[name]=Shiv" would not parse correctly)
 	limit: DATA_LIMIT
 }));
 
-// // 4. Serve static files directly from "public" folder
+// 5. Serve static files directly from "public" folder
 app.use(express.static('public'));
 
-// 5. Middleware that can access cookies from user's browser and set cookies in it
+// 6. Middleware that can access cookies from user's browser and set cookies in it
 //    Reads cookies from incoming HTTP requests (without this "req.cookies" would be undefined)
 app.use(cookieParser());
 
-// 6. With rate limiter middleware, restricting client how many max. requests he/she can make to 
+// 7. With rate limiter middleware, restricting client how many max. requests he/she can make to
 //    our APIs within a time window
 app.use('/api/v1', generalLimiter);
 
