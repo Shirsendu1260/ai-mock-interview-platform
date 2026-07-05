@@ -12,7 +12,7 @@ const Card = ({
 			viewport={{ once: true }}
 			transition={{ duration: 0.4 }}
 			className={`
-				w-full rounded-3xl border border-border bg-white p-8
+				rounded-3xl border border-border bg-white p-8
 				shadow-sm transition-all duration-300 hover:-translate-y-1
 				hover:shadow-lg
 				${className}
