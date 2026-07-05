@@ -2,7 +2,7 @@ import { asyncHandler } from '../utils/asyncHandler.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { db } from '../config/db.js';
-import { eq } from 'drizzle-orm';
+import { eq, desc, count } from 'drizzle-orm';
 import { PAID_PLANS, USER_PLANS_CREDITS } from '../constants.js';
 import { razorpay } from '../config/razorpay.config.js';
 import { payments, type NewPayment } from '../db/schema/payments.js';
@@ -12,6 +12,8 @@ import crypto from 'crypto';
 import { users } from '../db/schema/users.js';
 import { creditTransactions, type NewCreditTransaction } from '../db/schema/creditTransactions.js';
 import { cleanupExpiredCreatedPayments } from '../utils/paymentCleanup.js';
+import { PAYMENTS_CREDITS_PAGE_LIMIT } from '../constants.js';
+import { calculatePagination } from '../utils/pagination.js';
 
 // - Frontend
 //   POST /payments/create-order
@@ -433,4 +435,107 @@ const razorpayWebhook = asyncHandler(async (req, res) => {
     );
 });
 
-export { createRazorpayOrder, verifyRazorpayPayment, razorpayWebhook };
+const getPaymentHistory = asyncHandler(async (req, res) => {
+    // Auth check
+    if(!req.user) {
+        throw new ApiError(401, 'You need to be authenticated to see payment history.');
+    }
+
+    const authUser = req.user;
+
+
+    // Calculate page and skip offset for pagination
+    const limit = PAYMENTS_CREDITS_PAGE_LIMIT;
+    const page = Number(req.query.page) || 1;
+    const offset = (page - 1) * limit;
+
+
+    const [total] = await db.select({ count: count(payments.id) })
+                            .from(payments)
+                            .where(eq(payments.userId, authUser.id));
+
+    const items = await db.select({
+                                id: payments.id,
+                                plan: payments.plan,
+                                amount: payments.amount,
+                                status: payments.status,
+                                createdAt: payments.createdAt
+                            })
+                            .from(payments)
+                            .where(eq(payments.userId, authUser.id))
+                            .orderBy(desc(payments.createdAt))
+                            .limit(limit)
+                            .offset(offset);
+
+    if(!total) {
+        throw new ApiError(500, 'Unable to calculate total count.');
+    }
+
+    const paginationDetails = calculatePagination(page, total.count);
+
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            { items, ...paginationDetails },
+            'Payment history fetched successfully.'
+        )
+    );
+});
+
+const getCreditTransactionHistory = asyncHandler(async (req, res) => {
+    // Auth check
+    if(!req.user) {
+        throw new ApiError(401, 'You need to be authenticated to see credit history.');
+    }
+
+    const authUser = req.user;
+
+
+    // Calculate page and skip offset for pagination
+    const limit = PAYMENTS_CREDITS_PAGE_LIMIT;
+    const page = Number(req.query.page) || 1;
+    const offset = (page - 1) * limit;
+
+
+    const [total] = await db.select({
+                                count: count(creditTransactions.id)
+                            })
+                            .from(creditTransactions)
+                            .where(eq(creditTransactions.userId, authUser.id));
+
+    const items = await db.select({
+                                id: creditTransactions.id,
+                                credits: creditTransactions.credits,
+                                type: creditTransactions.type,
+                                createdAt: creditTransactions.createdAt
+                            })
+                            .from(creditTransactions)
+                            .where(eq(creditTransactions.userId, authUser.id))
+                            .orderBy(desc(creditTransactions.createdAt))
+                            .limit(limit)
+                            .offset(offset);
+
+    if(!total) {
+        throw new ApiError(500, 'Unable to calculate total count.');
+    }
+
+    const paginationDetails = calculatePagination(page, total.count);
+
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            { items, ...paginationDetails },
+            'Credit history fetched successfully.'
+        )
+    );
+});
+
+export {
+    createRazorpayOrder,
+    verifyRazorpayPayment,
+    razorpayWebhook,
+    getPaymentHistory,
+    getCreditTransactionHistory
+};
