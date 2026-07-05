@@ -15,9 +15,9 @@ const Pagination = ({
             <Button
                 disabled={!hasPreviousPage}
                 onClick={onPrevious}
-                className="px-4 py-2 disabled:cursor-not-allowed disabled:opacity-40"
+                className="px-3.5 py-1.5 disabled:cursor-not-allowed disabled:opacity-40"
             >
-                <FaChevronLeft className="h-4 w-4" />
+                <FaChevronLeft size={15} />
             </Button>
             <span className="min-w-[3.5rem] text-center text-sm font-medium text-slate-600">
                 {page} <span className="text-slate-400">/</span> {totalPages || 1}
@@ -25,9 +25,9 @@ const Pagination = ({
             <Button
                 disabled={!hasNextPage}
                 onClick={onNext}
-                className="px-4 py-2 disabled:cursor-not-allowed disabled:opacity-40"
+                className="px-3.5 py-1.5 disabled:cursor-not-allowed disabled:opacity-40"
             >
-                <FaChevronRight className="h-4 w-4" />
+                <FaChevronRight size={15} />
             </Button>
         </div>
     );

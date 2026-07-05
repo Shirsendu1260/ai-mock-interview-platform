@@ -4,7 +4,7 @@ import SectionHeading from "../components/ui/SectionHeading";
 import Spinner from "../components/ui/Spinner";
 import EmptyState from "../components/ui/EmptyState";
 import PaymentHistoryTable from "../components/payment/PaymentHistoryTable";
-import Pagination from "../components/payment/Pagination";
+import Pagination from "../components/ui/Pagination";
 import { getPaymentHistoryHandler } from "../handlers/payment.handler";
 import type { IPaymentHistoryResponse } from "../types/types";
 import { ApiError } from "../utils/ApiError";

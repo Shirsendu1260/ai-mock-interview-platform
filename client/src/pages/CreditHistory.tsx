@@ -4,7 +4,7 @@ import SectionHeading from "../components/ui/SectionHeading";
 import Spinner from "../components/ui/Spinner";
 import EmptyState from "../components/ui/EmptyState";
 import CreditHistoryTable from "../components/payment/CreditHistoryTable";
-import Pagination from "../components/payment/Pagination";
+import Pagination from "../components/ui/Pagination";
 import { getCreditHistoryHandler } from "../handlers/payment.handler";
 import type { ICreditHistoryResponse } from "../types/types";
 import { ApiError } from "../utils/ApiError";
