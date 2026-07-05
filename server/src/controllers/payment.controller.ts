@@ -456,6 +456,7 @@ const getPaymentHistory = asyncHandler(async (req, res) => {
 
     const items = await db.select({
                                 id: payments.id,
+                                receipt: payments.receipt,
                                 plan: payments.plan,
                                 amount: payments.amount,
                                 status: payments.status,

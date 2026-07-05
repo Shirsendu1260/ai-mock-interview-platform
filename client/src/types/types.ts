@@ -386,6 +386,7 @@ type CreditTransactionType = typeof CREDIT_TRANSACTION_TYPE[number];
 
 interface IPaymentHistory {
     id: string;
+    receipt: string;
     plan: UserPlan;
     amount: number;
     status: PaymentStatus;

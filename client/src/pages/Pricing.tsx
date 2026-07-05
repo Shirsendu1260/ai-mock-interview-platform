@@ -64,6 +64,7 @@ const PaymentPage = () => {
                     setUser(authUserResponse.data.data);
 
                     showSuccessToastWithToastId(`${planStrFormatted} plan purchased successfully.`, toastId);
+                    navigate('/dashboard/interviews/create');
                 },
 
                 onDismiss: () => {
