@@ -44,6 +44,18 @@ interface IInterviewEvaluationResult {
 
 type PaidPlan = typeof PAID_PLANS[number];
 
+interface IRazorpayPaymentCapturedWebhook {
+    event: string;
+    payload: {
+        payment: {
+            entity: {
+                id: string;
+                order_id: string;
+            };
+        };
+    };
+}
+
 export type {
 	IErrorMessage,
 	AsyncControllerFunction,
@@ -52,5 +64,6 @@ export type {
 	AnswerDataOfQuestion,
 	AnswerEvaluationOfQuestion,
 	IInterviewEvaluationResult,
-    PaidPlan
+    PaidPlan,
+    IRazorpayPaymentCapturedWebhook
 };

@@ -7,7 +7,7 @@ import { PAID_PLANS, USER_PLANS_CREDITS } from '../constants.js';
 import { razorpay } from '../config/razorpay.config.js';
 import { payments, type NewPayment } from '../db/schema/payments.js';
 import Joi from 'joi';
-import type { IErrorMessage, PaidPlan } from '../types/types.js';
+import type { IErrorMessage, IRazorpayPaymentCapturedWebhook, PaidPlan } from '../types/types.js';
 import crypto from 'crypto';
 import { users } from '../db/schema/users.js';
 import { creditTransactions, type NewCreditTransaction } from '../db/schema/creditTransactions.js';
@@ -234,7 +234,8 @@ const verifyRazorpayPayment = asyncHandler(async (req, res) => {
                 })
                 .where(eq(payments.id, payment.id));
 
-        // Add credits to user by fetching user first to avoid race condition
+        // Get the latest credit balance
+        // This allows us to increment from the current value rather than overwrite it
         const [currentUser] = await tx.select({ credit: users.credit })
                                         .from(users)
                                         .where(eq(users.id, authUser.id))
@@ -254,7 +255,8 @@ const verifyRazorpayPayment = asyncHandler(async (req, res) => {
         const newCreditTransaction: NewCreditTransaction = {
             userId: authUser.id,
             credits: purchasedCredits,
-            type: 'purchase'
+            type: 'purchase',
+            paymentId: payment.id,
         };
         await tx.insert(creditTransactions).values(newCreditTransaction);
     });
@@ -266,4 +268,163 @@ const verifyRazorpayPayment = asyncHandler(async (req, res) => {
     );
 });
 
-export { createRazorpayOrder, verifyRazorpayPayment };
+// Frontend callbacks are unreliable. Browsers can close, lose internet, or users can tamper with
+// requests. Webhooks are sent directly from Razorpay servers to our backend, making payment
+// confirmation reliable.
+// Webhook verification (POST /payments/webhook) can arrive before and after frontend verfication
+// i.e. POST /payments/verify. Our backend should be able to handle both. This is called
+// Idempotency.
+const razorpayWebhook = asyncHandler(async (req, res) => {
+    // Razorpay automatically sends a signature inside this header
+    // This is generated using: Raw request body + our webhook secret
+    // We will generate the same signature and compare them
+    // If both signatures match, we know - it really came from Razorpay
+    const razorpaySignature = req.headers['x-razorpay-signature'];
+
+    if(!razorpaySignature || typeof razorpaySignature !== 'string') {
+        throw new ApiError(400, 'Razorpay signature is missing.');
+    }
+
+
+    // req.body here is not a JS object. It is a Buffer (raw data) because this route will use:
+    // express.raw({ type: 'application/json' })
+    // We intentionally receive the original raw bytes.
+    // Example:
+    // Raw json data: {"event":"payment.captured"}
+    // Now express.json() would convert it into
+    // {
+    //   event: "payment.captured"
+    // }
+    // Although both contain the same data, their raw bytes are different.
+    // Here the representation got changed, this conversion changes the original bytes.
+    // Razorpay generates the webhook signature using the original bytes. Thus signature could differ.
+    // Therefore we must verify the signature before parsing JSON using raw data.
+    const rawBody = req.body as Buffer;
+
+
+    // Generate our signature
+    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
+
+    if(!webhookSecret) {
+        throw new ApiError(500, 'RAZORPAY_WEBHOOK_SECRET is missing.');
+    }
+
+    const generatedSignature = crypto.createHmac('sha256', webhookSecret)
+                                        .update(rawBody)
+                                        .digest('hex');
+
+
+    // Compare
+    if(!crypto.timingSafeEqual(Buffer.from(generatedSignature), Buffer.from(razorpaySignature))) {
+        throw new ApiError(400, 'Webhook signature verification failed.');
+    }
+
+
+    // Verified now, now parse JSON
+    const webhookPayload: IRazorpayPaymentCapturedWebhook = JSON.parse(rawBody.toString('utf8'));
+
+
+    // To only process payment captured (payment success) event,
+    // ignore all others
+    if(webhookPayload.event !== 'payment.captured') {
+        return res.status(200).json(
+            new ApiResponse(200, {}, 'Event ignored.')
+        );
+    }
+
+
+    // Collect payment information
+    const razorpayOrderId = webhookPayload.payload.payment.entity.order_id;
+    const razorpayPaymentId = webhookPayload.payload.payment.entity.id;
+
+
+    // Find our payment row
+    const [payment] = await db.select()
+                               .from(payments)
+                               .where(eq(payments.razorpayOrderId, razorpayOrderId))
+                               .limit(1);
+
+    // Because Razorpay will retry every non-2xx response
+    // If the order genuinely doesn't exist, we will receive retries for hours
+    // So intentionally ignoring it, no retries
+    if(!payment) {
+        console.warn(`Webhook received for unknown order ${razorpayOrderId}`);
+        return res.status(200).json(
+            new ApiResponse(200, {}, 'Unknown payment ignored.')
+        );
+    }
+
+
+    // Idempotency
+    // Webhooks are not guaranteed to arrive only once.
+    // Razorpay may retry the same webhook multiple times.
+    // Therefore this endpoint must be idempotent.
+    // If already the payment is processed, simply return success. Never give credits twice.
+    // This way we can achieve Idempotency.
+    if(payment.status === 'paid') {
+        return res.status(200).json(
+            new ApiResponse(200, {}, 'Payment already processed.')
+        );
+    }
+
+
+    // Store using transaction
+    const purchasedCredits = USER_PLANS_CREDITS[payment.plan as PaidPlan].credits;
+
+    await db.transaction(async (tx) => {
+        // Update payment row
+        const [updatedPayment] = await tx.update(payments)
+                                            .set({
+                                                status: 'paid',
+                                                razorpayPaymentId,
+                                                razorpaySignature,
+                                                updatedAt: new Date()
+                                            })
+                                            .where(eq(payments.id, payment.id))
+                                            .returning({
+                                                id: payments.id,
+                                                userId: payments.userId
+                                            });
+
+        if(!updatedPayment) {
+            throw new ApiError(500, 'Unable to update payment data.')
+        }
+
+        // Get the latest credit balance inside the transaction
+        // This allows us to increment from the current value rather than overwrite it
+        const [currentUser] = await tx.select({ credit: users.credit })
+                                        .from(users)
+                                        .where(eq(users.id, updatedPayment.userId))
+                                        .limit(1);
+        if(!currentUser) {
+            throw new ApiError(404, 'User not found for credit addition.');
+        }
+        await tx.update(users)
+                .set({
+                    credit: currentUser.credit + purchasedCredits,
+                    plan: payment.plan,
+                    updatedAt: new Date()
+                })
+                .where(eq(users.id, updatedPayment.userId));
+        // We intentionally read the latest credit inside the same transaction.
+        // This prevents overwriting credits if another transaction updated the user
+        // before this one committed.
+
+        // Insert credit transaction
+        const newCreditTransaction: NewCreditTransaction = {
+            userId: updatedPayment.userId,
+            credits: purchasedCredits,
+            type: 'purchase',
+            paymentId: payment.id
+        };
+        await tx.insert(creditTransactions).values(newCreditTransaction);
+    });
+
+
+    // Return success plan
+    return res.status(200).json(
+        new ApiResponse(200, {}, 'Payment verified successfully.')
+    );
+});
+
+export { createRazorpayOrder, verifyRazorpayPayment, razorpayWebhook };
