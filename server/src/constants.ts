@@ -24,7 +24,7 @@ export const TIME_PER_QUESTION = {
 } as const;
 
 export const PAGINATION_LIMIT = 4;
-export const PAYMENTS_CREDITS_PAGE_LIMIT = 10;
+export const PAYMENTS_CREDITS_PAGE_LIMIT = 6;
 
 export const USER_PLANS = ['free', 'starter', 'pro', 'ultimate'] as const;
 
