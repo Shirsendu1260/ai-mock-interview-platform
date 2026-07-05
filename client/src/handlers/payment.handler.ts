@@ -1,4 +1,4 @@
-import { createRazorpayPaymentOrder, verifyRazorpayPayment } from "../api/payment.api.js";
+import { createRazorpayPaymentOrder, getCreditHistory, getPaymentHistory, verifyRazorpayPayment } from "../api/payment.api.js";
 import type { RazorpayPaymentSuccessResponse } from "../types/razorpay.js";
 import type { ICreateRazorpayPaymentOrderResponse, PaidPlan } from "../types/types.js";
 import type { ApiResponse } from "../utils/ApiResponse.js";
@@ -28,4 +28,29 @@ const verifyRazorpayPaymentHandler = async (
     }
 };
 
-export { createRazorpayPaymentOrderHandler, verifyRazorpayPaymentHandler };
+const getPaymentHistoryHandler = async (page: number) => {
+    try {
+        const response = await getPaymentHistory(page); // response is a AxiosResponse
+        return response.data; // ApiResponse
+    }
+    catch(error) {
+        throw handleAxiosError(error);
+    }
+};
+
+const getCreditHistoryHandler = async (page: number) => {
+    try {
+        const response = await getCreditHistory(page); // response is a AxiosResponse
+        return response.data; // ApiResponse
+    }
+    catch(error) {
+        throw handleAxiosError(error);
+    }
+};
+
+export {
+    createRazorpayPaymentOrderHandler,
+    verifyRazorpayPaymentHandler,
+    getPaymentHistoryHandler,
+    getCreditHistoryHandler
+};
