@@ -11,6 +11,7 @@ import type { IErrorMessage, IRazorpayPaymentCapturedWebhook, PaidPlan } from '.
 import crypto from 'crypto';
 import { users } from '../db/schema/users.js';
 import { creditTransactions, type NewCreditTransaction } from '../db/schema/creditTransactions.js';
+import { cleanupExpiredCreatedPayments } from '../utils/paymentCleanup.js';
 
 // - Frontend
 //   POST /payments/create-order
@@ -26,6 +27,9 @@ const createRazorpayOrder = asyncHandler(async (req, res) => {
     }
 
     const authUser = req.user;
+
+    // Delete expired created payment orders from DB
+    await cleanupExpiredCreatedPayments();
 
     // Collect plan info from request body
     const { plan } = req.body as { plan: typeof PAID_PLANS[number] };
