@@ -419,6 +419,25 @@ interface ICreditHistoryResponse {
     hasNextPage: boolean;
 }
 
+interface PaginationProps {
+    page: number;
+    totalPages: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+    onPrevious(): void;
+    onNext(): void;
+}
+
+type PaymentHistoryTableProps = {
+	page: number,
+	items: IPaymentHistory[]
+}
+
+type CreditHistoryTableProps = {
+	page: number,
+	items: ICreditHistory[]
+}
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -477,5 +496,8 @@ export type {
 	IPaymentHistory,
 	ICreditHistory,
 	IPaymentHistoryResponse,
-	ICreditHistoryResponse
+	ICreditHistoryResponse,
+	PaginationProps,
+	PaymentHistoryTableProps,
+	CreditHistoryTableProps
 };
