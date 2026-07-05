@@ -22,3 +22,5 @@ export const USER_PLANS_CREDITS = {
 };
 
 export const PAID_PLANS = USER_PLANS.filter((plan) => plan !== 'free'); // Exclude 'free'
+export const PAYMENT_STATUS = ['created', 'paid', 'failed'] as const;
+export const CREDIT_TRANSACTION_TYPE = ['interview', 'purchase', 'job_search'] as const;

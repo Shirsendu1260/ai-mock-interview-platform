@@ -2,7 +2,7 @@ import type { PropsWithChildren, InputHTMLAttributes, ReactNode } from "react";
 import type { HTMLMotionProps } from "motion/react";
 import type { IconType } from 'react-icons';
 import type { DIFFICULTIES, NO_OF_QUESTIONS } from "../constants/interview.js";
-import type { PAID_PLANS, USER_PLANS } from "../constants/app.js";
+import type { CREDIT_TRANSACTION_TYPE, PAID_PLANS, PAYMENT_STATUS, USER_PLANS } from "../constants/app.js";
 import type { RazorpayPaymentSuccessResponse } from "./razorpay.js";
 
 type CardProps = PropsWithChildren<{
@@ -381,6 +381,44 @@ interface IOpenCheckoutProps {
     onDismiss?: () => void;
 }
 
+type PaymentStatus = typeof PAYMENT_STATUS[number];
+type CreditTransactionType = typeof CREDIT_TRANSACTION_TYPE[number];
+
+interface IPaymentHistory {
+    id: string;
+    plan: UserPlan;
+    amount: number;
+    status: PaymentStatus;
+    createdAt: string;
+}
+
+interface ICreditHistory {
+    id: string;
+    credits: number;
+    type: CreditTransactionType;
+    createdAt: string;
+}
+
+interface IPaymentHistoryResponse {
+    items: IPaymentHistory[];
+    page: number;
+    limit: number;
+    totalItems: number;
+    totalPages: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+}
+
+interface ICreditHistoryResponse {
+    items: ICreditHistory[];
+    page: number;
+    limit: number;
+    totalItems: number;
+    totalPages: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+}
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -433,5 +471,11 @@ export type {
 	ICreateRazorpayPaymentOrderResponse,
 	PaidPlan,
 	IOpenCheckoutProps,
-	NavbarSkeletonProps
+	NavbarSkeletonProps,
+	PaymentStatus,
+	CreditTransactionType,
+	IPaymentHistory,
+	ICreditHistory,
+	IPaymentHistoryResponse,
+	ICreditHistoryResponse
 };
