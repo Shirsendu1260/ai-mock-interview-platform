@@ -62,7 +62,7 @@ const generateQuestions = async (
     try {
         parsedResponse = JSON.parse(text);
     }
-    catch(error) {
+    catch {
         throw new ApiError(500, 'AI returned invalid JSON.');
     }
 
