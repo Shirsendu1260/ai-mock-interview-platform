@@ -23,6 +23,11 @@ type AsyncControllerFunction = (
 type InterviewStatus = typeof INTERVIEW_STATUS[number];
 type Difficulty = typeof DIFFICULTIES[number];
 
+// AI will return generated questions in JSON in exactly this shape
+interface IGenerateAIQuestionResponse {
+    questions: string[];
+}
+
 type AnswerDataOfQuestion = {
     question: string;
     answer: string | null;
@@ -65,5 +70,6 @@ export type {
 	AnswerEvaluationOfQuestion,
 	IInterviewEvaluationResult,
     PaidPlan,
-    IRazorpayPaymentCapturedWebhook
+    IRazorpayPaymentCapturedWebhook,
+    IGenerateAIQuestionResponse
 };
