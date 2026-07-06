@@ -72,8 +72,8 @@ const generateQuestions = async (
                         .items(
                             Joi.string()
                                 .trim()
-                                .min(10)
-                                .max(5000)
+                                .min(5)
+                                .max(1000)
                                 .required()
                         )
                         .length(qtnsCount)

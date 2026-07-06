@@ -1,6 +1,6 @@
 import type { AnswerDataOfQuestion } from "../../../types/types.js";
 
-const buildInterviewEvaluationPrompt = (answers: AnswerDataOfQuestion[]): string => {
+export const buildInterviewEvaluationPrompt = (answers: AnswerDataOfQuestion[]): string => {
     const formattedQuestions = answers.map((item, index) => {
                                             return `
                                                 Question ${index + 1}
@@ -71,5 +71,3 @@ const buildInterviewEvaluationPrompt = (answers: AnswerDataOfQuestion[]): string
 
     return prompt;
 };
-
-export { buildInterviewEvaluationPrompt };
