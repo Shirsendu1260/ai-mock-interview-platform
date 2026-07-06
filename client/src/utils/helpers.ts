@@ -40,10 +40,19 @@ export const speakQuestion = (text: string) => {
         const voices = window.speechSynthesis.getVoices();
         if(voices.length === 0) return;
 
-        // Prefer Indian english voice
-        let voice = voices.find((v) => (v.lang === 'en-IN'));
+        // Try to find a female English voice (common names across OS/Browsers)
+        const femaleNames = ['google us english', 'zira', 'samantha', 'moira', 'hazel', 'susan', 'female'];
+        let voice = voices.find((v) =>
+            v.lang.startsWith('en') &&
+            femaleNames.some(name => v.name.toLowerCase().includes(name))
+        );
 
-        // If Indian english voice is not found, fall back to any English voice
+        // Prefer US english voice (If previous female voice wasn't found)
+        if(!voice) {
+            voice = voices.find((v) => (v.lang === 'en-US'));
+        }
+
+        // If that english voice is not found, fall back to any English voice
         if(!voice) {
             voice = voices.find((v) => (v.lang.startsWith('en')));
         }
@@ -54,15 +63,18 @@ export const speakQuestion = (text: string) => {
         // Initialize text-to-speech APi
         const utterance = new SpeechSynthesisUtterance(text);
 
-        utterance.lang = 'en-IN'; // Indian english
+        // Assign preferred voice and match its specific language code dynamically
+        if(voice) {
+            utterance.voice = voice;
+            utterance.lang = voice.lang;
+        }
+        else {
+            utterance.lang = 'en-US';
+        }
+
         utterance.rate = 1; // Normal speed
         utterance.pitch = 1.1;
         utterance.volume = 1; // 100% volume
-
-        // Assign preferred voice
-        if(voice) {
-            utterance.voice = voice;
-        }
 
         // Speak out loud
         window.speechSynthesis.speak(utterance);
