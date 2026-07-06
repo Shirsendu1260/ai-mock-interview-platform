@@ -100,6 +100,12 @@ const ResumeUploader = ({ resumePdfFile, setResumePdfFile, error, setErrors }: R
                             <div>
                                 <p className='font-medium text-dark'>Upload your resume</p>
                                 <p className='mt-1 text-sm text-muted'>PDF only</p>
+                                <p className='mt-1 text-sm text-muted'>
+                                    Upload a text-based PDF only (image/scanned PDFs are not supported).
+                                </p>
+                                <p className='mt-1 text-sm text-muted'>
+                                    Your resume is never stored. It is processed temporarily for analysis and deleted immediately afterward.
+                                </p>
                                 <p className='mt-1 text-sm text-muted'>Max size 6 MB</p>
                             </div>
                         </div>

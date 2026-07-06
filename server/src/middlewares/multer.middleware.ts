@@ -4,6 +4,7 @@ import { UPLOAD_DIR } from '../constants.js';
 import type { Request } from 'express';
 import type { FileFilterCallback } from 'multer';
 import { ApiError } from '../utils/ApiError.js';
+import path from 'path';
 
 // Check if the directory exists or not at startup
 if(!fs.existsSync(UPLOAD_DIR)) {
@@ -31,7 +32,8 @@ const storage = multer.diskStorage({
 		cb: (error: Error | null, filename: string) => void
 	) {
 		const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9); // This creates an unique number
-		cb(null, file.fieldname + '-' + uniqueSuffix);
+		const extension = path.extname(file.originalname);
+		cb(null, file.fieldname + '-' + uniqueSuffix + extension);
 	}
 });
 

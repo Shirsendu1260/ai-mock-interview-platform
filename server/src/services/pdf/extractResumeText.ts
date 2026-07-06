@@ -5,14 +5,21 @@ import { ApiError } from '../../utils/ApiError.js';
 // Reads a PDF resume from server storage and extracts its text
 export const extractResumeText = async (resumePdfPath: string): Promise<string> => {
     // Read the PDF into memory as a Buffer
+    console.log('Resume path: ', resumePdfPath);
     const pdfBuffer = await fs.readFile(resumePdfPath);
+    console.log('Buffer size: ', pdfBuffer.length);
+
+    // unpdf expects Uint8Array instead of Node.js Buffer
+    const pdfData = new Uint8Array(pdfBuffer);
 
     let extractedText: string;
     try {
         // Parse the buffer and collect the resume text
-        const parsedPdf = await getDocumentProxy(pdfBuffer);
+        const parsedPdf = await getDocumentProxy(pdfData);
+        console.log('PDF parsed.');
         const { text } = await extractText(parsedPdf, { mergePages: true });
         extractedText = text;
+        console.log('Text extracted: ', extractedText.length);
     }
     catch(error) {
         console.error('Resume text extraction failed:', error);
