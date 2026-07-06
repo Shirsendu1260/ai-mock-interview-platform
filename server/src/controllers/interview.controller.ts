@@ -9,11 +9,11 @@ import { interviewFeedbacks, type NewInterviewFeedback } from '../db/schema/inte
 import { eq, and, asc, desc, count } from 'drizzle-orm';
 import type { AnswerDataOfQuestion, Difficulty, IErrorMessage } from '../types/types.js';
 import Joi from 'joi';
-import { cloudinaryDeleter, cloudinaryUploader } from '../utils/cloudinary.js';
 import { CREDIT_COST, PAGINATION_LIMIT, TIME_PER_QUESTION } from '../constants.js';
 import { generateQuestions } from '../services/ai/generateQuestions.js';
 import { users } from '../db/schema/users.js';
 import { evaluateInterview } from '../services/ai/evaluateInterview.js';
+import { extractResumeText } from '../services/pdf/extractResumeText.js';
 
 const createInterview = asyncHandler(async (req, res) => {
     const { role, yoe, difficulty, qtnsCount } = req.body as {
@@ -115,12 +115,9 @@ const createInterview = asyncHandler(async (req, res) => {
         throw new ApiError(400, 'Resume PDF file is required.');
     }
 
-    const resumePdfOnCloudinary = await cloudinaryUploader(resumePdfOnLocalPath);
 
-    if(!resumePdfOnCloudinary) {
-        errorsObj['resume'] = 'Unable to upload the Resume PDF, please try again.'
-        throw new ApiError(400, 'Unable to upload the Resume PDF, please try again.');
-    }
+    // Extract resume text
+    const resumeText = await extractResumeText(resumePdfOnLocalPath);
 
 
     // Calculate interview cost
@@ -144,21 +141,8 @@ const createInterview = asyncHandler(async (req, res) => {
 
 
     // Generate questions
-    // Here we will extract text from the uploaded pdf, send it to AI, call it, and generate questions
-    const questions = await generateQuestions(role, Number(yoe), difficulty, Number(qtnsCount));
-
-    if(questions.length === 0) {
-        throw new ApiError(500, 'Unable to generate questions, please try again.');
-    }
-
-    if(questions.length !== Number(qtnsCount)) {
-        throw new ApiError(500, 'Unable to generate the required number of questions.');
-    }
-
-
-    // After successful questions generation, delete the file from Cloudinary
-    // Cloudinary deletion should never block interview creation, that's why just catching error if happens
-    await cloudinaryDeleter(resumePdfOnCloudinary.secure_url).catch(console.error);
+    // Here we will send extracted text from the uploaded pdf to AI, and generate questions
+    const questions = await generateQuestions(role, Number(yoe), difficulty, Number(qtnsCount), resumeText);
 
 
     // A transaction groups multiple database operations into a single atomic unit.

@@ -20,8 +20,8 @@ export const extractResumeText = async (resumePdfPath: string): Promise<string> 
     }
     finally {
         // Delete the file anyway
-        await fs.unlink(resumePdfPath).catch(() => {
-            console.error('Unable to delete the uploaded resume.');
+        await fs.unlink(resumePdfPath).catch((error) => {
+            console.error('Unable to delete uploaded resume:', error);
         });
     }
 
