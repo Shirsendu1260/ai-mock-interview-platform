@@ -39,3 +39,16 @@ export const refreshLimiter = rateLimit({
 		message: 'Too many refresh token requests, please try again after 15 minutes.'
 	}
 });
+
+// For job search route
+export const jobSearchLimiter = rateLimit({
+	windowMs: 60 * 60 * 1000,
+	limit: 15,
+	standardHeaders: 'draft-8',
+	legacyHeaders: false,
+	message: {
+		statusCode: 429,
+		success: false,
+		message: 'Too many job search requests, please try again after 1 hour.'
+	}
+});

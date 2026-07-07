@@ -11,7 +11,7 @@ const buildJobKeywordPrompt = (resumeText: string): string => {
         - If the resume shows mixed or ambiguous focus (e.g. both frontend and backend work with no clear lean), pick the role with stronger/more recent evidence rather than defaulting to "Full Stack."
 
         Skills extraction rules:
-        - Return at most 16 technical skills, ordered from most important/most demonstrated to least — the order matters, put the strongest signals first.
+        - Return at most 10 technical skills, ordered from most important/most demonstrated to least — the order matters, put the strongest signals first.
         - Pull skills from BOTH the skills section AND the project descriptions. Skills demonstrated in actual project work should be weighted as more reliable than skills only listed in a standalone skills list with no supporting evidence elsewhere in the resume.
         - Normalize skill names to their commonly-searched form (e.g. "ReactJS" / "React.js" → "React", "NodeJS" → "Node.js", "JS" → "JavaScript"). Use the most standard, job-listing-friendly spelling.
         - Do not include duplicate or near-duplicate skills (e.g. do not list both "Node" and "Node.js" — pick one normalized form).
