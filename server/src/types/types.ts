@@ -61,6 +61,20 @@ interface IRazorpayPaymentCapturedWebhook {
     };
 }
 
+interface IJobKeywordExtractionResponse {
+    role: string;
+    skills: string[];
+}
+
+interface IJobSearchResult {
+    title: string;
+    company: string;
+    location: string;
+    salary: string | null;
+    description: string;
+    redirectUrl: string;
+}
+
 export type {
 	IErrorMessage,
 	AsyncControllerFunction,
@@ -71,5 +85,7 @@ export type {
 	IInterviewEvaluationResult,
     PaidPlan,
     IRazorpayPaymentCapturedWebhook,
-    IGenerateAIQuestionResponse
+    IGenerateAIQuestionResponse,
+    IJobKeywordExtractionResponse,
+    IJobSearchResult
 };
