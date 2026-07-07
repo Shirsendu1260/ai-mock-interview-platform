@@ -1,4 +1,4 @@
-import type { IJobSearchResult } from '../../types/types.js';
+import type { AdzunaJob, IJobSearchResult } from '../../types/types.js';
 import { ApiError } from '../../utils/ApiError.js';
 import { JOBS_PER_PAGE } from '../../constants.js';
 
@@ -39,7 +39,7 @@ const searchJobs = async (
 
     const data = await response.json();
 
-    const jobs: IJobSearchResult[] = data.results.map((job) => ({
+    const jobs: IJobSearchResult[] = data.results.map((job: AdzunaJob) => ({
         title: job.title,
         company: job.company?.display_name ?? 'Unknown',
         location: job.location?.display_name ?? location,

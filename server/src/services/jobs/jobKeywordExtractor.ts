@@ -1,8 +1,8 @@
 import Joi from 'joi';
-import { gemini } from '../aiEngine.js';
 import { ApiError } from '../../utils/ApiError.js';
 import type { IErrorMessage, IJobKeywordExtractionResponse } from '../../types/types.js';
 import { buildJobKeywordPrompt } from './prompts/jobKeyword.prompt.js';
+import { gemini } from '../ai/aiEngine.js';
 
 export const extractJobKeywords = async (resumeText: string): Promise<IJobKeywordExtractionResponse> => {
     const prompt = buildJobKeywordPrompt(resumeText);
@@ -21,9 +21,11 @@ export const extractJobKeywords = async (resumeText: string): Promise<IJobKeywor
                     skills: {
                         type: 'array',
                         items: { type: 'string' }
-                    }
+                    },
+                    state: { type: 'string' },
+                    district: { type: 'string' }
                 },
-                required: ['role', 'skills']
+                required: ['role', 'skills', 'state']
             },
             temperature: 0.2
         }
@@ -57,8 +59,17 @@ export const extractJobKeywords = async (resumeText: string): Promise<IJobKeywor
                             .max(100)
                     )
                     .min(1)
-                    .max(24)
-                    .required()
+                    .max(10)
+                    .required(),
+        state: Joi.string()
+                    .trim()
+                    .min(2)
+                    .max(100)
+                    .required(),
+        district: Joi.string()
+                    .trim()
+                    .min(2)
+                    .max(100)
     });
 
     const { error, value } = validatorSchema.validate(
@@ -69,7 +80,7 @@ export const extractJobKeywords = async (resumeText: string): Promise<IJobKeywor
         }
     );
 
-    if (error) {
+    if(error) {
         const errorsObj: IErrorMessage = {};
 
         error.details.forEach(detail => {
