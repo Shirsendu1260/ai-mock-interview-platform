@@ -4,7 +4,7 @@ import { FaCalendarAlt, FaCheckCircle, FaArrowRight } from 'react-icons/fa';
 import Card from '../ui/Card.jsx';
 import Button from '../ui/Button.jsx';
 import type { InterviewHistoryCardProps } from '../../types/types.js';
-import { formatDate, getScoreColor } from '../../utils/helpers.js';
+import { formatDate, getPerformance } from '../../utils/helpers.js';
 
 const InterviewHistoryCard = ({ interview, index }: InterviewHistoryCardProps) => {
     const navigate = useNavigate();
@@ -29,7 +29,7 @@ const InterviewHistoryCard = ({ interview, index }: InterviewHistoryCardProps) =
                         <div
                             className={`
                                 rounded-2xl px-3 py-1 text-base font-semibold
-                                ${getScoreColor(interview.overallScore ?? 0)}
+                                ${getPerformance(interview.overallScore ?? 0)}
                             `}
                         >
                             {interview.overallScore ?? 0}
