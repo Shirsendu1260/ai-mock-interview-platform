@@ -1,23 +1,28 @@
+import Joi from "joi";
 import { db } from "../config/db.js";
 import { JOB_SEARCH_CREDIT_COST, JOBS_PER_PAGE } from "../constants.js";
 import { users } from "../db/schema/users.js";
-import { searchJobs } from "../services/jobs/adzuna.service.js";
+import { searchJobsFromAdzuna } from "../services/jobs/adzuna.service.js";
 import { extractJobKeywords } from "../services/jobs/jobKeywordExtractor.js";
 import { extractResumeText } from "../services/pdf/extractResumeText.js";
-import type { IJobKeywordExtractionResponse } from "../types/types.js";
+import type { IErrorMessage, IJobSearchData, ILoadMoreJobsRequest } from "../types/types.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { eq } from 'drizzle-orm';
 
-const searchJobsController = asyncHandler(async (req, res) => {
+const searchJobs = asyncHandler(async (req, res) => {
     if(!req.user) {
         throw new ApiError(401, 'You need to be authenticated to search jobs.');
     }
 
     const authUser = req.user;
 
-    const { state, district, page = 1 } = req.body;
+    const { state, district, page = 1 } = req.body as {
+        state: string,
+        district?: string,
+        page: number
+    };
 
     const resumePath = req.file?.path;
 
@@ -54,7 +59,7 @@ const searchJobsController = asyncHandler(async (req, res) => {
                     })
                     .where(eq(users.id, authUser.id));
 
-        const resultJobs = await searchJobs(
+        const resultJobs = await searchJobsFromAdzuna(
             searchData.role,
             searchData.skills,
             searchData.state,
@@ -71,7 +76,7 @@ const searchJobsController = asyncHandler(async (req, res) => {
             {
                 jobs,
                 page,
-                hasMore,
+                hasMore: jobs.length === JOBS_PER_PAGE,
                 searchData
             },
             'Jobs fetched successfully.'
@@ -79,7 +84,7 @@ const searchJobsController = asyncHandler(async (req, res) => {
     );
 });
 
-const loadMoreJobsController = asyncHandler(async (req, res) => {
+const loadMoreJobs = asyncHandler(async (req, res) => {
     const validatorSchema = Joi.object({
         page: Joi.number().integer().min(2).required(),
         searchData: Joi.object({
@@ -111,7 +116,7 @@ const loadMoreJobsController = asyncHandler(async (req, res) => {
 
     const { searchData, page }: ILoadMoreJobsRequest = value;
 
-    const jobs = await searchJobs(
+    const jobs = await searchJobsFromAdzuna(
                             searchData.role,
                             searchData.skills,
                             searchData.state,

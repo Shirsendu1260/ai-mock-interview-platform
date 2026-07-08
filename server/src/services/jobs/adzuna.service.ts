@@ -6,7 +6,7 @@ if(!process.env.ADZUNA_APP_ID || !process.env.ADZUNA_APP_KEY) {
     throw new Error('Adzuna credentials are missing.');
 }
 
-const searchJobs = async (
+const searchJobsFromAdzuna = async (
     role: string,
     skills: string[],
     state: string,
@@ -53,4 +53,4 @@ const searchJobs = async (
     return jobs;
 };
 
-export { searchJobs };
+export { searchJobsFromAdzuna };
