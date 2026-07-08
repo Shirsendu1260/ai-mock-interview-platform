@@ -99,22 +99,22 @@ export const stopSpeaking = () => {
 
 export const getPerformance = (score: number) => {
     if(score >= 90) {
-        return { title: "Outstanding", color: "#16a34a" };
+        return { title: "Outstanding", color: "#16a34a", class: "bg-green-100 text-green-700" };
     }
 
     if(score >= 75) {
-        return { title: "Excellent", color: "#2563eb" };
+        return { title: "Excellent", color: "#2563eb", class: "bg-blue-100 text-blue-700" };
     }
 
     if(score >= 60) {
-        return { title: "Good", color: "#f59e0b" };
+        return { title: "Good", color: "#f59e0b", class: "bg-yellow-100 text-yellow-700" };
     }
 
     if(score >= 40) {
-        return { title: "Needs Improvement", color: "#ea580c" };
+        return { title: "Needs Improvement", color: "#ea580c", class: "bg-orange-100 text-orange-700" };
     }
 
-    return { title: "Keep Practicing", color: "#dc2626" };
+    return { title: "Keep Practicing", color: "#dc2626", class: "bg-red-100 text-red-700" };
 };
 
 export const getScoreColor = (score: number) => {

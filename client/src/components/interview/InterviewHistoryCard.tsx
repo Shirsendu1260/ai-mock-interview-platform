@@ -29,7 +29,7 @@ const InterviewHistoryCard = ({ interview, index }: InterviewHistoryCardProps) =
                         <div
                             className={`
                                 rounded-2xl px-3 py-1 text-base font-semibold
-                                ${getPerformance(interview.overallScore ?? 0)}
+                                ${getPerformance(interview.overallScore ?? 0).class}
                             `}
                         >
                             {interview.overallScore ?? 0}
