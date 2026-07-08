@@ -1,6 +1,6 @@
 import { FaChevronDown } from "react-icons/fa";
 import { DISTRICTS } from "../../constants/jobSearch.js";
-import { DistrictSelectorProps } from '../../types/types.js';
+import type { DistrictSelectorProps } from '../../types/types.js';
 
 const DistrictSelector = ({
     stateName,

@@ -175,7 +175,7 @@ const JobSearch = () => {
                     )
                 }
             </div>
-        </PageContainer
+        </PageContainer>
     );
 };
 

@@ -1,7 +1,6 @@
 import Card from "../ui/Card.jsx";
-import Button from "../ui/Button.jsx";
 import { FaBuilding, FaLocationDot, FaIndianRupeeSign, FaArrowUpRightFromSquare } from "react-icons/fa6";
-import type { IJobSearchResult, JobCardProps } from "../../types/types.js";
+import type { JobCardProps } from "../../types/types.js";
 
 const JobCard = ({ job }: JobCardProps) => {
     return (
@@ -38,16 +37,17 @@ const JobCard = ({ job }: JobCardProps) => {
             </p>
 
             <div className="mt-auto flex justify-end">
-                <Button
-                    as="a"
+                <a
                     href={job.redirectUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-semibold
+                    text-sm bg-accent text-white hover:scale-[1.02] active:scale-[0.98] transition-transform
+                    duration-200 shadow-sm hover:shadow-md"
                 >
                     Apply
                     <FaArrowUpRightFromSquare size={13} />
-                </Button>
+                </a>
             </div>
         </Card>
     );

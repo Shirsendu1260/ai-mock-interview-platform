@@ -1,6 +1,6 @@
 import { FaChevronDown } from "react-icons/fa";
 import { STATES } from "../../constants/jobSearch.js";
-import { StateSelectorProps } from '../../types/types.js';
+import type { StateSelectorProps } from '../../types/types.js';
 
 const StateSelector = ({
     stateName,

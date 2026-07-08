@@ -1,6 +1,6 @@
 const BookmarkedJobs = () => {
     return (
-        
+        <div></div>
     );
 };
 
