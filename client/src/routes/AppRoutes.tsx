@@ -15,8 +15,8 @@ import InterviewResult from '../pages/InterviewResult.jsx';
 import NotFound from '../pages/NotFound.jsx';
 import PaymentHistory from '../pages/PaymentHistory.js';
 import CreditHistory from '../pages/CreditHistory.js';
-import JobSearch from './pages/JobSearch.jsx';
-import BookmarkedJobs from "./pages/BookmarkedJobs.jsx";
+import JobSearch from '../pages/JobSearch.jsx';
+import BookmarkedJobs from "../pages/BookmarkedJobs.jsx";
 
 // PublicRoute: Prevents authenticated users from visiting login pages
 // ProtectedRoute: Prevents unauthenticated users from accessing private pages
