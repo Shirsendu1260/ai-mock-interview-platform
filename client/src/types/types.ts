@@ -468,6 +468,35 @@ interface ILoadMoreJobsResponse {
     hasMore: boolean;
 }
 
+interface IJobKeywordExtractionResponse {
+    role: string;
+    skills: string[];
+}
+
+interface StateSelectorProps {
+    stateName: string;
+    setStateName: React.Dispatch<React.SetStateAction<string>>;
+    setDistrict: React.Dispatch<React.SetStateAction<string>>;
+    error?: string;
+    setErrors: React.Dispatch<React.SetStateAction<IErrorMessage>>;
+}
+
+interface DistrictSelectorProps{
+    stateName: string;
+    district: string;
+    setDistrict: React.Dispatch<React.SetStateAction<string>>;
+    error?: string;
+    setErrors: React.Dispatch<React.SetStateAction<IErrorMessage>>;
+}
+
+interface JobCardProps {
+    job: IJobSearchResult;
+}
+
+interface SearchSummaryCardProps {
+    searchData: IJobSearchData;
+}
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -533,5 +562,10 @@ export type {
     IJobSearchResult,
     IJobSearchData,
     IJobSearchResponse,
-    ILoadMoreJobsResponse
+    ILoadMoreJobsResponse,
+    IJobKeywordExtractionResponse,
+    StateSelectorProps,
+    DistrictSelectorProps,
+    JobCardProps,
+    SearchSummaryCardProps
 };

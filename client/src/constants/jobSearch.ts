@@ -258,5 +258,5 @@ export const DISTRICTS = {
   ]
 } as const;
 
-export const JOB_SEARCH_CREDIT_COST = 40;
+export const JOB_SEARCH_CREDIT_COST = 90;
 export const JOBS_PER_PAGE = 6;

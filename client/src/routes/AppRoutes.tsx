@@ -15,6 +15,8 @@ import InterviewResult from '../pages/InterviewResult.jsx';
 import NotFound from '../pages/NotFound.jsx';
 import PaymentHistory from '../pages/PaymentHistory.js';
 import CreditHistory from '../pages/CreditHistory.js';
+import JobSearch from './pages/JobSearch.jsx';
+import BookmarkedJobs from "./pages/BookmarkedJobs.jsx";
 
 // PublicRoute: Prevents authenticated users from visiting login pages
 // ProtectedRoute: Prevents unauthenticated users from accessing private pages
@@ -43,6 +45,12 @@ const AppRoutes = () => {
 				        	<Route path='history' element={<InterviewHistory/>} />
 				        	<Route path=':interviewId/session' element={<InterviewSession/>} />
 						    <Route path=':interviewId/result' element={<InterviewResult/>} />
+				        </Route>
+
+                        {/*Jobs*/}
+				        <Route path='jobs'>
+				        	<Route path='search' element={<JobSearch/>} />
+                            <Route path='bookmarks' element={<BookmarkedJobs/>} />
 				        </Route>
 
 				        {/*Profile*/}

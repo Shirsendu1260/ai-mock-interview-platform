@@ -42,5 +42,5 @@ export const PAID_PLANS = USER_PLANS.filter((plan) => plan !== 'free'); // Exclu
 
 export const PAYMENT_STATUS = ["pending", "paid", "failed"] as const;
 export const CREDIT_TRANSACTION_TYPES = ["purchase", "interview", "job_search"] as const;
-export const JOB_SEARCH_CREDIT_COST = 25;
+export const JOB_SEARCH_CREDIT_COST = 90;
 export const JOBS_PER_PAGE = 6;

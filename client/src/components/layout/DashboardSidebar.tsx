@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { FaHistory, FaPlusCircle, FaUser } from 'react-icons/fa';
+import { FaHistory, FaPlusCircle, FaUser, FaBookmark } from 'react-icons/fa';
+import { PiBriefcaseFill } from 'react-icons/pi';
 import { GoHomeFill } from 'react-icons/go';
 import { RiMenuFill } from 'react-icons/ri';
 import { HiX } from 'react-icons/hi';
@@ -18,14 +19,26 @@ const sidebarLinks = [
 		icon: FaPlusCircle,
 		label: 'Create Interview'
 	},
-	{
+    {
 		id: 3,
+		to: '/dashboard/jobs/search',
+		icon: PiBriefcaseFill,
+		label: 'Job Search'
+	},
+    {
+		id: 4,
+		to: '/dashboard/jobs/bookmarks',
+		icon: FaBookmark,
+		label: 'Bookmarked Jobs'
+	},
+	{
+		id: 5,
 		to: '/dashboard/interviews/history',
 		icon: FaHistory,
 		label: 'History'
 	},
 	{
-		id: 4,
+		id: 6,
 		to: '/dashboard/user/profile',
 		icon: FaUser,
 		label: 'Profile'
