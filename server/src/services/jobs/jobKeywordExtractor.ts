@@ -21,11 +21,9 @@ export const extractJobKeywords = async (resumeText: string): Promise<IJobKeywor
                     skills: {
                         type: 'array',
                         items: { type: 'string' }
-                    },
-                    state: { type: 'string' },
-                    district: { type: 'string' }
+                    }
                 },
-                required: ['role', 'skills', 'state']
+                required: ['role', 'skills']
             },
             temperature: 0.2
         }
@@ -60,16 +58,7 @@ export const extractJobKeywords = async (resumeText: string): Promise<IJobKeywor
                     )
                     .min(1)
                     .max(10)
-                    .required(),
-        state: Joi.string()
-                    .trim()
-                    .min(2)
-                    .max(100)
-                    .required(),
-        district: Joi.string()
-                    .trim()
-                    .min(2)
-                    .max(100)
+                    .required()
     });
 
     const { error, value } = validatorSchema.validate(

@@ -6,6 +6,7 @@ import userRouter from './routes/user.routes.js';
 import dashboardRouter from './routes/dashboard.routes.js';
 import interviewRouter from './routes/interview.routes.js';
 import paymentRouter from './routes/payment.routes.js';
+import jobRouter from './routes/job.routes.js';
 import { DATA_LIMIT } from './constants.js';
 import type { Request, Response, NextFunction } from 'express';
 import { ApiError } from './utils/ApiError.js';
@@ -82,6 +83,7 @@ app.use('/api/v1/user', userRouter);
 app.use('/api/v1/dashboard', dashboardRouter);
 app.use('/api/v1/interviews', interviewRouter);
 app.use('/api/v1/payments', paymentRouter);
+app.use('/api/v1/jobs', jobRouter);
 
 
 

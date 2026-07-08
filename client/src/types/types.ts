@@ -439,6 +439,35 @@ type CreditHistoryTableProps = {
 	items: ICreditHistory[]
 }
 
+interface IJobSearchResult {
+    title: string;
+    company: string;
+    location: string;
+    salary: string | null;
+    description: string;
+    redirectUrl: string;
+}
+
+interface IJobSearchData {
+    role: string;
+    skills: string[];
+    state: string;
+    district?: string;
+}
+
+interface IJobSearchResponse {
+    jobs: IJobSearchResult[];
+    page: number;
+    hasMore: boolean;
+    searchData: IJobSearchData;
+}
+
+interface ILoadMoreJobsResponse {
+    jobs: IJobSearchResult[];
+    page: number;
+    hasMore: boolean;
+}
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -500,5 +529,9 @@ export type {
 	ICreditHistoryResponse,
 	PaginationProps,
 	PaymentHistoryTableProps,
-	CreditHistoryTableProps
+	CreditHistoryTableProps,
+    IJobSearchResult,
+    IJobSearchData,
+    IJobSearchResponse,
+    ILoadMoreJobsResponse
 };

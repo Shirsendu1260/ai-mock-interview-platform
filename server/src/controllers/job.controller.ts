@@ -30,7 +30,8 @@ const searchJobsController = asyncHandler(async (req, res) => {
     }
 
     const resumeText = await extractResumeText(resumePath);
-    const { role, skills } = await extractJobKeywords(resumeText);
+    const keywordData = await extractJobKeywords(resumeText);
+    const searchData: IJobSearchData = { ...keywordData, state, district };
 
     const jobs = await db.transaction(async (tx) => {
         const [currentUser] = await tx.select({ credit: users.credit })
@@ -53,7 +54,13 @@ const searchJobsController = asyncHandler(async (req, res) => {
                     })
                     .where(eq(users.id, authUser.id));
 
-        const resultJobs = await searchJobs(role, skills, state, district, page);
+        const resultJobs = await searchJobs(
+            searchData.role,
+            searchData.skills,
+            searchData.state,
+            searchData.district,
+            page
+        );
 
         return resultJobs;
     });
@@ -64,13 +71,8 @@ const searchJobsController = asyncHandler(async (req, res) => {
             {
                 jobs,
                 page,
-                hasMore: jobs.length === JOBS_PER_PAGE,
-                searchData: {
-                    role,
-                    skills,
-                    state,
-                    district
-                }
+                hasMore,
+                searchData
             },
             'Jobs fetched successfully.'
         )
@@ -78,10 +80,36 @@ const searchJobsController = asyncHandler(async (req, res) => {
 });
 
 const loadMoreJobsController = asyncHandler(async (req, res) => {
-    const { searchData, page } = req.body as {
-        searchData: IJobKeywordExtractionResponse,
-        page: number
-    };
+    const validatorSchema = Joi.object({
+        page: Joi.number().integer().min(2).required(),
+        searchData: Joi.object({
+            role: Joi.string().required(),
+            skills: Joi.array()
+                        .items(Joi.string().min(1).max(100).required())
+                        .min(1)
+                        .max(10)
+                        .required(),
+            state: Joi.string().required(),
+            district: Joi.string().allow("")
+        }).required()
+    });
+
+    const { error, value } = validatorSchema.validate(req.body, {
+        abortEarly: false,
+        stripUnknown: true
+    });
+
+    if(error) {
+        const errors: IErrorMessage = {};
+
+        error.details.forEach(detail => {
+            errors[detail.path.join('.')] = detail.message;
+        });
+
+        throw new ApiError(400, "Validation failed for load more jobs request.", errors);
+    }
+
+    const { searchData, page }: ILoadMoreJobsRequest = value;
 
     const jobs = await searchJobs(
                             searchData.role,
@@ -104,4 +132,4 @@ const loadMoreJobsController = asyncHandler(async (req, res) => {
     );
 });
 
-export { searchJobsController, loadMoreJobsController };
+export { searchJobs, loadMoreJobs };

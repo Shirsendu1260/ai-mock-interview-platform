@@ -64,12 +64,17 @@ interface IRazorpayPaymentCapturedWebhook {
 interface IJobKeywordExtractionResponse {
     role: string;
     skills: string[];
+}
+
+interface IJobSearchData {
+    role: string;
+    skills: string[];
     state: string;
     district?: string;
 }
 
 interface ILoadMoreJobsRequest {
-    searchData: IJobKeywordExtractionResponse;
+    searchData: IJobSearchData;
     page: number;
 }
 
@@ -106,5 +111,6 @@ export type {
     IJobKeywordExtractionResponse,
     IJobSearchResult,
     ILoadMoreJobsRequest,
-    AdzunaJob
+    AdzunaJob,
+    IJobSearchData
 };
