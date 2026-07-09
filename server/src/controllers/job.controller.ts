@@ -151,10 +151,8 @@ const loadMoreJobs = asyncHandler(async (req, res) => {
         searchData: Joi.object({
             role: Joi.string().required(),
             skills: Joi.array()
-                        .items(Joi.string().min(1).max(100).required())
-                        .min(1)
-                        .max(10)
-                        .required(),
+                        .items(Joi.string().trim().min(1).max(100))
+                        .default([]),
             state: Joi.string().required(),
             district: Joi.string().allow("")
         }).required()
