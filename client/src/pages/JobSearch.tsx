@@ -9,7 +9,7 @@ import DistrictSelector from "../components/job/DistrictSelector.jsx";
 import SearchSummaryCard from "../components/job/SearchSummaryCard.jsx";
 import JobCard from "../components/job/JobCard.jsx";
 import { searchJobsHandler, loadMoreJobsHandler } from "../handlers/job.handler.js";
-import { showLoadingToast, showSuccessToastWithToastId, showErrorToastWithToastId } from "../utils/toast.js";
+import { showLoadingToast, showErrorToast, showSuccessToastWithToastId, showErrorToastWithToastId } from "../utils/toast.js";
 import { ApiError } from "../utils/ApiError.js";
 import type { IErrorMessage, IJobSearchData, IJobSearchResult } from "../types/types.js";
 import { JOB_SEARCH_CREDIT_COST } from '../constants/jobSearch.js';
@@ -33,17 +33,25 @@ const JobSearch = () => {
     const handleSearchJobs = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        if(!resumePdfFile) return;
+        if(!resumePdfFile) {
+            showErrorToast("Please upload your resume PDF.");
+            return;
+        }
 
-        setErrors({});
-        setJobs([]);
-        setSearchData(null);
+        if(!stateName) {
+            showErrorToast("Please select a state.");
+            return;
+        }
 
         const toastId = showLoadingToast("Searching jobs...");
 
         setIsSearching(true);
 
         try {
+            setErrors({});
+            setJobs([]);
+            setSearchData(null);
+
             const formData = new FormData();
             formData.append("resume", resumePdfFile);
             formData.append("state", stateName);
@@ -81,7 +89,17 @@ const JobSearch = () => {
 
 
     const handleLoadMore = async () => {
-        if (!searchData || !hasMore) return;
+        if(!isLoadingMore) return;
+
+        if(!searchData) {
+            showErrorToast("No search data available. Please upload your resume PDF and fill state & district properly.");
+            return;
+        }
+
+        if(!hasMore) {
+            showErrorToast("You've reached the end of the results.");
+            return;
+        }
 
         setIsLoadingMore(true);
 
@@ -97,7 +115,13 @@ const JobSearch = () => {
             setHasMore(response.data.hasMore);
         }
         catch(error) {
-            console.error(error);
+            if(error instanceof ApiError) {
+                showErrorToast(error.message);
+            }
+            else {
+                showErrorToast("Unable to load more jobs.");
+                console.error(error);
+            }
         }
         finally {
             setIsLoadingMore(false);
@@ -144,7 +168,8 @@ const JobSearch = () => {
                         <Button
                             type="submit"
                             className="w-full"
-                            isLoading={isSearching}
+                            disabled={isLoadingMore || isSearching}
+                            isLoading={isLoadingMore || isSearching}
                         >
                             Search Jobs ({JOB_SEARCH_CREDIT_COST} Credits)
                         </Button>
@@ -156,7 +181,7 @@ const JobSearch = () => {
                         <div className="mt-10 space-y-8">
                             <SearchSummaryCard searchData={searchData} />
 
-                            <div className="grid gap-5">
+                            <div className="grid gap-5 xl:grid-cols-2">
                                 {
                                     jobs.map(job => (
                                         <JobCard key={job.redirectUrl} job={job} />
@@ -165,21 +190,39 @@ const JobSearch = () => {
                             </div>
 
                             {
-                                hasMore
-                                    ? (
-                                        <div className="flex justify-center">
-                                            <Button onClick={handleLoadMore} isLoading={isLoadingMore} >
-                                                Load More
-                                            </Button>
-                                        </div>
-                                    )
-                                    : (
-                                        jobs.length > 0 && (
-                                            <p className="text-center text-muted">
-                                                No more matching jobs found.
-                                            </p>
-                                        )
-                                    )
+                                jobs.length === 0 && (
+                                    <Card className="py-12 text-center">
+                                        <h3 className="text-lg font-semibold text-dark">
+                                            No matching jobs found
+                                        </h3>
+
+                                        <p className="mt-2 text-sm text-muted">
+                                            Try another state or upload a different resume.
+                                        </p>
+                                    </Card>
+                                )
+                            }
+
+                            {
+                                jobs.length > 0 && (
+                                    <div className="mt-8 flex justify-center">
+                                        {
+                                            hasMore ? (
+                                                <Button
+                                                    onClick={handleLoadMore}
+                                                    disabled={isLoadingMore || isSearching}
+                                                    isLoading={isLoadingMore || isSearching}
+                                                >
+                                                    Load More Jobs
+                                                </Button>
+                                            ) : (
+                                                <p className="text-center text-sm text-muted">
+                                                    You've reached the end of the results.
+                                                </p>
+                                            )
+                                        }
+                                    </div>
+                                )
                             }
                         </div>
                     )
