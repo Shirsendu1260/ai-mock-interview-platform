@@ -36,7 +36,18 @@ const searchJobs = asyncHandler(async (req, res) => {
     }
 
     const resumeText = await extractResumeText(resumePath);
-    const keywordData = await extractJobKeywords(resumeText);
+    
+    let keywordData;
+    try {
+        keywordData = await extractJobKeywords(resumeText);
+    }
+    catch {
+        keywordData = {
+            role: 'Software Developer',
+            skills: []
+        };
+    }
+
     const searchData: IJobSearchData = { ...keywordData, state, district };
 
     const jobs = await db.transaction(async (tx) => {

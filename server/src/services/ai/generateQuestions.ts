@@ -1,3 +1,4 @@
+import type { GenerateContentResponse } from "@google/genai";
 import type { IErrorMessage, IGenerateAIQuestionResponse } from "../../types/types.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { gemini } from "./aiEngine.js";
@@ -20,35 +21,55 @@ const generateQuestions = async (
     const prompt = buildQuestionGenerationPrompt(role, yoe, difficulty, qtnsCount, resumeText);
 
     // Ask AI to generate questions
-    const response = await gemini.models.generateContent({
-        // AI model that is used to generate questions
-        model: 'gemini-2.5-flash',
+    let response: GenerateContentResponse;
+    try {
+        response = await gemini.models.generateContent({
+            // AI model that is used to generate questions
+            model: 'gemini-2.5-flash',
 
-        contents: prompt,
+            contents: prompt,
 
-        config: {
-            // We want JSON
-            responseMimeType: 'application/json',
+            config: {
+                // We want JSON
+                responseMimeType: 'application/json',
 
-            // guarantees that the JSON has the exact shape we expect
-            responseSchema: {
-                type: 'object',
-                properties: {
-                    questions: {
-                        type: 'array',
-                        items: {
-                            type: 'string'
+                // guarantees that the JSON has the exact shape we expect
+                responseSchema: {
+                    type: 'object',
+                    properties: {
+                        questions: {
+                            type: 'array',
+                            items: {
+                                type: 'string'
+                            }
                         }
-                    }
+                    },
+                    required: ['questions']
                 },
-                required: ['questions']
-            },
 
-            // This temperature makes response balanced, mostly focused, but with some creativity
-            // and variation
-            temperature: 0.6
+                // This temperature makes response balanced, mostly focused, but with some creativity
+                // and variation
+                temperature: 0.6
+            }
+        });
+    }
+    catch(error) {
+        const message = error instanceof Error ? error.message : 'Unable to generate job keywords.';
+
+        if(message.includes('503') || message.includes('UNAVAILABLE')) {
+            throw new ApiError(503, 'AI service is currently busy. Please try again in a few minutes.');
         }
-    });
+
+        if(message.includes('429')) {
+            throw new ApiError(429, 'AI request limit exceeded. Please try again later.');
+        }
+
+        throw new ApiError(500, 'Failed to generate job keywords.');
+    }
+
+    if(!response) {
+        throw new ApiError(500, 'Unable to generate job keywords.');
+    }
 
     // Raw JSON string for questions in this format - "{"questions":["...","..."]}"
     const text = response.text;
