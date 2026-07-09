@@ -8,7 +8,7 @@ export const extractJobKeywords = async (resumeText: string): Promise<IJobKeywor
     const prompt = buildJobKeywordPrompt(resumeText);
 
     const response = await gemini.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-2.5-flash-lite',
 
         contents: prompt,
 
