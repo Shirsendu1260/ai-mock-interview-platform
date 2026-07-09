@@ -84,7 +84,7 @@ const searchJobs = asyncHandler(async (req, res) => {
     catch {
         keywordData = {
             role: 'Software Developer',
-            skills: []
+            skills: ['Developer']
         };
     }
 
