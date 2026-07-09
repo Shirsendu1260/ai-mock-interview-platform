@@ -16,7 +16,7 @@ const searchJobsFromAdzuna = async (
     // Combined job and skills become search keywords
     // Example: 'Backend Developer Node Express MongoDB SQL'
     const cleanedSkills = skills.map(skill => skill.replace(/\.\s?/g, '')); // Replace '.' from strings
-    const keywordQuery = `${role} ${cleanedSkills.slice(0, 5).join(' ')}`;
+    const keywordQuery = `${role} ${cleanedSkills.slice(0, 7).join(' ')}`;
 
     const location = district
                         ? district
