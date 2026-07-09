@@ -15,7 +15,7 @@ const NotFound = () => {
                     description='The page you are looking for does not exist or may have been removed.'
                     action={
                         <Button
-                            className='max-w-xs'
+                            className='rounded-xl bg-accent px-4 py-2 font-medium text-white'
                             onClick={() => navigate('/')}
                         >
                             Go Home

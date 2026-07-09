@@ -68,7 +68,7 @@ const Dashboard = () => {
 				<StatsCard title='Interviews Created' value={totalInterviews} />
 				<StatsCard title='Completed Interviews' value={completedInterviews} />
 				<StatsCard title='Average Score' value={avgScore} scoreColor={getPerformance(avgScore).color} />
-				<StatsCard title='Best Score' value={bestScore} scoreColor={getPerformance(avgScore).color} />
+				<StatsCard title='Best Score' value={bestScore} scoreColor={getPerformance(bestScore).color} />
 			</div>
 
 			<QuickActions/>
