@@ -1,0 +1,1 @@
+ALTER TABLE "credit_transactions" ALTER COLUMN "payment_id" DROP NOT NULL;

@@ -10,6 +10,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { eq } from 'drizzle-orm';
+import { creditTransactions, type NewCreditTransaction } from "../db/schema/creditTransactions.js";
 
 const searchJobs = asyncHandler(async (req, res) => {
     if(!req.user) {
@@ -58,6 +59,15 @@ const searchJobs = asyncHandler(async (req, res) => {
                         updatedAt: new Date()
                     })
                     .where(eq(users.id, authUser.id));
+
+        // Insert credit transaction
+        const newCreditTransaction: NewCreditTransaction = {
+            userId: authUser.id,
+            credits: JOB_SEARCH_CREDIT_COST,
+            type: 'job_search',
+        };
+
+        await tx.insert(creditTransactions).values(newCreditTransaction);
 
         const resultJobs = await searchJobsFromAdzuna(
             searchData.role,

@@ -13,6 +13,8 @@ import { showLoadingToast, showSuccessToastWithToastId, showErrorToastWithToastI
 import { ApiError } from "../utils/ApiError.js";
 import type { IErrorMessage, IJobSearchData, IJobSearchResult } from "../types/types.js";
 import { JOB_SEARCH_CREDIT_COST } from '../constants/jobSearch.js';
+import { getAuthUser } from "../api/auth.api.js";
+import { useAuthStore } from "../stores/auth.store.js";
 
 const JobSearch = () => {
     const [stateName, setStateName] = useState("");
@@ -25,6 +27,7 @@ const JobSearch = () => {
     const [isSearching, setIsSearching] = useState(false);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const [errors, setErrors] = useState<IErrorMessage>({});
+    const setUser = useAuthStore((state) => state.setUser);
 
 
     const handleSearchJobs = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -52,6 +55,13 @@ const JobSearch = () => {
             setSearchData(response.data.searchData);
             setPage(response.data.page);
             setHasMore(response.data.hasMore);
+
+            // Fetch authenticated user
+            const authUserResponse = await getAuthUser();
+
+            // update Zustand store to get latest user state
+            setUser(authUserResponse.data.data);
+
             showSuccessToastWithToastId("Jobs loaded successfully.", toastId);
         }
         catch(error) {

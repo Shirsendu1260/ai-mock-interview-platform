@@ -13,8 +13,8 @@ const buildJobKeywordPrompt = (resumeText: string): string => {
         Skills extraction rules:
         - Return at most 10 technical skills, ordered from most important/most demonstrated to least — the order matters, put the strongest signals first.
         - Pull skills from BOTH the skills section AND the project descriptions. Skills demonstrated in actual project work should be weighted as more reliable than skills only listed in a standalone skills list with no supporting evidence elsewhere in the resume.
-        - Normalize skill names to their commonly-searched form (e.g. "ReactJS" / "React.js" → "React", "NodeJS" → "Node.js", "JS" → "JavaScript"). Use the most standard, job-listing-friendly spelling.
-        - Do not include duplicate or near-duplicate skills (e.g. do not list both "Node" and "Node.js" — pick one normalized form).
+        - Normalize skill names to their commonly-searched form (e.g. "ReactJS" / "React.js" → "React", "NodeJS" / "Node.js" → "Node", "JS" → "JavaScript"). Use the most standard, job-listing-friendly spelling perfectly suitable for job search with Adzuna API, specifically for the 'what' URL Query Parameter for Adzuna API.
+        - Do not include duplicate or near-duplicate skills (e.g. do not list both "Node" and "Node.js" — pick one normalized form, always prefer without the "." included version such as "Node", "React", "Vue", "Express" etc.).
         - Ignore soft skills (e.g. "communication", "teamwork", "leadership").
         - Ignore certifications.
         - Ignore education/degrees.

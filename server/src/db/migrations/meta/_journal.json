@@ -71,6 +71,13 @@
       "when": 1783225688434,
       "tag": "0009_real_famine",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1783575462103,
+      "tag": "0010_aromatic_captain_universe",
+      "breakpoints": true
     }
   ]
 }

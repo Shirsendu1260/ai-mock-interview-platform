@@ -5,7 +5,7 @@ import { payments } from './payments.js';
 export const creditTransactions = pgTable('credit_transactions', {
     id: uuid('id').defaultRandom().primaryKey(),
     userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-    paymentId: uuid('payment_id').notNull().references(() => payments.id, { onDelete: 'cascade' }),
+    paymentId: uuid('payment_id').references(() => payments.id, { onDelete: 'cascade' }),
     credits: integer('credits').notNull(),
     type: varchar('type', { length: 40 }).notNull(), // interview, purchase etc.
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull()

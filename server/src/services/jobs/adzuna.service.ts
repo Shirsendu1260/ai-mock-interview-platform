@@ -14,13 +14,13 @@ const searchJobsFromAdzuna = async (
     page: number
 ): Promise<IJobSearchResult[]> => {
     // Combined job and skills become search keywords
-    // Example: 'Backend Developer Node.js Express MongoDB SQL'
-    const keywordQuery = [role, ...skills].join(' ');
+    // Example: 'Backend Developer Node Express MongoDB SQL'
+    const keywordQuery = `${role} ${skills.slice(0, 5).join(' ')}`;
 
     const location = district
-                        ? `${district}, ${state}, India`
+                        ? district
                         : state
-                        ? `${state}, India`
+                        ? state
                         : 'India';
 
     const url = `https://api.adzuna.com/v1/api/jobs/in/search/${page}` +
@@ -30,6 +30,8 @@ const searchJobsFromAdzuna = async (
                     `&what=${encodeURIComponent(keywordQuery)}` +
                     `&where=${encodeURIComponent(location)}` +
                     `&content-type=application/json`;
+
+    console.log(url);
 
     const response = await fetch(url);
 
