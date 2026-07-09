@@ -54,6 +54,7 @@ const JobSearch = () => {
             setSearchData(response.data.searchData);
             setPage(response.data.page);
             setHasMore(response.data.hasMore);
+            setIsLoadingMore(response.data.hasMore);
 
             // Fetch authenticated user
             const authUserResponse = await getAuthUser();
