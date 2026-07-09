@@ -11,16 +11,20 @@ const buildJobKeywordPrompt = (resumeText: string): string => {
         - If the resume shows mixed or ambiguous focus (e.g. both frontend and backend work with no clear lean), pick the role with stronger/more recent evidence rather than defaulting to "Full Stack."
 
         Skills extraction rules:
-        - Return at most 10 technical skills, ordered from most important/most demonstrated to least — the order matters, put the strongest signals first.
-        - Pull skills from BOTH the skills section AND the project descriptions. Skills demonstrated in actual project work should be weighted as more reliable than skills only listed in a standalone skills list with no supporting evidence elsewhere in the resume.
-        - Normalize skill names to their commonly-searched form (e.g. "ReactJS" / "React.js" → "React", "NodeJS" / "Node.js" → "Node", "JS" → "JavaScript"). Use the most standard, job-listing-friendly spelling perfectly suitable for job search with Adzuna API, specifically for the 'what' URL Query Parameter for Adzuna API.
-        - Do not include duplicate or near-duplicate skills (e.g. do not list both "Node" and "Node.js" — pick one normalized form, always prefer without the "." included version such as "Node", "React", "Vue", "Express" etc.).
-        - Ignore soft skills (e.g. "communication", "teamwork", "leadership").
-        - Ignore certifications.
-        - Ignore education/degrees.
-        - Only include technical skills: languages, frameworks, libraries, databases, tools, and platforms.
-
-        If the resume text is sparse, unclear, or low-quality, extract the best possible answer from whatever signal is available rather than returning empty values.
+        - Return EXACTLY 3 technical skills.
+        - These must be the 3 strongest technologies that best define the candidate's primary role and are most useful for searching job listings on Adzuna.
+        - Prioritize technologies that commonly appear in job titles and job descriptions.
+        - Prefer core languages, frameworks and databases.
+        - Do NOT include supporting tools such as Git, GitHub, VS Code, Postman, Swagger, Linux, Jira, Figma, npm, yarn or similar unless they are absolutely central to the role.
+        - Pull skills from both the Skills section and Project descriptions. Technologies demonstrated in projects should have higher priority.
+        - Normalize names to common search terms in lowercase:
+            - Node.js → node
+            - React.js → react
+            - Express.js → express
+            - MongoDB → mongodb
+            - TypeScript → typescript
+        - Remove duplicates.
+        - Ignore certifications, education and soft skills.
 
         Resume:
         ${resumeText}
