@@ -8,6 +8,7 @@ import { getDashboardStats } from '../api/dashboard.api.js';
 import { ApiError } from '../utils/ApiError.js';
 import { showErrorToast } from '../utils/toast.js';
 import Spinner from '../components/ui/Spinner.js';
+import { getPerformance } from '../utils/helpers.js';
 
 const Dashboard = () => {
 	const user = useAuthStore(state => state.user);
@@ -66,8 +67,8 @@ const Dashboard = () => {
 				<StatsCard title='Credits' value={user?.credit ?? 0} />
 				<StatsCard title='Interviews Created' value={totalInterviews} />
 				<StatsCard title='Completed Interviews' value={completedInterviews} />
-				<StatsCard title='Average Score' value={avgScore} />
-				<StatsCard title='Best Score' value={bestScore} />
+				<StatsCard title='Average Score' value={avgScore} scoreColor={getPerformance(avgScore).color} />
+				<StatsCard title='Best Score' value={bestScore} scoreColor={getPerformance(avgScore).color} />
 			</div>
 
 			<QuickActions/>

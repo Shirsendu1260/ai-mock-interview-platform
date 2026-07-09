@@ -156,6 +156,7 @@ type SidebarLinkProps = {
 type StatsCardProps = {
 	title: string;
 	value: string | number;
+    scoreColor?: string
 };
 
 type NavbarLinksProps = {

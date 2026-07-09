@@ -15,6 +15,9 @@ import type { IErrorMessage, IJobSearchData, IJobSearchResult } from "../types/t
 import { JOB_SEARCH_CREDIT_COST } from '../constants/jobSearch.js';
 import { getAuthUser } from "../api/auth.api.js";
 import { useAuthStore } from "../stores/auth.store.js";
+import Spinner from "../components/ui/Spinner.js";
+import EmptyState from "../components/ui/EmptyState.js";
+import { PiBriefcaseFill } from 'react-icons/pi';
 
 const JobSearch = () => {
     const [stateName, setStateName] = useState("");
@@ -32,20 +35,8 @@ const JobSearch = () => {
 
     const handleSearchJobs = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-
-        if(!resumePdfFile) {
-            showErrorToast("Please upload your resume PDF.");
-            return;
-        }
-
-        if(!stateName) {
-            showErrorToast("Please select a state.");
-            return;
-        }
-
-        const toastId = showLoadingToast("Searching jobs...");
-
         setIsSearching(true);
+        const toastId = showLoadingToast("Searching jobs...");
 
         try {
             setErrors({});
@@ -53,7 +44,7 @@ const JobSearch = () => {
             setSearchData(null);
 
             const formData = new FormData();
-            formData.append("resume", resumePdfFile);
+            if(resumePdfFile) formData.append("resume", resumePdfFile);
             formData.append("state", stateName);
             if(district) formData.append("district", district);
 
@@ -167,10 +158,13 @@ const JobSearch = () => {
 
                         <Button
                             type="submit"
-                            className="w-full"
+                            className="w-full flex items-center justify-center gap-3"
                             disabled={isLoadingMore || isSearching}
                             isLoading={isLoadingMore || isSearching}
                         >
+                            {
+                                isSearching && (<Spinner size="sm" />)
+                            }
                             Search Jobs ({JOB_SEARCH_CREDIT_COST} Credits)
                         </Button>
                     </form>
@@ -191,15 +185,13 @@ const JobSearch = () => {
 
                             {
                                 jobs.length === 0 && (
-                                    <Card className="py-12 text-center">
-                                        <h3 className="text-lg font-semibold text-dark">
-                                            No matching jobs found
-                                        </h3>
-
-                                        <p className="mt-2 text-sm text-muted">
-                                            Try another state or upload a different resume.
-                                        </p>
-                                    </Card>
+                                    <div className="py-12 text-center">
+                                        <EmptyState
+                                            title="No matching jobs found"
+                                            description="Try another state or upload a different resume."
+                                            icon={<PiBriefcaseFill size={36}/>}
+                                        />
+                                    </div>
                                 )
                             }
 
@@ -212,7 +204,11 @@ const JobSearch = () => {
                                                     onClick={handleLoadMore}
                                                     disabled={isLoadingMore || isSearching}
                                                     isLoading={isLoadingMore || isSearching}
+                                                    className="flex items-center justify-center gap-3"
                                                 >
+                                                    {
+                                                        isLoadingMore && (<Spinner size="sm" />)
+                                                    }
                                                     Load More Jobs
                                                 </Button>
                                             ) : (

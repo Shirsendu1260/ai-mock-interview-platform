@@ -25,6 +25,46 @@ const searchJobs = asyncHandler(async (req, res) => {
         page: number
     };
 
+    const validatorSchema = Joi.object({
+        state: Joi.string()
+                    .required()
+                    .messages({
+                        'string.base': 'State must be a string.',
+                        'string.empty': 'State cannot be empty.',
+                        'any.required': 'State is required.'
+                    }),
+        district: Joi.string()
+                        .allow('')
+                        .messages({
+                            'string.base': 'District must be a string.'
+                        }),
+        page: Joi.number()
+                    .integer()
+                    .valid(1)
+                    .required()
+                    .messages({
+                        'number.base': 'Page must be a number.',
+                        'number.integer': 'Page must be an integer.',
+                        'any.only': 'Page must be exactly 1.',
+                        'any.required': 'Page is required.'
+                    })
+    });
+
+    const { error, value } = validatorSchema.validate({ state, district, page }, {
+        abortEarly: false,
+        stripUnknown: true
+    });
+
+    if(error) {
+        const errors: IErrorMessage = {};
+
+        error.details.forEach(detail => {
+            errors[detail.path[0] as string] = detail.message;
+        });
+
+        throw new ApiError(400, "Validation failed for load more jobs request.", errors);
+    }
+
     const resumePath = req.file?.path;
 
     if(!resumePath) {
