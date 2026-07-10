@@ -78,7 +78,7 @@ export const extractJobKeywords = async (resumeText: string): Promise<IJobKeywor
                             .max(100)
                     )
                     .min(1)
-                    .max(10)
+                    .max(3)
                     .required()
     });
 
