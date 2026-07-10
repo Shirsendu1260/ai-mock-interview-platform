@@ -43,7 +43,7 @@ const searchJobsFromAdzuna = async (
     const data = await response.json();
 
     const jobs: IJobSearchResult[] = data.results.map((job: AdzunaJob) => ({
-        id: String(job.id),
+        jobId: String(job.id),
         title: job.title,
         company: job.company?.display_name ?? 'Unknown',
         location: job.location?.display_name ?? location,

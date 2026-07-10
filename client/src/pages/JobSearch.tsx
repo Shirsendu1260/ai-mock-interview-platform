@@ -273,7 +273,7 @@ const JobSearch = () => {
                                 {
                                     jobs.map(job => (
                                         <JobCard
-                                            key={job.id}
+                                            key={job.jobId}
                                             job={job}
                                             isBookmarked={bookmarkedJobIds.has(job.jobId)}
                                             isBookmarkLoading={bookmarkLoadingJobId === job.jobId}
