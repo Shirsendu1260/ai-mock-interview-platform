@@ -1,5 +1,5 @@
 import { searchJobs, loadMoreJobs, bookmarkJob, getBookmarkedJobIds, getBookmarkedJobs, removeBookmark } from "../api/job.api.js";
-import type { IBookmarkedJobResponse, IBookmarkJob, IJobSearchData, IJobSearchResponse, ILoadMoreJobsResponse } from "../types/types.js";
+import type { IBookmarkedJobResponse, IJob, IJobSearchData, IJobSearchResponse, ILoadMoreJobsResponse } from "../types/types.js";
 import type { ApiResponse } from "../utils/ApiResponse.js";
 import { handleAxiosError } from "../utils/helpers.js";
 
@@ -26,7 +26,7 @@ const loadMoreJobsHandler = async (
     }
 };
 
-const bookmarkJobHandler = async (job: IBookmarkJob): Promise<ApiResponse<null>> => {
+const bookmarkJobHandler = async (job: IJob): Promise<ApiResponse<null>> => {
     try {
         const response = await bookmarkJob(job); // response is a AxiosResponse
         return response.data; // ApiResponse

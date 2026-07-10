@@ -1,6 +1,6 @@
 import type { AxiosResponse } from "axios";
 import type { ApiResponse } from "../utils/ApiResponse.js";
-import type { IBookmarkedJobResponse, IBookmarkJob, IJobSearchData, IJobSearchResponse, ILoadMoreJobsResponse } from "../types/types.js";
+import type { IBookmarkedJobResponse, IJob, IJobSearchData, IJobSearchResponse, ILoadMoreJobsResponse } from "../types/types.js";
 import { api } from "./axios";
 
 const searchJobs = (formData: FormData): Promise<AxiosResponse<ApiResponse<IJobSearchResponse>>> => {
@@ -16,7 +16,7 @@ const loadMoreJobs = (
     return api.post('/jobs/load-more', { searchData, page });
 };
 
-const bookmarkJob = (job: IBookmarkJob): Promise<AxiosResponse<ApiResponse<null>>> => {
+const bookmarkJob = (job: IJob): Promise<AxiosResponse<ApiResponse<null>>> => {
     return api.post('/jobs/bookmark', job);
 };
 
