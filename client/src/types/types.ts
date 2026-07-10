@@ -440,7 +440,9 @@ type CreditHistoryTableProps = {
 	items: ICreditHistory[]
 }
 
-interface IJobSearchResult {
+interface IJob {
+    id?: string;
+    jobId: string;
     title: string;
     company: string;
     location: string;
@@ -457,14 +459,14 @@ interface IJobSearchData {
 }
 
 interface IJobSearchResponse {
-    jobs: IJobSearchResult[];
+    jobs: IJob[];
     page: number;
     hasMore: boolean;
     searchData: IJobSearchData;
 }
 
 interface ILoadMoreJobsResponse {
-    jobs: IJobSearchResult[];
+    jobs: IJob[];
     page: number;
     hasMore: boolean;
 }
@@ -491,11 +493,20 @@ interface DistrictSelectorProps{
 }
 
 interface JobCardProps {
-    job: IJobSearchResult;
+    job: IJob;
+    isBookmarked?: boolean;
+    isBookmarkLoading?: boolean;
+    onBookmarkToggle?: (job: IJob) => void;
 }
 
 interface SearchSummaryCardProps {
     searchData: IJobSearchData;
+}
+
+interface IBookmarkedJobResponse {
+    jobs: IJob[];
+    page: number;
+    hasMore: boolean;
 }
 
 export type {
@@ -560,7 +571,7 @@ export type {
 	PaginationProps,
 	PaymentHistoryTableProps,
 	CreditHistoryTableProps,
-    IJobSearchResult,
+    IJob,
     IJobSearchData,
     IJobSearchResponse,
     ILoadMoreJobsResponse,
@@ -568,5 +579,6 @@ export type {
     StateSelectorProps,
     DistrictSelectorProps,
     JobCardProps,
-    SearchSummaryCardProps
+    SearchSummaryCardProps,
+    IBookmarkedJobResponse
 };

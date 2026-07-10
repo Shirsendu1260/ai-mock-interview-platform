@@ -5,12 +5,13 @@ import { users } from "../db/schema/users.js";
 import { searchJobsFromAdzuna } from "../services/jobs/adzuna.service.js";
 import { extractJobKeywords } from "../services/jobs/jobKeywordExtractor.js";
 import { extractResumeText } from "../services/pdf/extractResumeText.js";
-import type { IErrorMessage, IJobSearchData, ILoadMoreJobsRequest } from "../types/types.js";
+import type { IBookmarkJob, IErrorMessage, IJobSearchData, ILoadMoreJobsRequest } from "../types/types.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { eq } from 'drizzle-orm';
+import { eq, and, desc } from 'drizzle-orm';
 import { creditTransactions, type NewCreditTransaction } from "../db/schema/creditTransactions.js";
+import { bookmarkedJobs } from "../db/schema/bookmarkedJobs.js";
 
 const searchJobs = asyncHandler(async (req, res) => {
     if(!req.user) {
@@ -196,4 +197,184 @@ const loadMoreJobs = asyncHandler(async (req, res) => {
     );
 });
 
-export { searchJobs, loadMoreJobs };
+const bookmarkJob = asyncHandler(async (req, res) => {
+    if(!req.user) {
+        throw new ApiError(401, 'You need to be authenticated to bookmark a job.');
+    }
+
+    const authUser = req.user;
+
+    const validatorSchema = Joi.object({
+        jobId: Joi.string().required(),
+        title: Joi.string().required(),
+        company: Joi.string().required(),
+        location: Joi.string().required(),
+        salary: Joi.string().allow(null, ''),
+        description: Joi.string().required(),
+        redirectUrl: Joi.string().uri().required()
+    });
+
+    const { error, value } = validatorSchema.validate(req.body, {
+        abortEarly: false
+    });
+
+    if(error) {
+        const errors: IErrorMessage = {};
+
+        error.details.forEach(detail => {
+            errors[detail.path[0] as string] = detail.message;
+        });
+
+        throw new ApiError(400, 'Validation failed for job bookmark process.', errors);
+    }
+
+    const job = value as IBookmarkJob;
+
+    const [alreadyBookmarked] = await db.select({ id: bookmarkedJobs.id })
+                                        .from(bookmarkedJobs)
+                                        .where(and(
+                                            eq(bookmarkedJobs.userId, authUser.id),
+                                            eq(bookmarkedJobs.jobId, job.jobId)
+                                        ))
+                                        .limit(1);
+
+    if(alreadyBookmarked) {
+        throw new ApiError(409, 'Job already bookmarked.');
+    }
+
+    await db.insert(bookmarkedJobs).values({
+        userId: req.user.id,
+        ...job
+    });
+
+    return res.status(201).json(
+        new ApiResponse(201, null, 'Job bookmarked successfully.')
+    );
+});
+
+const removeBookmark = asyncHandler(async (req, res) => {
+    if(!req.user) {
+        throw new ApiError(401, 'You need to be authenticated to remove a job bookmark.');
+    }
+
+    const authUser = req.user;
+
+    const validatorSchema = Joi.object({
+        jobId: Joi.string().required()
+    });
+
+    const { error, value } = validatorSchema.validate(req.params, {
+        abortEarly: false
+    });
+
+    if(error) {
+        const errors: IErrorMessage = {};
+
+        error.details.forEach(detail => {
+            errors[detail.path[0] as string] = detail.message;
+        });
+
+        throw new ApiError(400, 'Validation failed for remove job bookmark process.', errors);
+    }
+
+    const jobId = String(value.jobId);
+
+    // Delete the bookmarked job
+    const deletedBookmarkedJob = await db.delete(bookmarkedJobs)
+                                            .where(and(
+                                                eq(bookmarkedJobs.userId, authUser.id),
+                                                eq(bookmarkedJobs.jobId, jobId)
+                                            ))
+                                            .returning({ id: bookmarkedJobs.id });
+
+    if(deletedBookmarkedJob.length === 0) {
+        throw new ApiError(404, 'Bookmark not found.');
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, null, 'Bookmark removed successfully.')
+    );
+});
+
+const getBookmarkedJobs = asyncHandler(async (req, res) => {
+    if(!req.user) {
+        throw new ApiError(401, 'You need to be authenticated to get bookmarked jobs list.');
+    }
+
+    const authUser = req.user;
+
+    const validatorSchema = Joi.object({
+        page: Joi.number().integer().min(1).default(1)
+    });
+
+    const { error, value } = validatorSchema.validate(req.query, {
+        abortEarly: false
+    });
+
+    if(error) {
+        const errors: IErrorMessage = {};
+
+        error.details.forEach(detail => {
+            errors[detail.path[0] as string] = detail.message;
+        });
+
+        throw new ApiError(400, 'Validation failed for get bookmarked jobs.', errors);
+    }
+
+    const page = Number(value.page);
+
+    const jobs = await db.select({
+                                jobId: bookmarkedJobs.jobId,
+                                title: bookmarkedJobs.title,
+                                company: bookmarkedJobs.company,
+                                location: bookmarkedJobs.location,
+                                salary: bookmarkedJobs.salary,
+                                description: bookmarkedJobs.description,
+                                redirectUrl: bookmarkedJobs.redirectUrl
+                            })
+                            .from(bookmarkedJobs)
+                            .where(eq(bookmarkedJobs.userId, authUser.id))
+                            .orderBy(desc(bookmarkedJobs.createdAt))
+                            .limit(JOBS_PER_PAGE)
+                            .offset((page - 1) * JOBS_PER_PAGE);
+
+    const hasMore = jobs.length > JOBS_PER_PAGE;
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            {
+                jobs,
+                page,
+                hasMore
+            },
+            'Bookmarked jobs fetched successfully.'
+        )
+    );
+});
+
+const getBookmarkedJobIds = asyncHandler(async (req, res) => {
+    if(!req.user) {
+        throw new ApiError(401, 'You need to be authenticated to get bookmarked jobs ids.');
+    }
+
+    const authUser = req.user;
+
+    const jobs = await db.select({
+                                jobId: bookmarkedJobs.jobId
+                            })
+                            .from(bookmarkedJobs)
+                            .where(eq(bookmarkedJobs.userId, authUser.id));
+
+    const jobIds = jobs.map(job => job.jobId);
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            jobIds,
+            'Bookmarked ids fetched successfully.'
+        )
+    );
+});
+
+export { searchJobs, loadMoreJobs, bookmarkJob, removeBookmark, getBookmarkedJobs, getBookmarkedJobIds };

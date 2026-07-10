@@ -52,3 +52,16 @@ export const jobSearchLimiter = rateLimit({
 		message: 'Too many job search requests, please try again after 1 hour.'
 	}
 });
+
+// For job bookmarking
+export const jobBookmarkLimiter = rateLimit({
+	windowMs: 15 * 60 * 1000,
+	limit: 20,
+	standardHeaders: 'draft-8',
+	legacyHeaders: false,
+	message: {
+		statusCode: 429,
+		success: false,
+		message: 'Too many job bookmark requests, please try again after 15 minutes.'
+	}
+});

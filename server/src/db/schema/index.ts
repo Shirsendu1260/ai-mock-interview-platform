@@ -6,3 +6,4 @@ export * from './interviewFeedbacks.js';
 export * from './signupRewards.js';
 export * from './payments.js';
 export * from './creditTransactions.js';
+export * from './bookmarkedJobs.js';

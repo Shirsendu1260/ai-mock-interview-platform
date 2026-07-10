@@ -88,6 +88,7 @@ interface IJobSearchResult {
 }
 
 interface AdzunaJob {
+    id: string;
     title: string;
     company?: { display_name: string };
     location?: { display_name: string };
@@ -95,6 +96,22 @@ interface AdzunaJob {
     salary_max?: number;
     description: string;
     redirect_url: string
+}
+
+interface IBookmarkJob {
+    jobId: string;
+    title: string;
+    company: string;
+    location: string;
+    salary: string | null;
+    description: string;
+    redirectUrl: string;
+}
+
+interface IBookmarkedJobResponse {
+    jobs: IBookmarkJob[];
+    hasMore: boolean;
+    page: number;
 }
 
 export type {
@@ -112,5 +129,7 @@ export type {
     IJobSearchResult,
     ILoadMoreJobsRequest,
     AdzunaJob,
-    IJobSearchData
+    IJobSearchData,
+    IBookmarkJob,
+    IBookmarkedJobResponse
 };

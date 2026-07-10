@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PageContainer from "../components/ui/PageContainer.jsx";
 import SectionHeading from "../components/ui/SectionHeading.jsx";
 import Card from "../components/ui/Card.jsx";
@@ -8,10 +8,10 @@ import StateSelector from "../components/job/StateSelector.jsx";
 import DistrictSelector from "../components/job/DistrictSelector.jsx";
 import SearchSummaryCard from "../components/job/SearchSummaryCard.jsx";
 import JobCard from "../components/job/JobCard.jsx";
-import { searchJobsHandler, loadMoreJobsHandler } from "../handlers/job.handler.js";
-import { showLoadingToast, showErrorToast, showSuccessToastWithToastId, showErrorToastWithToastId } from "../utils/toast.js";
+import { searchJobsHandler, loadMoreJobsHandler, bookmarkJobHandler, removeBookmarkHandler, getBookmarkedJobIdsHandler } from "../handlers/job.handler.js";
+import { showLoadingToast, showErrorToast, showSuccessToastWithToastId, showErrorToastWithToastId, showSuccessToast } from "../utils/toast.js";
 import { ApiError } from "../utils/ApiError.js";
-import type { IErrorMessage, IJobSearchData, IJobSearchResult } from "../types/types.js";
+import type { IErrorMessage, IJob, IJobSearchData } from "../types/types.js";
 import { JOB_SEARCH_CREDIT_COST } from '../constants/jobSearch.js';
 import { getAuthUser } from "../api/auth.api.js";
 import { useAuthStore } from "../stores/auth.store.js";
@@ -23,13 +23,15 @@ const JobSearch = () => {
     const [stateName, setStateName] = useState("");
     const [district, setDistrict] = useState("");
     const [resumePdfFile, setResumePdfFile] = useState<File | null>(null);
-    const [jobs, setJobs] = useState<IJobSearchResult[]>([]);
+    const [jobs, setJobs] = useState<IJob[]>([]);
     const [searchData, setSearchData] = useState<IJobSearchData | null>(null);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(false);
     const [isSearching, setIsSearching] = useState(false);
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const [errors, setErrors] = useState<IErrorMessage>({});
+    const [bookmarkedJobIds, setBookmarkedJobIds] = useState<Set<string>>(new Set()); // Set() is collection of unique values
+    const [bookmarkLoadingJobId, setBookmarkLoadingJobId] = useState<string | null>(null);
     const setUser = useAuthStore((state) => state.setUser);
 
 
@@ -58,7 +60,7 @@ const JobSearch = () => {
             // Fetch authenticated user
             const authUserResponse = await getAuthUser();
 
-            // update Zustand store to get latest user state
+            // update Zustand store to get latest user state after credit deduction
             setUser(authUserResponse.data.data);
 
             showSuccessToastWithToastId("Jobs loaded successfully.", toastId);
@@ -116,6 +118,100 @@ const JobSearch = () => {
             setIsLoadingMore(false);
         }
     };
+
+
+    // For bookmark toggling of shown jobs
+    const handleBookmarkToggle = async (job: IJob) => {
+        // Prevent double click for ongoing bookmark toggling
+        if(bookmarkLoadingJobId) {
+            showErrorToast("Bookmark toggling is already in progress.");
+            return;
+        }
+
+        const alreadyBookmarked = bookmarkedJobIds.has(job.jobId);
+
+        // Update the UI for bookmarked jobs immediately without waiting for the API
+        setBookmarkedJobIds(prev => {
+            const next = new Set(prev); // Make a copy of old set of bookmarked ids // Never mutate state directly in React
+
+            // The job is already bookmarked, so user wants to unbookmark it
+            if(alreadyBookmarked) {
+                next.delete(job.jobId); // remove the jobId from the Set
+            }
+            // The job is not bookmarked yet, so user wants to bookmark it
+            else {
+                next.add(job.jobId); // add the jobId to the set
+            }
+
+            // Return the new set, this triggers re-render with updated bookmarks
+            // Set of bookmarked job ids including this job id - if this is bookmark process
+            // Set of bookmarked job ids excluding this job id - if this is unbookmark process
+            return next;
+        });
+
+        // Marks the job is already in bookmark toggling progress
+        setBookmarkLoadingJobId(job.jobId);
+
+        try {
+            if(alreadyBookmarked) {
+                await removeBookmarkHandler(job.jobId);
+                showSuccessToast("Removed from bookmarks.");
+            }
+            else {
+                await bookmarkJobHandler(job);
+                showSuccessToast("Job bookmarked.");
+            }
+        }
+        catch(error) {
+            // Undo updating the UI for bookmarked jobs
+            setBookmarkedJobIds(prev => {
+                const next = new Set(prev);
+
+                if(alreadyBookmarked) {
+                    next.add(job.jobId);
+                }
+                else {
+                    next.delete(job.jobId);
+                }
+
+                return next;
+            });
+
+            if(error instanceof ApiError) {
+                showErrorToast(error.message);
+            }
+            else {
+                showErrorToast("Unable to update bookmark.");
+            }
+        }
+        finally {
+            setBookmarkLoadingJobId(null);
+        }
+    };
+
+
+    // load already bookmarked job ids
+    useEffect(() => {
+        const loadBookmarkedIds = async () => {
+            try {
+                const response = await getBookmarkedJobIdsHandler();
+                setBookmarkedJobIds(new Set(response.data));
+
+            }
+            catch(error) {
+                if(error instanceof ApiError) {
+                    showErrorToast(error.message);
+                }
+                else {
+                    showErrorToast("Unable to load bookmarked jobs.");
+                }
+
+                console.error(error);
+            }
+        };
+
+        loadBookmarkedIds();
+    }, []);
 
 
     return (
@@ -176,14 +272,20 @@ const JobSearch = () => {
                             <div className="grid gap-5 xl:grid-cols-2">
                                 {
                                     jobs.map(job => (
-                                        <JobCard key={job.redirectUrl} job={job} />
+                                        <JobCard
+                                            key={job.id}
+                                            job={job}
+                                            isBookmarked={bookmarkedJobIds.has(job.jobId)}
+                                            isBookmarkLoading={bookmarkLoadingJobId === job.jobId}
+                                            onBookmarkToggle={handleBookmarkToggle}
+                                        />
                                     ))
                                 }
                             </div>
 
                             {
                                 jobs.length === 0 && (
-                                    <div className="py-12 text-center">
+                                    <div className="py-3 text-center">
                                         <EmptyState
                                             title="No matching jobs found"
                                             description="Try another state or upload a different resume."

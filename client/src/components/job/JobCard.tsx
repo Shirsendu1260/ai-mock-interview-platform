@@ -1,42 +1,92 @@
 import Card from "../ui/Card.jsx";
 import { FaBuilding, FaLocationDot, FaIndianRupeeSign, FaArrowUpRightFromSquare } from "react-icons/fa6";
+import { FaRegBookmark, FaBookmark } from "react-icons/fa6";
 import type { JobCardProps } from "../../types/types.js";
 
-const JobCard = ({ job }: JobCardProps) => {
+const JobCard = ({
+    job,
+    isBookmarked = false,
+    isBookmarkLoading = false,
+    onBookmarkToggle
+}: JobCardProps) => {
     return (
-        <Card className="flex flex-col gap-5">
-            <div className="space-y-2">
-                <h3 className="text-xl font-semibold text-dark">
-                    {job.title}
-                </h3>
+        <Card
+            className="
+                group relative overflow-hidden border border-border
+                transition-all duration-300 hover:-translate-y-1 hover:shadow-xl
+            "
+        >
+            <div
+                className="absolute inset-x-0 top-0 h-1 bg-accent scale-x-0 origin-left
+                transition-transform duration-300 group-hover:scale-x-100"
+            />
 
-                <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted">
-                    <div className="flex items-center gap-2">
-                        <FaBuilding size={13} />
-                        <span>{job.company}</span>
-                    </div>
+            <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0 flex-1">
+                    <h3 className="line-clamp-2 text-xl font-bold text-dark">
+                        {job.title}
+                    </h3>
+                    <p className="mt-1 text-base font-semibold text-accent">
+                        {job.company}
+                    </p>
+                </div>
 
-                    <div className="flex items-center gap-2">
-                        <FaLocationDot size={13} />
-                        <span>{job.location}</span>
-                    </div>
+                {
+                    onBookmarkToggle && (
+                        <button
+                            disabled={isBookmarkLoading}
+                            onClick={() => onBookmarkToggle(job)}
+                            className="
+                                rounded-full p-2 transition-colors duration-200
+                                hover:bg-accent/10 disabled:opacity-50
+                            "
+                        >
+                            {
+                                isBookmarked
+                                    ? (
+                                        <FaBookmark
+                                            size={22}
+                                            className="text-accent"
+                                        />
+                                    )
+                                    : (
+                                        <FaRegBookmark
+                                            size={22}
+                                            className="text-muted"
+                                        />
+                                    )
+                            }
+                        </button>
+                    )
+                }
+            </div>
 
-                    {
-                        job.salary && (
-                            <div className="flex items-center gap-2">
-                                <FaIndianRupeeSign size={13} />
-                                <span>{job.salary}</span>
-                            </div>
-                        )
-                    }
+            <div className="mt-5 flex flex-wrap gap-3 text-sm">
+                <div className="flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1.5">
+                    <FaLocationDot size={12} className="text-accent" />
+                    <span>{job.location}</span>
+                </div>
+
+                {
+                    job.salary && (
+                        <div className="flex items-center gap-2 rounded-full bg-green-100 px-3 py-1.5 font-medium text-green-700">
+                            <FaIndianRupeeSign size={11} />
+                            <span>{job.salary}</span>
+                        </div>
+                    )
+                }
+
+                <div className="flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1.5">
+                    <FaBuilding size={11} className="text-accent" />
+                    <span>{job.company}</span>
                 </div>
             </div>
 
-            <p className="line-clamp-4 text-sm leading-7 text-muted">
+            <p className="mt-5 line-clamp-3 leading-7 text-sm text-muted">
                 {job.description}
             </p>
 
-            <div className="mt-auto flex justify-end">
+            <div className="mt-7 flex justify-end">
                 <a
                     href={job.redirectUrl}
                     target="_blank"
