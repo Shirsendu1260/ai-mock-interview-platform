@@ -269,7 +269,7 @@ const JobSearch = () => {
                         <div className="mt-10 space-y-8">
                             <SearchSummaryCard searchData={searchData} />
 
-                            <div className="grid gap-5 xl:grid-cols-2">
+                            <div className="grid gap-5 md:grid-cols-2">
                                 {
                                     jobs.map(job => (
                                         <JobCard
