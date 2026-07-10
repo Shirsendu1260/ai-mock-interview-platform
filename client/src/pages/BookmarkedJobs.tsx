@@ -177,7 +177,7 @@ const BookmarkedJobs = () => {
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="mt-8 grid gap-6"
+                    className="mt-8 grid gap-5 xl:grid-cols-2"
                 >
                     {
                         jobs.map(job => (
