@@ -335,10 +335,16 @@ const getBookmarkedJobs = asyncHandler(async (req, res) => {
                             .from(bookmarkedJobs)
                             .where(eq(bookmarkedJobs.userId, authUser.id))
                             .orderBy(desc(bookmarkedJobs.createdAt))
-                            .limit(JOBS_PER_PAGE)
+                            .limit(JOBS_PER_PAGE + 1) // Fetch one eztra job for 'hasMore' check, if page size is 6, fetch 7
                             .offset((page - 1) * JOBS_PER_PAGE);
 
+    // Check if there are more jobs after this page
     const hasMore = jobs.length > JOBS_PER_PAGE;
+
+    // Remove the extra job we fetched only for checking 'hasMore'
+    if(hasMore) {
+        jobs.pop();
+    }
 
     return res.status(200).json(
         new ApiResponse(
