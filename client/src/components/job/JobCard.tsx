@@ -22,7 +22,7 @@ const JobCard = ({
                 transition-transform duration-300 group-hover:scale-x-100"
             />
 
-            <div className="flex-1 p-2.5">
+            <div className="flex-1 p-2">
             <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
                     <h3 className="line-clamp-2 text-xl font-bold text-dark">
@@ -89,7 +89,7 @@ const JobCard = ({
             </p>
             </div>
 
-            <div className="flex justify-end p-2.5 pt-0">
+            <div className="flex justify-end p-2 pt-0 mt-2.5">
                 <a
                     href={job.redirectUrl}
                     target="_blank"
