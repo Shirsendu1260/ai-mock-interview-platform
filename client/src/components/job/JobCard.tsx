@@ -14,6 +14,7 @@ const JobCard = ({
             className="
                 group relative overflow-hidden border border-border
                 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl
+                flex flex-col h-full
             "
         >
             <div
@@ -21,6 +22,7 @@ const JobCard = ({
                 transition-transform duration-300 group-hover:scale-x-100"
             />
 
+            <div className="flex-1 p-4">
             <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
                     <h3 className="line-clamp-2 text-xl font-bold text-dark">
@@ -85,8 +87,9 @@ const JobCard = ({
             <p className="mt-5 line-clamp-3 leading-7 text-sm text-muted">
                 {job.description}
             </p>
+            </div>
 
-            <div className="mt-7 flex justify-end">
+            <div className="flex justify-end p-4 pt-0">
                 <a
                     href={job.redirectUrl}
                     target="_blank"
