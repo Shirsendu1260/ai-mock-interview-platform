@@ -15,7 +15,7 @@ The idea behind this project was to build something that feels close to a real i
 - **Resume Processing**: PDF resume parsing with AI-based role and technical skill extraction.
 - **Job Search**: Personalized job recommendations using the Adzuna API with bookmarking support.
 - **Dashboard**: Interview history, score analytics, profile management, payment history, and credit history.
-- **Production Practices** – Joi validation, centralized error handling, Helmet, rate limiting, secure file uploads, reusable API response structure, and protected routes.
+- **Production Practices**: Joi validation, centralized error handling, Helmet, rate limiting, secure file uploads, reusable API response structure, and protected routes.
 
 ---
 
