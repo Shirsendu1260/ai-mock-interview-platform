@@ -8,7 +8,7 @@ import {
     getOngoingInterview,
     getInterviewHistory
 } from '../api/interview.api.js';
-import type { ICreateInterviewResponse, IInterview, IInterviewHistoryResponse, IInterviewQuestion, IInterviewResult, IOngoingInterview, ISubmitInterviewResponse } from '../types/types.js';
+import type { ICreateInterviewResponse, IInterview, IInterviewHistoryFilters, IInterviewHistoryResponse, IInterviewQuestion, IInterviewResult, IOngoingInterview, ISubmitInterviewResponse } from '../types/types.js';
 import type { ApiResponse } from '../utils/ApiResponse.js';
 import { handleAxiosError } from '../utils/helpers.js';
 import { getAuthUserHandler } from './auth.handler.js';
@@ -98,9 +98,9 @@ const getOngoingInterviewHandler = async (): Promise<ApiResponse<IOngoingIntervi
     }
 };
 
-const getInterviewHistoryHandler = async (page: number): Promise<ApiResponse<IInterviewHistoryResponse>> => {
+const getInterviewHistoryHandler = async (filters: IInterviewHistoryFilters): Promise<ApiResponse<IInterviewHistoryResponse>> => {
     try {
-        const response = await getInterviewHistory(page); // response is a AxiosResponse
+        const response = await getInterviewHistory(filters); // response is a AxiosResponse
         return response.data; // ApiResponse
     }
     catch(error) {

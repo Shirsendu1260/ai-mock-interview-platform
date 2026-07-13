@@ -299,6 +299,16 @@ interface IOngoingInterview {
     interviewExpired: boolean;
 }
 
+interface IInterviewHistoryFilters {
+    page: number;
+    search?: string;
+    difficulty?: string;
+    minScore?: number;
+    maxScore?: number;
+    from?: string;
+    to?: string;
+}
+
 interface IInterviewHistory {
     id: string;
     role: string;
@@ -580,5 +590,6 @@ export type {
     DistrictSelectorProps,
     JobCardProps,
     SearchSummaryCardProps,
-    IBookmarkedJobResponse
+    IBookmarkedJobResponse,
+    IInterviewHistoryFilters
 };
