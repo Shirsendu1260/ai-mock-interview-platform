@@ -6,7 +6,7 @@ import { interviews } from '../db/schema/interviews.js';
 import type { NewInterview } from '../db/schema/interviews.js';
 import { interviewQuestions, type NewInterviewQuestion, type InterviewQuestion } from '../db/schema/interviewQuestions.js';
 import { interviewFeedbacks, type NewInterviewFeedback } from '../db/schema/interviewFeedbacks.js';
-import { eq, and, asc, desc, count } from 'drizzle-orm';
+import { eq, and, asc, desc, count, ilike, gte, lte } from 'drizzle-orm';
 import type { AnswerDataOfQuestion, Difficulty, IErrorMessage } from '../types/types.js';
 import Joi from 'joi';
 import { CREDIT_COST, PAGINATION_LIMIT, TIME_PER_QUESTION } from '../constants.js';
@@ -848,7 +848,7 @@ const getOngoingInterview = asyncHandler(async (req, res) => {
 
 const getInterviewHistory = asyncHandler(async (req, res) => {
     // Auth check
-    if (!req.user) {
+    if(!req.user) {
         throw new ApiError(401, 'You need to be authenticated to view your interview history.');
     }
 
@@ -856,21 +856,82 @@ const getInterviewHistory = asyncHandler(async (req, res) => {
 
 
     // For pagination
+    const validatorSchema = Joi.object({
+        page: Joi.number().integer().min(1).default(1),
+        search: Joi.string().trim().allow('').default(''),
+        difficulty: Joi.string()
+                        .valid('easy', 'medium', 'hard')
+                        .allow('')
+                        .default(''),
+        minScore: Joi.number().min(0).max(100).optional(),
+        maxScore: Joi.number().min(0).max(100).optional(),
+        from: Joi.date().iso().optional(),
+        to: Joi.date().iso().optional()
+    });
+
+    const { error, value } = validatorSchema.validate(req.query, {
+        abortEarly: false
+    });
+
+    if(error) {
+        const errors: IErrorMessage = {};
+
+        error.details.forEach(detail => {
+            errors[detail.path[0] as string] = detail.message;
+        });
+
+        throw new ApiError(400, 'Validation failed for interview history.', errors);
+    }
+
+    const { page, search, difficulty, minScore, maxScore, from, to } = value;
     const limit = PAGINATION_LIMIT;
-    const page = Number(req.query.page) || 1;
     const offset = (page - 1) * limit;
+
+
+    // Build filters dynamically based on request query
+    const filters = [
+        eq(interviews.userId, authUser.id)
+    ];
+
+    if(search) {
+        filters.push(ilike(interviews.role, `%${search}%`));
+    }
+
+    if(difficulty) {
+        filters.push(eq(interviews.difficulty, difficulty));
+    }
+
+    if(typeof minScore === 'number') {
+        filters.push(gte(interviewFeedbacks.overallScore, minScore));
+    }
+
+    if(typeof maxScore === 'number') {
+        filters.push(lte(interviewFeedbacks.overallScore, maxScore));
+    }
+
+    if(from) {
+        filters.push(gte(interviews.completedAt, new Date(from)));
+    }
+
+    if(to) {
+        filters.push(lte(interviews.completedAt, new Date(to)));
+    }
 
 
     // Count total interviews and total number of pages
     const [totalInterviewCount] = await db.select({ count: count() })
                                             .from(interviews)
-                                            .where(eq(interviews.userId, authUser.id));
+                                            .innerJoin(
+                                                interviewFeedbacks,
+                                                eq(interviewFeedbacks.interviewId, interviews.id)
+                                            )
+                                            .where(and(...filters));
 
     if(!totalInterviewCount) {
         throw new ApiError(500, 'Failed to fetch interview count.');
     }
 
-    const totalPages = Math.ceil(totalInterviewCount.count / limit);
+    const totalPages = Math.ceil(Number(totalInterviewCount.count) / limit);
 
 
     // Get interviews (all types) for current page
@@ -888,7 +949,7 @@ const getInterviewHistory = asyncHandler(async (req, res) => {
                                             interviewFeedbacks,
                                             eq(interviewFeedbacks.interviewId, interviews.id)
                                         )
-                                        .where(eq(interviews.userId, authUser.id))
+                                        .where(and(...filters))
                                         .orderBy(desc(interviews.completedAt))
                                         .limit(limit)
                                         .offset(offset);
