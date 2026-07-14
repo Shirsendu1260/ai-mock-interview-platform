@@ -866,8 +866,8 @@ const getInterviewHistory = asyncHandler(async (req, res) => {
                         .default(''),
         minScore: Joi.number().min(0).max(100).optional(),
         maxScore: Joi.number().min(0).max(100).optional(),
-        fromDate: Joi.date().iso().optional(),
-        toDate: Joi.date().iso().optional(),
+        fromDate: Joi.date().iso().empty('').optional(),
+        toDate: Joi.date().iso().empty('').optional(),
         sort: Joi.string()
                     .valid('newest', 'oldest', 'highest_score', 'lowest_score')
                     .default('newest')
