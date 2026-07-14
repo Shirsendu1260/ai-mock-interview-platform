@@ -148,3 +148,31 @@ export const handleAxiosError = (error: unknown): never => {
 
     throw error;
 };
+
+export const downloadPdf = (blob: Blob, filename: string) => {
+    // Browser cannot directly open a Blob
+    // It creates a temporary URL like -> blob:http://localhost:5173/abc123...
+    // That URL exists only during this session
+    const url = URL.createObjectURL(blob);
+
+    // Create a temporary <a> tag
+    const link = document.createElement('a');
+
+    // Set blob URL
+    link.href = url;
+
+    // Set the download attribute which tells browser to download this file
+    link.download = filename;
+
+    // Place the link in the DOM to be clickable programmatically
+    document.body.appendChild(link);
+
+    // Programmatically click to link to start download
+    link.click();
+
+    // Programmatically remove the link from the DOM as our download task is done
+    link.remove();
+
+    // Clean up the blob URL so browser can free memory
+    URL.revokeObjectURL(url);
+};

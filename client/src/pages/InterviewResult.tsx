@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import PageContainer from '../components/ui/PageContainer.jsx';
 import Spinner from '../components/ui/Spinner.jsx';
 import NotFound from './NotFound.jsx';
-import { getInterviewResultHandler } from '../handlers/interview.handler.js';
+import { downloadInterviewReportHandler, getInterviewResultHandler } from '../handlers/interview.handler.js';
 import type { IInterviewResult } from '../types/types.js';
 import { ApiError } from '../utils/ApiError.js';
 import { showErrorToast } from '../utils/toast.js';
@@ -16,9 +16,11 @@ import QuestionResultCard from '../components/interview/QuestionResultCard.jsx';
 import { motion } from 'motion/react';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { getPerformance } from '../utils/helpers.js';
+import { downloadPdf, getPerformance } from '../utils/helpers.js';
 import Button from '../components/ui/Button.js';
 import { GoHomeFill } from 'react-icons/go';
+import { useAuthStore } from '../stores/auth.store.js';
+import { FaDownload } from 'react-icons/fa';
 
 
 const InterviewResult = () => {
@@ -27,6 +29,8 @@ const InterviewResult = () => {
 
     const [result, setResult] = useState<IInterviewResult | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isDownloading, setIsDownloading] = useState(false);
+    const user = useAuthStore(state => state.user);
 
 
     // Fetch interview result
@@ -58,6 +62,34 @@ const InterviewResult = () => {
 
         loadInterviewResult();
     }, [interviewId]);
+
+
+    // for PDF download
+    const handleDownloadReport = async () => {
+        if(!interviewId) {
+            setIsDownloading(false);
+            showErrorToast('Invalid interview.');
+            return;
+        }
+
+        try {
+            setIsDownloading(true);
+            const filename = `${user?.fullName} - ${result?.interviewWithoutUserId.role} - ${result?.interviewWithoutUserId.completedAt}`;
+            const blob = await downloadInterviewReportHandler(interviewId);
+            downloadPdf(blob, `${filename}.pdf`);
+        }
+        catch (error) {
+            if(error instanceof ApiError) {
+                showErrorToast(error.message);
+            }
+            else {
+                showErrorToast('Unable to download report.');
+            }
+        }
+        finally {
+            setIsDownloading(false);
+        }
+    };
 
 
     // Loading state
@@ -228,7 +260,23 @@ const InterviewResult = () => {
                 </Card>
 
                 <div className="mt-10 flex flex-wrap justify-center gap-4">
-                    <Button onClick={() => navigate('/dashboard')}>
+                    <Button onClick={handleDownloadReport}>
+                        {
+                            isDownloading
+                            ? (
+                                <Spinner size="sm" />
+                            )
+                            : (
+                                <FaDownload className="text-lg" />
+                            )
+                        }
+                        Download Report
+                    </Button>
+
+                    <Button
+                        variant="secondary"
+                        onClick={() => navigate('/dashboard')}
+                    >
                         <GoHomeFill className="text-lg" />
                         Dashboard
                     </Button>
