@@ -6,7 +6,8 @@ import {
     submitInterview,
     getInterviewResult,
     getOngoingInterview,
-    getInterviewHistory
+    getInterviewHistory,
+    downloadInterviewReport
 } from '../api/interview.api.js';
 import type { ICreateInterviewResponse, IInterview, IInterviewHistoryFilters, IInterviewHistoryResponse, IInterviewQuestion, IInterviewResult, IOngoingInterview, ISubmitInterviewResponse } from '../types/types.js';
 import type { ApiResponse } from '../utils/ApiResponse.js';
@@ -108,6 +109,19 @@ const getInterviewHistoryHandler = async (filters: IInterviewHistoryFilters): Pr
     }
 };
 
+const downloadInterviewReportHandler = async (interviewId: string): Promise<Blob> => {
+    try {
+        const response = await downloadInterviewReport(interviewId);
+
+        // we're no longer returning ApiResponse<T>
+        // because PDFs aren't wrapped inside ApiResponse, they are raw binary
+        return response.data; // raw binary data
+    }
+    catch(error) {
+        throw handleAxiosError(error);
+    }
+};
+
 export {
     createInterviewHandler,
     getInterviewHandler,
@@ -116,5 +130,6 @@ export {
     submitInterviewHandler,
     getInterviewResultHandler,
     getOngoingInterviewHandler,
-    getInterviewHistoryHandler
+    getInterviewHistoryHandler,
+    downloadInterviewReportHandler
 };

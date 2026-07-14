@@ -67,6 +67,14 @@ const getInterviewHistory = (
     });
 };
 
+const downloadInterviewReport = (interviewId: string): Promise<AxiosResponse<Blob>> => {
+    // Blob simply means Some binary file
+    // Could be PDF, image. zip, excel etc.
+    return api.get(`/interviews/${interviewId}/report`, {
+        responseType: "blob"
+    });
+};
+
 export {
     createInterview,
     getInterview,
@@ -75,5 +83,6 @@ export {
     submitInterview,
     getInterviewResult,
     getOngoingInterview,
-    getInterviewHistory
+    getInterviewHistory,
+    downloadInterviewReport
 };
