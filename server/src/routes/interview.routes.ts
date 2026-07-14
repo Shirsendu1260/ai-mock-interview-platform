@@ -7,7 +7,8 @@ import {
     submitInterview,
     getInterviewResult,
     getOngoingInterview,
-    getInterviewHistory
+    getInterviewHistory,
+    downloadInterviewReport
 } from '../controllers/interview.controller.js';
 import { upload } from '../middlewares/multer.middleware.js';
 import { verifyJWT } from '../middlewares/auth.middleware.js';
@@ -28,6 +29,7 @@ router.route('/:interviewId/questions/:position').get(verifyJWT, getInterviewQue
 router.route('/:interviewId/questions/:position').patch(verifyJWT, saveInterviewQuestionAnswer);
 router.route('/:interviewId/submit').post(verifyJWT, submitInterview);
 router.route('/:interviewId/result').get(verifyJWT, getInterviewResult);
+router.route('/:interviewId/report').get(verifyJWT, downloadInterviewReport);
 
 
 

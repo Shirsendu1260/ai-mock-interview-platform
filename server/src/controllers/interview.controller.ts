@@ -14,6 +14,7 @@ import { generateQuestions } from '../services/ai/generateQuestions.js';
 import { users } from '../db/schema/users.js';
 import { evaluateInterview } from '../services/ai/evaluateInterview.js';
 import { extractResumeText } from '../services/pdf/extractResumeText.js';
+import { generateInterviewReportPdf } from '../services/pdf/interviewReport.js';
 
 const createInterview = asyncHandler(async (req, res) => {
     const { role, yoe, difficulty, qtnsCount } = req.body as {
@@ -996,6 +997,32 @@ const getInterviewHistory = asyncHandler(async (req, res) => {
     );
 });
 
+const downloadInterviewReport = asyncHandler(async (req, res) => {
+    if(!req.user) {
+        throw new ApiError(401, 'You need to be authenticated to download this report.');
+    }
+
+    const authUser = req.user;
+
+    // Create the PDF document and returns a Uint8Array
+    const pdfBytes = await generateInterviewReportPdf();
+
+    // Set this response header to let browser know this is a PDF file
+    res.setHeader('Content-Type', 'application/pdf');
+
+    // Tells browser to download the file instead of opening in new tab
+    // 'attachment' = download, and sets the default file name
+    res.setHeader(
+        'Content-Disposition',
+        'attachment; filename="interview-report.pdf"'
+    );
+
+    // pdf-lib returns Uint8Array bytes data, Express prefers Buffer
+    // Node's Buffer is basically a wrapper around binary data
+    // Uint8Array -> Buffer -> Express -> Browser
+    return res.send(Buffer.from(pdfBytes));
+});
+
 export {
     createInterview,
     getInterview,
@@ -1004,5 +1031,6 @@ export {
     submitInterview,
     getInterviewResult,
     getOngoingInterview,
-    getInterviewHistory
+    getInterviewHistory,
+    downloadInterviewReport
 };
