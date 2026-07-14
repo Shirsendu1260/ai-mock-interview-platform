@@ -865,8 +865,11 @@ const getInterviewHistory = asyncHandler(async (req, res) => {
                         .default(''),
         minScore: Joi.number().min(0).max(100).optional(),
         maxScore: Joi.number().min(0).max(100).optional(),
-        from: Joi.date().iso().optional(),
-        to: Joi.date().iso().optional()
+        fromDate: Joi.date().iso().optional(),
+        toDate: Joi.date().iso().optional(),
+        sort: Joi.string()
+                    .valid('newest', 'oldest', 'highest_score', 'lowest_score')
+                    .default('newest')
     });
 
     const { error, value } = validatorSchema.validate(req.query, {
@@ -888,8 +891,9 @@ const getInterviewHistory = asyncHandler(async (req, res) => {
     const difficulty = String(value.difficulty ?? '');
     const minScore = Number(value.minScore ?? 0);
     const maxScore = Number(value.maxScore ?? 100);
-    const from = String(value.from || '');
-    const to = String(value.to || '');
+    const fromDate = String(value.fromDate || '');
+    const toDate = String(value.toDate || '');
+    const sort = String(value.sort ?? '');
     const limit = PAGINATION_LIMIT;
     const offset = (page - 1) * limit;
 
@@ -914,12 +918,31 @@ const getInterviewHistory = asyncHandler(async (req, res) => {
     filters.push(gte(interviewFeedbacks.overallScore, minScore));
     filters.push(lte(interviewFeedbacks.overallScore, maxScore));
 
-    if(from) {
-        filters.push(gte(interviews.completedAt, new Date(from)));
+    if(fromDate) {
+        filters.push(gte(interviews.completedAt, new Date(fromDate)));
     }
 
-    if(to) {
-        filters.push(lte(interviews.completedAt, new Date(to)));
+    if(toDate) {
+        const endDate = new Date(toDate);
+        endDate.setHours(23, 59, 59, 999);
+        filters.push(lte(interviews.completedAt, endDate));
+    }
+
+
+    // Dynamic orderBy
+    let orderByClause;
+    switch(sort) {
+        case 'oldest':
+            orderByClause = asc(interviews.completedAt);
+            break;
+        case 'highest_score':
+            orderByClause = desc(interviewFeedbacks.overallScore);
+            break;
+        case 'lowest_score':
+            orderByClause = asc(interviewFeedbacks.overallScore);
+            break;
+        default:
+            orderByClause = desc(interviews.completedAt);
     }
 
 
@@ -955,7 +978,7 @@ const getInterviewHistory = asyncHandler(async (req, res) => {
                                             eq(interviewFeedbacks.interviewId, interviews.id)
                                         )
                                         .where(and(...filters))
-                                        .orderBy(desc(interviews.completedAt))
+                                        .orderBy(orderByClause)
                                         .limit(limit)
                                         .offset(offset);
 

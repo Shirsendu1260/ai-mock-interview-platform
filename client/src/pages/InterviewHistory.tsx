@@ -31,6 +31,7 @@ const InterviewHistory = () => {
     const [scoreRange, setScoreRange] = useState([0, 100]);
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
+    const [sort, setSort] = useState('newest');
 
     // Invisible element placed at the bottom of the page
     // When this element becomes visible on screen,
@@ -59,6 +60,7 @@ const InterviewHistory = () => {
         setScoreRange([0, 100]);
         setFromDate('');
         setToDate('');
+        setSort('newest');
     };
 
 
@@ -110,7 +112,8 @@ const InterviewHistory = () => {
                 minScore: scoreRange[0],
                 maxScore: scoreRange[1],
                 fromDate,
-                toDate
+                toDate,
+                sort
             });
 
             // Keep previous interviews and append the new ones
@@ -274,6 +277,21 @@ const InterviewHistory = () => {
                                 />
                             </div>
                         </div>
+
+                        {/*Sort*/}
+                        <select
+                            value={sort}
+                            onChange={(e) => setSort(e.target.value)}
+                            className="
+                                h-12 w-full rounded-xl border border-border bg-white px-4 text-sm
+                                outline-none transition focus:border-accent
+                            "
+                        >
+                            <option value="newest">Newest</option>
+                            <option value="oldest">Oldest</option>
+                            <option value="highest_score">Highest Score</option>
+                            <option value="lowest_score">Lowest Score</option>
+                        </select>
 
                         {/*Difficulty*/}
                         <div>

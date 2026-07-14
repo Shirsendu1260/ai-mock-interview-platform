@@ -307,6 +307,7 @@ interface IInterviewHistoryFilters {
     maxScore?: number;
     fromDate?: string;
     toDate?: string;
+    sort: string;
 }
 
 interface IInterviewHistory {
