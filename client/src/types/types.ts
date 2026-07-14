@@ -305,8 +305,8 @@ interface IInterviewHistoryFilters {
     difficulty?: string;
     minScore?: number;
     maxScore?: number;
-    from?: string;
-    to?: string;
+    fromDate?: string;
+    toDate?: string;
 }
 
 interface IInterviewHistory {
@@ -519,6 +519,13 @@ interface IBookmarkedJobResponse {
     hasMore: boolean;
 }
 
+interface RangeSliderProps {
+    min: number;
+    max: number;
+    values: number[];
+    onChange: (values: number[]) => void;
+}
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -591,5 +598,6 @@ export type {
     JobCardProps,
     SearchSummaryCardProps,
     IBookmarkedJobResponse,
-    IInterviewHistoryFilters
+    IInterviewHistoryFilters,
+    RangeSliderProps
 };

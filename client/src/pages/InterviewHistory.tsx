@@ -11,6 +11,9 @@ import { showErrorToast } from '../utils/toast.js';
 import { ApiError } from '../utils/ApiError.js';
 import type { IInterviewHistory } from '../types/types.js';
 import { LAYOUT } from '../constants/design.js';
+import { DIFFICULTIES } from '../constants/interview.js';
+import RangeSlider from '../components/interview/RangeSlider.js';
+import { FaSearch } from "react-icons/fa";
 
 const InterviewHistory = () => {
 	const [interviews, setInterviews] = useState<IInterviewHistory[]>([]);
@@ -22,14 +25,74 @@ const InterviewHistory = () => {
     // Without this, Intersection Observer may trigger repeatedly
 	const [isFetchingMore, setIsFetchingMore] = useState(false);
 
+    const [search, setSearch] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState(''); // state to prevent hitting the backend on every keystroke
+    const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>([]);
+    const [scoreRange, setScoreRange] = useState([0, 100]);
+    const [fromDate, setFromDate] = useState('');
+    const [toDate, setToDate] = useState('');
+
     // Invisible element placed at the bottom of the page
     // When this element becomes visible on screen,
     // Intersection Observer knows the user has reached the bottom
 	const loadMoreRef = useRef<HTMLDivElement>(null);
 
 
+    // Toggle function to add or remove a difficulty from an array state
+    const toggleDifficulty = (difficulty: string) => {
+        setSelectedDifficulties(prev => {
+            // Check if this difficulty is already selected, if yes, remove it
+            if(prev.includes(difficulty)) {
+                return prev.filter(item => item !== difficulty);
+            }
+
+            // Else spread old items and add new difficulty at the end
+            return [...prev, difficulty];
+        });
+    };
+
+
+    // Reset Filters button
+    const resetFilters = () => {
+        setSearch('');
+        setSelectedDifficulties([]);
+        setScoreRange([0, 100]);
+        setFromDate('');
+        setToDate('');
+    };
+
+
+    // prevents hitting the backend on every keystroke
+    useEffect(() => {
+        // start a timer, after 400ms of no typing, update the debounced search value
+        const timer = setTimeout(() => {
+            setDebouncedSearch(search.trim()); // This is what actually triggers API call
+        }, 400);
+
+        // Cleanup function, runs when 'search' changes or component unmounts
+        return () => clearTimeout(timer);
+    }, [search]);
+
+
+    // Reset pagination whenever filters change
+    // Whenever the search changes - clear old interviews, start again from page 1, enable infinite scrolling again
+    useEffect(() => {
+        setInterviews([]);
+        setPage(1);
+        setHasMore(true);
+        setIsLoading(true);
+        loadHistory(1);
+    }, [
+        debouncedSearch, // we are using 'debouncedSearch' to prevent API call on every keystroke
+        selectedDifficulties,
+        scoreRange,
+        fromDate,
+        toDate
+    ]);
+
+
     // Loads interviews from the backend based on page number
-    const loadHistory = useCallback(async () => {
+    const loadHistory = useCallback(async (currentPage: number) => {
         // Don't send request, when already fetching another page
         if(isFetchingMore) return;
 
@@ -40,7 +103,15 @@ const InterviewHistory = () => {
             setIsFetchingMore(true);
 
             // Load interviews of current page
-            const response = await getInterviewHistoryHandler(page);
+            const response = await getInterviewHistoryHandler({
+                page: currentPage,
+                search: debouncedSearch,
+                difficulty: selectedDifficulties.join(','),
+                minScore: scoreRange[0],
+                maxScore: scoreRange[1],
+                fromDate,
+                toDate
+            });
 
             // Keep previous interviews and append the new ones
             setInterviews(prev => [
@@ -52,7 +123,7 @@ const InterviewHistory = () => {
             setHasMore(response.data.hasMore);
 
             // Only increment page for next request if there is actually more data left to fetch
-            if(response.data.hasMore) setPage(prev => prev + 1);
+            if(response.data.hasMore) setPage(currentPage + 1);;
         }
         catch(error) {
             if(error instanceof ApiError) {
@@ -66,7 +137,15 @@ const InterviewHistory = () => {
             setIsLoading(false);
             setIsFetchingMore(false);
         }
-    }, [page, hasMore, isFetchingMore]); // Recreate the function in memory only when these values change
+    }, [
+        isFetchingMore,
+        hasMore,
+        debouncedSearch,
+        selectedDifficulties,
+        scoreRange,
+        fromDate,
+        toDate
+    ]); // Recreate the function in memory only when these values change
     // useCallback remembers (memoizes) this function between renders.
     // Normally, whenever this component re-renders, React creates a brand new
     // loadHistory() function again. Most of the time that's perfectly fine.
@@ -80,14 +159,6 @@ const InterviewHistory = () => {
     // In short:
     // Same dependencies -> Same function reference
     // Dependency changed -> React creates a new function
-    // And, loadHistory now looks directly at page state variable, because page is in the useCallback
-    // dependency array, it will always look at the correct, real-time page number
-
-
-	// Loads interviews when component loads for the first time
-	useEffect(() => {
-        loadHistory(); // Loads first set of interviews (i.e. page = 1)
-    }, []);
 
 
     // Observe the invisible div placed at the bottom of the page
@@ -103,7 +174,7 @@ const InterviewHistory = () => {
             (entries) => {
                 // entries[0] is our only target div element and check if it has reached the viewport
                 if(entries[0].isIntersecting) {
-                    loadHistory(); // it already knows what page to fetch
+                    loadHistory(page); // it already knows what page to fetch
                 }
             },
 
@@ -120,8 +191,8 @@ const InterviewHistory = () => {
 
         // Disconnect the observer when the component unmounts
         return () => observer.disconnect();
-    }, [loadHistory]);
-    // loadHistory's reference changed means page, hasMore, or isFetchingMore also changed
+    }, [loadHistory, page]);
+    // loadHistory's reference changed means isFetchingMore, hasMore, debouncedSearch, selectedDifficulties, scoreRange, fromDate, or toDate also changed
     // (hint: useCallback())
 
 
@@ -139,8 +210,22 @@ const InterviewHistory = () => {
             <PageContainer>
                 <EmptyState
                     icon={<FaHistory/>}
-                    title="No Interview History"
-                    description="Your completed interviews will appear here."
+                    title={
+                        debouncedSearch ||
+                        selectedDifficulties.length > 0 ||
+                        scoreRange[0] > 0 ||
+                        scoreRange[1] < 100
+                            ? "No Matching Interviews"
+                            : "No Interview History"
+                    }
+                    description={
+                        debouncedSearch ||
+                        selectedDifficulties.length > 0 ||
+                        scoreRange[0] > 0 ||
+                        scoreRange[1] < 100
+                            ? "Try adjusting your filters."
+                            : "Your completed interviews will appear here."
+                    }
                 />
             </PageContainer>
         );
@@ -162,6 +247,131 @@ const InterviewHistory = () => {
                 <SectionHeading description="Review your previous interview performances.">
                     Interview History
                 </SectionHeading>
+
+                <div className="mt-6 rounded-2xl border border-border bg-white p-5 shadow-sm">
+                    <div className="grid gap-6 lg:grid-cols-2">
+                        {/*Search*/}
+                        <div>
+                            <label className="mb-2 block text-sm font-medium text-dark">
+                                Search
+                            </label>
+
+                            <div className="relative">
+                                <FaSearch
+                                    className="
+                                        pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted
+                                    "
+                                />
+
+                                <input
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    placeholder="Search by role..."
+                                    className="
+                                        w-full rounded-xl border border-border
+                                        py-3 pl-11 pr-4 outline-none transition focus:border-primary-light
+                                    "
+                                />
+                            </div>
+                        </div>
+
+                        {/*Difficulty*/}
+                        <div>
+                            <label className="mb-2 block text-sm font-medium text-dark">
+                                Difficulty
+                            </label>
+
+                            <div className="flex flex-wrap gap-3">
+                                {
+                                    DIFFICULTIES.map(difficulty => {
+                                        const active = selectedDifficulties.includes(difficulty);
+
+                                        return (
+                                            <button
+                                                key={difficulty}
+                                                type="button"
+                                                onClick={() => toggleDifficulty(difficulty)}
+                                                className={`
+                                                    rounded-full border px-4 py-2 text-sm capitalize transition
+                                                    ${
+                                                        active
+                                                        ? "border-primary-light bg-primary-light text-white"
+                                                        : "border-border bg-white hover:border-primary-light"
+                                                    }
+                                                `}
+                                            >
+                                                {difficulty}
+                                            </button>
+                                        );
+                                    })
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    {/*Score*/}
+                    <div className="mt-8">
+                        <label className="mb-4 block text-sm font-medium text-dark">
+                            Performance Score
+                        </label>
+
+                        <RangeSlider
+                            min={0}
+                            max={100}
+                            values={scoreRange}
+                            onChange={setScoreRange}
+                        />
+                    </div>
+
+                    {/*Dates*/}
+                    <div className="mt-8 grid gap-6 md:grid-cols-2">
+                        <div>
+                            <label className="mb-2 block text-sm font-medium text-dark">
+                                From
+                            </label>
+
+                            <input
+                                type="date"
+                                value={fromDate}
+                                onChange={(e) => setFromDate(e.target.value)}
+                                className="
+                                    w-full rounded-xl border border-border
+                                    px-4 py-3 outline-none transition focus:border-primary-light
+                                "
+                            />
+                        </div>
+
+                        <div>
+                            <label className="mb-2 block text-sm font-medium text-dark">
+                                To
+                            </label>
+
+                            <input
+                                type="date"
+                                value={toDate}
+                                onChange={(e) => setToDate(e.target.value)}
+                                className="
+                                    w-full rounded-xl border border-border
+                                    px-4 py-3 outline-none transition focus:border-primary-light
+                                "
+                            />
+                        </div>
+                    </div>
+
+                    {/*Reset button*/}
+                    <div className="mt-6 flex justify-end">
+                        <button
+                            type="button"
+                            onClick={resetFilters}
+                            className="
+                                rounded-xl border border-border px-5 py-2.5 text-sm font-medium
+                                text-muted transition hover:border-primary-light hover:text-primary-light
+                            "
+                        >
+                            Reset Filters
+                        </button>
+                    </div>
+                </div>
 
                 <motion.div
                     initial={{ opacity: 0 }}

@@ -6,7 +6,7 @@ import { interviews } from '../db/schema/interviews.js';
 import type { NewInterview } from '../db/schema/interviews.js';
 import { interviewQuestions, type NewInterviewQuestion, type InterviewQuestion } from '../db/schema/interviewQuestions.js';
 import { interviewFeedbacks, type NewInterviewFeedback } from '../db/schema/interviewFeedbacks.js';
-import { eq, and, asc, desc, count, ilike, gte, lte } from 'drizzle-orm';
+import { eq, and, asc, desc, count, ilike, gte, lte, inArray } from 'drizzle-orm';
 import type { AnswerDataOfQuestion, Difficulty, IErrorMessage } from '../types/types.js';
 import Joi from 'joi';
 import { CREDIT_COST, PAGINATION_LIMIT, TIME_PER_QUESTION } from '../constants.js';
@@ -883,7 +883,13 @@ const getInterviewHistory = asyncHandler(async (req, res) => {
         throw new ApiError(400, 'Validation failed for interview history.', errors);
     }
 
-    const { page, search, difficulty, minScore, maxScore, from, to } = value;
+    const page = Number(value.page);
+    const search = String(value.search ?? '').trim();
+    const difficulty = String(value.difficulty ?? '');
+    const minScore = Number(value.minScore ?? 0);
+    const maxScore = Number(value.maxScore ?? 100);
+    const from = String(value.from || '');
+    const to = String(value.to || '');
     const limit = PAGINATION_LIMIT;
     const offset = (page - 1) * limit;
 
@@ -898,16 +904,15 @@ const getInterviewHistory = asyncHandler(async (req, res) => {
     }
 
     if(difficulty) {
-        filters.push(eq(interviews.difficulty, difficulty));
+        const levels = difficulty.split(',').filter(Boolean); // filter(Boolean) removes falsy values
+
+        if(levels.length > 0) {
+            filters.push(inArray(interviews.difficulty, levels as Difficulty[]))
+        }
     }
 
-    if(typeof minScore === 'number') {
-        filters.push(gte(interviewFeedbacks.overallScore, minScore));
-    }
-
-    if(typeof maxScore === 'number') {
-        filters.push(lte(interviewFeedbacks.overallScore, maxScore));
-    }
+    filters.push(gte(interviewFeedbacks.overallScore, minScore));
+    filters.push(lte(interviewFeedbacks.overallScore, maxScore));
 
     if(from) {
         filters.push(gte(interviews.completedAt, new Date(from)));
