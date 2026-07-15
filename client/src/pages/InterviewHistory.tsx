@@ -9,7 +9,7 @@ import InterviewHistoryCard from '../components/interview/InterviewHistoryCard.j
 import { getInterviewHistoryHandler } from '../handlers/interview.handler.js';
 import { showErrorToast } from '../utils/toast.js';
 import { ApiError } from '../utils/ApiError.js';
-import type { IInterviewHistory } from '../types/types.js';
+import type { IInterviewHistory, IInterviewHistoryFilters } from '../types/types.js';
 import { LAYOUT } from '../constants/design.js';
 import { DIFFICULTIES } from '../constants/interview.js';
 import RangeSlider from '../components/interview/RangeSlider.js';
@@ -57,6 +57,7 @@ const InterviewHistory = () => {
     // Reset Filters button
     const resetFilters = () => {
         setSearch('');
+        setDebouncedSearch('')
         setSelectedDifficulties([]);
         setScoreRange([0, 100]);
         setFromDate('');
@@ -106,17 +107,37 @@ const InterviewHistory = () => {
         try {
             setIsFetchingMore(true);
 
-            // Load interviews of current page
-            const response = await getInterviewHistoryHandler({
+            const params: IInterviewHistoryFilters = {
                 page: currentPage,
-                search: debouncedSearch,
-                difficulty: selectedDifficulties.join(','),
-                minScore: scoreRange[0],
-                maxScore: scoreRange[1],
-                fromDate,
-                toDate,
                 sort
-            });
+            };
+
+            if(debouncedSearch !== '') {
+                params.search = debouncedSearch
+            }
+
+            if(selectedDifficulties.length > 0) {
+                params.difficulty = selectedDifficulties.join(',');
+            }
+
+            if(scoreRange[0] > 0) {
+                params.minScore = scoreRange[0];
+            }
+
+            if(scoreRange[1] < 100) {
+                params.maxScore = scoreRange[1];
+            }
+
+            if(fromDate !== '') {
+                params.fromDate = fromDate;
+            }
+
+            if(toDate !== '') {
+                params.toDate = toDate;
+            }
+
+            // Load interviews of current page
+            const response = await getInterviewHistoryHandler(params);
 
             // Keep previous interviews and append the new ones
             setInterviews(prev => [
