@@ -15,6 +15,7 @@ import { DIFFICULTIES } from '../constants/interview.js';
 import RangeSlider from '../components/interview/RangeSlider.js';
 import { FaSearch } from "react-icons/fa";
 import { TbReload } from 'react-icons/tb';
+import { IoIosArrowForward } from 'react-icons/io';
 
 const InterviewHistory = () => {
 	const [interviews, setInterviews] = useState<IInterviewHistory[]>([]);
@@ -233,33 +234,6 @@ const InterviewHistory = () => {
     }
 
 
-    if(interviews.length === 0) {
-        return (
-            <PageContainer>
-                <EmptyState
-                    icon={<FaHistory/>}
-                    title={
-                        debouncedSearch ||
-                        selectedDifficulties.length > 0 ||
-                        scoreRange[0] > 0 ||
-                        scoreRange[1] < 100
-                            ? "No Matching Interviews"
-                            : "No Interview History"
-                    }
-                    description={
-                        debouncedSearch ||
-                        selectedDifficulties.length > 0 ||
-                        scoreRange[0] > 0 ||
-                        scoreRange[1] < 100
-                            ? "Try adjusting your filters."
-                            : "Your completed interviews will appear here."
-                    }
-                />
-            </PageContainer>
-        );
-    }
-
-
     /*
     Intersection Observer flow here:
 
@@ -318,15 +292,15 @@ const InterviewHistory = () => {
                         </div>
                     </div>
 
-                    {/*Second row*/}
-                    <div className="mt-5 flex flex-wrap items-center gap-4">
-                        {/*Difficulty*/}
-                        <div>
-                            <label className="mb-2 block text-sm font-medium text-dark">
+                    {/* Second row */}
+                    <div className="mt-6 grid gap-6 lg:grid-cols-12">
+                        {/* Difficulty */}
+                        <div className="lg:col-span-4">
+                            <label className="mb-3 block text-sm font-medium text-dark">
                                 Difficulty
                             </label>
 
-                            <div className="flex flex-wrap gap-3">
+                            <div className="flex flex-wrap gap-2">
                                 {
                                     DIFFICULTIES.map(difficulty => {
                                         const active = selectedDifficulties.includes(difficulty);
@@ -337,11 +311,11 @@ const InterviewHistory = () => {
                                                 type="button"
                                                 onClick={() => toggleDifficulty(difficulty)}
                                                 className={`
-                                                    rounded-full border px-4 py-2 text-sm capitalize transition
+                                                    rounded-full px-4 h-10 text-sm border transition
                                                     ${
                                                         active
-                                                        ? "border-primary-light bg-primary-light text-white"
-                                                        : "border-border bg-white hover:border-primary-light"
+                                                        ? "bg-primary-light text-white border-primary-light"
+                                                        : "bg-white border-border hover:border-primary-light"
                                                     }
                                                 `}
                                             >
@@ -353,9 +327,9 @@ const InterviewHistory = () => {
                             </div>
                         </div>
 
-                        {/*Score*/}
-                        <div className="mt-8">
-                            <label className="mb-4 block text-sm font-medium text-dark">
+                        {/* Score */}
+                        <div className="lg:col-span-4">
+                            <label className="mb-3 block text-sm font-medium text-dark">
                                 Performance Score
                             </label>
 
@@ -367,99 +341,120 @@ const InterviewHistory = () => {
                             />
                         </div>
 
-                        {/*Dates*/}
-                        <div className="mt-8 grid gap-6 md:grid-cols-2">
-                            <div>
-                                <label className="mb-2 block text-sm font-medium text-dark">
-                                    From
-                                </label>
+                        {/* Dates + Reset */}
+                        <div className="lg:col-span-4">
+                            <label className="mb-3 block text-sm font-medium text-dark">
+                                Date Range
+                            </label>
 
+                            <div className="flex items-center gap-2">
                                 <input
                                     type="date"
                                     value={fromDate}
                                     onChange={(e) => setFromDate(e.target.value)}
-                                    className="
-                                        w-full rounded-xl border border-border
-                                        px-4 py-3 outline-none transition focus:border-primary-light
-                                    "
+                                    className="h-11 flex-1 rounded-xl border border-border px-3 text-sm
+                                    outline-none focus:border-primary-light"
                                 />
-                            </div>
 
-                            <div>
-                                <label className="mb-2 block text-sm font-medium text-dark">
-                                    To
-                                </label>
+                                <span className="text-muted"><IoIosArrowForward size={18} /></span>
 
                                 <input
                                     type="date"
                                     value={toDate}
                                     onChange={(e) => setToDate(e.target.value)}
-                                    className="
-                                        w-full rounded-xl border border-border
-                                        px-4 py-3 outline-none transition focus:border-primary-light
-                                    "
+                                    className="h-10 flex-1 rounded-xl border border-border px-3 text-sm
+                                    outline-none focus:border-primary-light"
                                 />
                             </div>
-                        </div>
 
-                        {/*Reset button*/}
-                        <div className="mt-6 flex justify-end">
                             <button
                                 type="button"
                                 onClick={resetFilters}
                                 className="
-                                    rounded-xl border border-border h-11 px-5 py-2.5 text-sm font-medium
-                                    text-muted transition hover:border-primary-light hover:text-primary-light
-                                    flex items-center justify-center gap-3
+                                    mt-4 h-11 w-full rounded-xl border border-border text-sm font-medium text-muted
+                                    transition hover:border-primary-light hover:text-primary-light flex items-center
+                                    justify-center gap-2
                                 "
                             >
-                                <TbReload size={22} />
+                                <TbReload size={18} />
                                 Reset Filters
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="mt-8 grid gap-6 sm:grid-cols-2"
-                >
-                    {
-                        interviews.map((interview, index) => (
-                            <InterviewHistoryCard
-                                key={interview.id}
-                                interview={interview}
-                                index={index}
+                {
+                    interviews.length === 0 ? (
+                        <div className="mt-12">
+                            <EmptyState
+                                icon={<FaHistory />}
+                                title={
+                                    debouncedSearch ||
+                                    selectedDifficulties.length > 0 ||
+                                    scoreRange[0] > 0 ||
+                                    scoreRange[1] < 100 ||
+                                    fromDate ||
+                                    toDate
+                                        ? "No Matching Interviews"
+                                        : "No Interview History"
+                                }
+                                description={
+                                    debouncedSearch ||
+                                    selectedDifficulties.length > 0 ||
+                                    scoreRange[0] > 0 ||
+                                    scoreRange[1] < 100 ||
+                                    fromDate ||
+                                    toDate
+                                        ? "Try adjusting your filters."
+                                        : "Your completed interviews will appear here."
+                                }
                             />
-                        ))
-                    }
-                </motion.div>
-
-                <AnimatePresence>
-                    {
-                        isFetchingMore && (
+                        </div>
+                    ) : (
+                        <>
                             <motion.div
-                                initial={{ opacity: 0, y: 16 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -16 }}
-                                transition={{ duration: 0.25 }}
-                                className="py-10 flex justify-center"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="mt-8 grid gap-6 sm:grid-cols-2"
                             >
-                                <Spinner size="lg" />
+                                {
+                                    interviews.map((interview, index) => (
+                                        <InterviewHistoryCard
+                                            key={interview.id}
+                                            interview={interview}
+                                            index={index}
+                                        />
+                                    ))
+                                }
                             </motion.div>
-                        )
-                    }
-                </AnimatePresence>
 
-				{
-				    hasMore &&
-				    (
-                        // Invisible div watched by Intersection Observer
-                        // When this becomes visible, the next page loads automatically
-				        <div ref={loadMoreRef} className="h-8" />
-				    )
-				}
+                            <AnimatePresence>
+                                {
+                                    isFetchingMore && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 16 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -16 }}
+                                            transition={{ duration: 0.25 }}
+                                            className="py-10 flex justify-center"
+                                        >
+                                            <Spinner size="lg" />
+                                        </motion.div>
+                                    )
+                                }
+                            </AnimatePresence>
+
+                            {
+                                hasMore && (
+                                    <div
+                                        ref={loadMoreRef}
+                                        className="h-8"
+                                    />
+                                )
+                            }
+                        </>
+                    )
+                }
             </div>
         </PageContainer>
     );
