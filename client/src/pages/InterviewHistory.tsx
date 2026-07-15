@@ -14,6 +14,7 @@ import { LAYOUT } from '../constants/design.js';
 import { DIFFICULTIES } from '../constants/interview.js';
 import RangeSlider from '../components/interview/RangeSlider.js';
 import { FaSearch } from "react-icons/fa";
+import { TbReload } from 'react-icons/tb';
 
 const InterviewHistory = () => {
 	const [interviews, setInterviews] = useState<IInterviewHistory[]>([]);
@@ -89,7 +90,8 @@ const InterviewHistory = () => {
         selectedDifficulties,
         scoreRange,
         fromDate,
-        toDate
+        toDate,
+        sort
     ]);
 
 
@@ -147,7 +149,8 @@ const InterviewHistory = () => {
         selectedDifficulties,
         scoreRange,
         fromDate,
-        toDate
+        toDate,
+        sort
     ]); // Recreate the function in memory only when these values change
     // useCallback remembers (memoizes) this function between renders.
     // Normally, whenever this component re-renders, React creates a brand new
@@ -252,13 +255,10 @@ const InterviewHistory = () => {
                 </SectionHeading>
 
                 <div className="mt-6 rounded-2xl border border-border bg-white p-5 shadow-sm">
-                    <div className="grid gap-6 lg:grid-cols-2">
+                    {/*First row*/}
+                    <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
                         {/*Search*/}
-                        <div>
-                            <label className="mb-2 block text-sm font-medium text-dark">
-                                Search
-                            </label>
-
+                        <div className="flex-1">
                             <div className="relative">
                                 <FaSearch
                                     className="
@@ -272,27 +272,32 @@ const InterviewHistory = () => {
                                     placeholder="Search by role..."
                                     className="
                                         w-full rounded-xl border border-border
-                                        py-3 pl-11 pr-4 outline-none transition focus:border-primary-light
+                                        h-11 pl-11 pr-4 outline-none transition focus:border-primary-light
                                     "
                                 />
                             </div>
                         </div>
 
                         {/*Sort*/}
-                        <select
-                            value={sort}
-                            onChange={(e) => setSort(e.target.value)}
-                            className="
-                                h-12 w-full rounded-xl border border-border bg-white px-4 text-sm
-                                outline-none transition focus:border-accent
-                            "
-                        >
-                            <option value="newest">Newest</option>
-                            <option value="oldest">Oldest</option>
-                            <option value="highest_score">Highest Score</option>
-                            <option value="lowest_score">Lowest Score</option>
-                        </select>
+                        <div className="w-full lg:w-52">
+                            <select
+                                value={sort}
+                                onChange={(e) => setSort(e.target.value)}
+                                className="
+                                    h-11 rounded-xl border border-border bg-white px-4 text-sm
+                                    outline-none transition focus:border-accent
+                                "
+                            >
+                                <option value="newest">Sort By: Newest</option>
+                                <option value="oldest">Sort By: Oldest</option>
+                                <option value="highest_score">Sort By: Highest Score</option>
+                                <option value="lowest_score">Sort By: Lowest Score</option>
+                            </select>
+                        </div>
+                    </div>
 
+                    {/*Second row*/}
+                    <div className="mt-5 flex flex-wrap items-center gap-4">
                         {/*Difficulty*/}
                         <div>
                             <label className="mb-2 block text-sm font-medium text-dark">
@@ -325,69 +330,71 @@ const InterviewHistory = () => {
                                 }
                             </div>
                         </div>
-                    </div>
 
-                    {/*Score*/}
-                    <div className="mt-8">
-                        <label className="mb-4 block text-sm font-medium text-dark">
-                            Performance Score
-                        </label>
-
-                        <RangeSlider
-                            min={0}
-                            max={100}
-                            values={scoreRange}
-                            onChange={setScoreRange}
-                        />
-                    </div>
-
-                    {/*Dates*/}
-                    <div className="mt-8 grid gap-6 md:grid-cols-2">
-                        <div>
-                            <label className="mb-2 block text-sm font-medium text-dark">
-                                From
+                        {/*Score*/}
+                        <div className="mt-8">
+                            <label className="mb-4 block text-sm font-medium text-dark">
+                                Performance Score
                             </label>
 
-                            <input
-                                type="date"
-                                value={fromDate}
-                                onChange={(e) => setFromDate(e.target.value)}
-                                className="
-                                    w-full rounded-xl border border-border
-                                    px-4 py-3 outline-none transition focus:border-primary-light
-                                "
+                            <RangeSlider
+                                min={0}
+                                max={100}
+                                values={scoreRange}
+                                onChange={setScoreRange}
                             />
                         </div>
 
-                        <div>
-                            <label className="mb-2 block text-sm font-medium text-dark">
-                                To
-                            </label>
+                        {/*Dates*/}
+                        <div className="mt-8 grid gap-6 md:grid-cols-2">
+                            <div>
+                                <label className="mb-2 block text-sm font-medium text-dark">
+                                    From
+                                </label>
 
-                            <input
-                                type="date"
-                                value={toDate}
-                                onChange={(e) => setToDate(e.target.value)}
-                                className="
-                                    w-full rounded-xl border border-border
-                                    px-4 py-3 outline-none transition focus:border-primary-light
-                                "
-                            />
+                                <input
+                                    type="date"
+                                    value={fromDate}
+                                    onChange={(e) => setFromDate(e.target.value)}
+                                    className="
+                                        w-full rounded-xl border border-border
+                                        px-4 py-3 outline-none transition focus:border-primary-light
+                                    "
+                                />
+                            </div>
+
+                            <div>
+                                <label className="mb-2 block text-sm font-medium text-dark">
+                                    To
+                                </label>
+
+                                <input
+                                    type="date"
+                                    value={toDate}
+                                    onChange={(e) => setToDate(e.target.value)}
+                                    className="
+                                        w-full rounded-xl border border-border
+                                        px-4 py-3 outline-none transition focus:border-primary-light
+                                    "
+                                />
+                            </div>
                         </div>
-                    </div>
 
-                    {/*Reset button*/}
-                    <div className="mt-6 flex justify-end">
-                        <button
-                            type="button"
-                            onClick={resetFilters}
-                            className="
-                                rounded-xl border border-border px-5 py-2.5 text-sm font-medium
-                                text-muted transition hover:border-primary-light hover:text-primary-light
-                            "
-                        >
-                            Reset Filters
-                        </button>
+                        {/*Reset button*/}
+                        <div className="mt-6 flex justify-end">
+                            <button
+                                type="button"
+                                onClick={resetFilters}
+                                className="
+                                    rounded-xl border border-border h-11 px-5 py-2.5 text-sm font-medium
+                                    text-muted transition hover:border-primary-light hover:text-primary-light
+                                    flex items-center justify-center gap-3
+                                "
+                            >
+                                <TbReload size={22} />
+                                Reset Filters
+                            </button>
+                        </div>
                     </div>
                 </div>
 
