@@ -18,7 +18,7 @@ import { TbReload } from 'react-icons/tb';
 
 const InterviewHistory = () => {
 	const [interviews, setInterviews] = useState<IInterviewHistory[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 	const [page, setPage] = useState(1); // Current page loaded from backend (first we load page 1, i.e. default)
 	const [hasMore, setHasMore] = useState(true); // Whether backend has more interviews to show
 
@@ -84,7 +84,7 @@ const InterviewHistory = () => {
         setInterviews([]);
         setPage(1);
         setHasMore(true);
-        setIsLoading(true);
+        setIsLoading(false);
         loadHistory(1);
     }, [
         debouncedSearch, // we are using 'debouncedSearch' to prevent API call on every keystroke
@@ -106,6 +106,7 @@ const InterviewHistory = () => {
 
         try {
             setIsFetchingMore(true);
+            setIsLoading(true);
 
             const params: IInterviewHistoryFilters = {
                 page: currentPage,
