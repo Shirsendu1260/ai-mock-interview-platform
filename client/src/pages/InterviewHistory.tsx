@@ -250,100 +250,109 @@ const InterviewHistory = () => {
                     Interview History
                 </SectionHeading>
 
-                <div className="mt-5 rounded-2xl border border-border bg-white p-4 shadow-sm">
-                    {/*First row*/}
-                    <div className="grid gap-3 lg:grid-cols-[1fr_220px]">
-                        {/*Search*/}
-                        <div className="flex-1">
-                            <div className="relative">
-                                <FaSearch
-                                    className="
-                                        pointer-events-none absolute text-[14px] left-4 top-1/2 -translate-y-1/2
-                                        text-muted
-                                    "
-                                />
-
-                                <input
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    placeholder="Search by role..."
-                                    className="
-                                        w-full rounded-xl border border-border text-[14px]
-                                        h-10 pl-10 pr-3.5 outline-none transition focus:border-primary-light
-                                    "
-                                />
-                            </div>
-                        </div>
-
-                        {/*Sort*/}
-                        <div className="w-full lg:w-52">
-                            <select
-                                value={sort}
-                                onChange={(e) => setSort(e.target.value)}
+                <div className="mt-5 rounded-2xl border border-border bg-white p-6 shadow-sm">
+                    {/* Top Row: Search and Sort */}
+                    <div className="grid gap-4 lg:grid-cols-[1fr_220px]">
+                        {/* Search */}
+                        <div className="relative flex-1">
+                            <FaSearch
                                 className="
-                                    h-10 rounded-xl border border-border bg-white px-3.5 text-[14px]
-                                    outline-none transition focus:border-accent
+                                    pointer-events-none absolute text-[14px] left-4 top-1/2 -translate-y-1/2
+                                    text-muted
                                 "
-                            >
-                                <option value="newest">Sort By: Newest</option>
-                                <option value="oldest">Sort By: Oldest</option>
-                                <option value="highest_score">Sort By: Highest Score</option>
-                                <option value="lowest_score">Sort By: Lowest Score</option>
-                            </select>
+                            />
+                            <input
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                placeholder="Search by role..."
+                                className="
+                                    w-full rounded-xl border border-border text-[14px]
+                                    h-10 pl-10 pr-3.5 outline-none transition focus:border-primary-light
+                                "
+                            />
                         </div>
+
+                        {/* Sort */}
+                        <select
+                            value={sort}
+                            onChange={(e) => setSort(e.target.value)}
+                            className="
+                                h-10 w-full rounded-xl border border-border bg-white px-3.5 text-[14px]
+                                outline-none transition focus:border-accent lg:w-full
+                            "
+                        >
+                            <option value="newest">Sort By: Newest</option>
+                            <option value="oldest">Sort By: Oldest</option>
+                            <option value="highest_score">Sort By: Highest Score</option>
+                            <option value="lowest_score">Sort By: Lowest Score</option>
+                        </select>
                     </div>
 
-                    {/* Second row */}
-                    <div className="mt-5 grid gap-6 lg:grid-cols-12">
-                        {/* Difficulty */}
-                        <div className="lg:col-span-4">
+                    <hr className="my-5 border-border" />
+
+                    {/* Bottom Row: Filters */}
+                    <div className="grid gap-8 lg:grid-cols-3">
+                        {/* Column 1: Difficulty & Reset */}
+                        <div className="flex flex-col">
                             <label className="mb-2 block text-[14px] font-medium text-dark">
                                 Difficulty
                             </label>
 
-                            <div className="flex flex-wrap gap-2">
-                                {
-                                    DIFFICULTIES.map(difficulty => {
-                                        const active = selectedDifficulties.includes(difficulty);
+                            <div className="flex flex-wrap gap-2 mb-4">
+                                {DIFFICULTIES.map((difficulty) => {
+                                    const active = selectedDifficulties.includes(difficulty);
 
-                                        return (
-                                            <button
-                                                key={difficulty}
-                                                type="button"
-                                                onClick={() => toggleDifficulty(difficulty)}
-                                                className={`
-                                                    rounded-full px-3.5 h-10 text-[14px] border transition
-                                                    ${
-                                                        active
+                                    return (
+                                        <button
+                                            key={difficulty}
+                                            type="button"
+                                            onClick={() => toggleDifficulty(difficulty)}
+                                            className={`
+                                                rounded-full px-4 h-10 text-[14px] border transition capitalize
+                                                ${
+                                                    active
                                                         ? "bg-primary-light text-white border-primary-light"
-                                                        : "bg-white border-border hover:border-primary-light"
-                                                    }
-                                                `}
-                                            >
-                                                {difficulty}
-                                            </button>
-                                        );
-                                    })
-                                }
+                                                        : "bg-white border-border text-dark hover:border-primary-light"
+                                                }
+                                            `}
+                                        >
+                                            {difficulty}
+                                        </button>
+                                    );
+                                })}
                             </div>
+
+                            <button
+                                type="button"
+                                onClick={resetFilters}
+                                className="
+                                    flex h-10 w-fit items-center justify-center gap-2 rounded-xl
+                                    border border-border bg-white px-3.5 text-[14px] font-medium
+                                    text-muted transition hover:border-primary-light hover:text-primary-light
+                                "
+                            >
+                                <TbReload size={18} />
+                                Reset Filters
+                            </button>
                         </div>
 
-                        {/* Score */}
-                        <div className="lg:col-span-4">
+                        {/* Column 2: Score */}
+                        <div className="flex flex-col">
                             <label className="mb-2 block text-[14px] font-medium text-dark">
                                 Performance Score
                             </label>
-
-                            <RangeSlider
-                                min={0}
-                                max={100}
-                                values={scoreRange}
-                                onChange={setScoreRange}
-                            />
+                            <div className="mt-2">
+                                <RangeSlider
+                                    min={0}
+                                    max={100}
+                                    values={scoreRange}
+                                    onChange={setScoreRange}
+                                />
+                            </div>
                         </div>
 
-                        {/* Dates + Reset */}
-                        <div className="lg:col-span-4">
+                        {/* Column 3: Dates */}
+                        <div className="flex flex-col">
                             <label className="mb-2 block text-[14px] font-medium text-dark">
                                 Date Range
                             </label>
@@ -353,35 +362,27 @@ const InterviewHistory = () => {
                                     type="date"
                                     value={fromDate}
                                     onChange={(e) => setFromDate(e.target.value)}
-                                    className="h-10 flex-1 rounded-xl border border-border px-3.5 text-[14px]
-                                    outline-none focus:border-primary-light"
+                                    className="
+                                        h-10 flex-1 rounded-xl border border-border px-3.5 text-[14px]
+                                        outline-none focus:border-primary-light
+                                    "
                                 />
 
-                                <span className="text-muted"><IoIosArrowForward size={18} /></span>
+                                <span className="text-muted">
+                                    <IoIosArrowForward size={18} />
+                                </span>
 
                                 <input
                                     type="date"
                                     value={toDate}
                                     onChange={(e) => setToDate(e.target.value)}
-                                    className="h-10 flex-1 rounded-xl border border-border px-3.5 text-[14px]
-                                    outline-none focus:border-primary-light"
+                                    className="
+                                        h-10 flex-1 rounded-xl border border-border px-3.5 text-[14px]
+                                        outline-none focus:border-primary-light
+                                    "
                                 />
                             </div>
                         </div>
-
-                        {/*Reset filters and sort*/}
-                        <button
-                            type="button"
-                            onClick={resetFilters}
-                            className="
-                                mt-4 h-10 rounded-xl border border-border text-[14px] font-medium text-muted
-                                transition hover:border-primary-light hover:text-primary-light flex items-center
-                                justify-center gap-2 w-fit ml-auto px-3.5
-                            "
-                        >
-                            <TbReload size={18} />
-                            Reset Filters
-                        </button>
                     </div>
                 </div>
 
