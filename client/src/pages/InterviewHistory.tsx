@@ -250,15 +250,16 @@ const InterviewHistory = () => {
                     Interview History
                 </SectionHeading>
 
-                <div className="mt-6 rounded-2xl border border-border bg-white p-5 shadow-sm">
+                <div className="mt-5 rounded-2xl border border-border bg-white p-4 shadow-sm">
                     {/*First row*/}
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
+                    <div className="grid gap-3 lg:grid-cols-[1fr_220px]">
                         {/*Search*/}
                         <div className="flex-1">
                             <div className="relative">
                                 <FaSearch
                                     className="
-                                        pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted
+                                        pointer-events-none absolute text-[14px] left-4 top-1/2 -translate-y-1/2
+                                        text-muted
                                     "
                                 />
 
@@ -267,8 +268,8 @@ const InterviewHistory = () => {
                                     onChange={(e) => setSearch(e.target.value)}
                                     placeholder="Search by role..."
                                     className="
-                                        w-full rounded-xl border border-border
-                                        h-11 pl-11 pr-4 outline-none transition focus:border-primary-light
+                                        w-full rounded-xl border border-border text-[14px]
+                                        h-10 pl-10 pr-3.5 outline-none transition focus:border-primary-light
                                     "
                                 />
                             </div>
@@ -280,7 +281,7 @@ const InterviewHistory = () => {
                                 value={sort}
                                 onChange={(e) => setSort(e.target.value)}
                                 className="
-                                    h-11 rounded-xl border border-border bg-white px-4 text-sm
+                                    h-10 rounded-xl border border-border bg-white px-3.5 text-[14px]
                                     outline-none transition focus:border-accent
                                 "
                             >
@@ -293,10 +294,10 @@ const InterviewHistory = () => {
                     </div>
 
                     {/* Second row */}
-                    <div className="mt-6 grid gap-6 lg:grid-cols-12">
+                    <div className="mt-5 grid gap-6 lg:grid-cols-12">
                         {/* Difficulty */}
                         <div className="lg:col-span-4">
-                            <label className="mb-3 block text-sm font-medium text-dark">
+                            <label className="mb-2 block text-[14px] font-medium text-dark">
                                 Difficulty
                             </label>
 
@@ -311,7 +312,7 @@ const InterviewHistory = () => {
                                                 type="button"
                                                 onClick={() => toggleDifficulty(difficulty)}
                                                 className={`
-                                                    rounded-full px-4 h-10 text-sm border transition
+                                                    rounded-full px-3.5 h-10 text-[14px] border transition
                                                     ${
                                                         active
                                                         ? "bg-primary-light text-white border-primary-light"
@@ -329,7 +330,7 @@ const InterviewHistory = () => {
 
                         {/* Score */}
                         <div className="lg:col-span-4">
-                            <label className="mb-3 block text-sm font-medium text-dark">
+                            <label className="mb-2 block text-[14px] font-medium text-dark">
                                 Performance Score
                             </label>
 
@@ -343,7 +344,7 @@ const InterviewHistory = () => {
 
                         {/* Dates + Reset */}
                         <div className="lg:col-span-4">
-                            <label className="mb-3 block text-sm font-medium text-dark">
+                            <label className="mb-2 block text-[14px] font-medium text-dark">
                                 Date Range
                             </label>
 
@@ -352,7 +353,7 @@ const InterviewHistory = () => {
                                     type="date"
                                     value={fromDate}
                                     onChange={(e) => setFromDate(e.target.value)}
-                                    className="h-11 flex-1 rounded-xl border border-border px-3 text-sm
+                                    className="h-10 flex-1 rounded-xl border border-border px-3.5 text-[14px]
                                     outline-none focus:border-primary-light"
                                 />
 
@@ -362,24 +363,25 @@ const InterviewHistory = () => {
                                     type="date"
                                     value={toDate}
                                     onChange={(e) => setToDate(e.target.value)}
-                                    className="h-10 flex-1 rounded-xl border border-border px-3 text-sm
+                                    className="h-10 flex-1 rounded-xl border border-border px-3.5 text-[14px]
                                     outline-none focus:border-primary-light"
                                 />
                             </div>
-
-                            <button
-                                type="button"
-                                onClick={resetFilters}
-                                className="
-                                    mt-4 h-11 w-full rounded-xl border border-border text-sm font-medium text-muted
-                                    transition hover:border-primary-light hover:text-primary-light flex items-center
-                                    justify-center gap-2
-                                "
-                            >
-                                <TbReload size={18} />
-                                Reset Filters
-                            </button>
                         </div>
+
+                        {/*Reset filters and sort*/}
+                        <button
+                            type="button"
+                            onClick={resetFilters}
+                            className="
+                                mt-4 h-10 rounded-xl border border-border text-[14px] font-medium text-muted
+                                transition hover:border-primary-light hover:text-primary-light flex items-center
+                                justify-center gap-2 w-fit ml-auto px-3.5
+                            "
+                        >
+                            <TbReload size={18} />
+                            Reset Filters
+                        </button>
                     </div>
                 </div>
 
