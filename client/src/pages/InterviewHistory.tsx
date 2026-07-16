@@ -250,56 +250,53 @@ const InterviewHistory = () => {
                     Interview History
                 </SectionHeading>
 
-                <div className="mt-5 rounded-2xl border border-border bg-white p-6 shadow-sm">
-                    {/* Top Row: Search and Sort */}
-                    <div className="grid gap-4 lg:grid-cols-[1fr_220px]">
-                        {/* Search */}
+                <div className="mt-6 flex flex-col gap-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                    {/*Top Row: Search & Sort*/}
+                    <div className="flex flex-col gap-4 sm:flex-row">
                         <div className="relative flex-1">
-                            <FaSearch
-                                className="
-                                    pointer-events-none absolute text-[14px] left-4 top-1/2 -translate-y-1/2
-                                    text-muted
-                                "
-                            />
+                            <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                             <input
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                placeholder="Search by role..."
+                                placeholder="Search past interviews by role..."
                                 className="
-                                    w-full rounded-xl border border-border text-[14px]
-                                    h-10 pl-10 pr-3.5 outline-none transition focus:border-primary-light
+                                    w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4
+                                    text-sm text-slate-700 outline-none transition
+                                    focus:border-primary-light focus:bg-white focus:ring-1 focus:ring-primary-light
                                 "
                             />
                         </div>
 
-                        {/* Sort */}
-                        <select
-                            value={sort}
-                            onChange={(e) => setSort(e.target.value)}
-                            className="
-                                h-10 w-full rounded-xl border border-border bg-white px-3.5 text-[14px]
-                                outline-none transition focus:border-accent lg:w-full
-                            "
-                        >
-                            <option value="newest">Sort By: Newest</option>
-                            <option value="oldest">Sort By: Oldest</option>
-                            <option value="highest_score">Sort By: Highest Score</option>
-                            <option value="lowest_score">Sort By: Lowest Score</option>
-                        </select>
+                        <div className="w-full sm:w-56">
+                            <select
+                                value={sort}
+                                onChange={(e) => setSort(e.target.value)}
+                                className="
+                                    w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 px-4
+                                    text-sm text-slate-700 outline-none transition
+                                    focus:border-primary-light focus:bg-white focus:ring-1 focus:ring-primary-light
+                                "
+                            >
+                                <option value="newest">Sort By: Newest First</option>
+                                <option value="oldest">Sort By: Oldest First</option>
+                                <option value="highest_score">Sort By: Highest Score</option>
+                                <option value="lowest_score">Sort By: Lowest Score</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <hr className="my-5 border-border" />
+                    <div className="h-px w-full bg-slate-100" />
 
-                    {/* Bottom Row: Filters */}
-                    <div className="grid gap-8 lg:grid-cols-3">
-                        {/* Column 1: Difficulty & Reset */}
-                        <div className="flex flex-col">
-                            <label className="mb-2 block text-[14px] font-medium text-dark">
+                    {/*Bottom Row: Filters*/}
+                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        {/* Difficulty */}
+                        <div className="flex flex-col gap-2">
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                                 Difficulty
-                            </label>
+                            </span>
 
-                            <div className="flex flex-wrap gap-2 mb-4">
-                                {DIFFICULTIES.map((difficulty) => {
+                            <div className="flex flex-wrap gap-2">
+                                {DIFFICULTIES.map(difficulty => {
                                     const active = selectedDifficulties.includes(difficulty);
 
                                     return (
@@ -308,11 +305,11 @@ const InterviewHistory = () => {
                                             type="button"
                                             onClick={() => toggleDifficulty(difficulty)}
                                             className={`
-                                                rounded-full px-4 h-10 text-[14px] border transition capitalize
+                                                rounded-md px-3 py-1.5 text-xs font-semibold capitalize transition-colors
                                                 ${
                                                     active
-                                                        ? "bg-primary-light text-white border-primary-light"
-                                                        : "bg-white border-border text-dark hover:border-primary-light"
+                                                    ? "bg-primary-light text-white"
+                                                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                                                 }
                                             `}
                                         >
@@ -321,27 +318,15 @@ const InterviewHistory = () => {
                                     );
                                 })}
                             </div>
-
-                            <button
-                                type="button"
-                                onClick={resetFilters}
-                                className="
-                                    flex h-10 w-fit items-center justify-center gap-2 rounded-xl
-                                    border border-border bg-white px-3.5 text-[14px] font-medium
-                                    text-muted transition hover:border-primary-light hover:text-primary-light
-                                "
-                            >
-                                <TbReload size={18} />
-                                Reset Filters
-                            </button>
                         </div>
 
-                        {/* Column 2: Score */}
-                        <div className="flex flex-col">
-                            <label className="mb-2 block text-[14px] font-medium text-dark">
-                                Performance Score
-                            </label>
-                            <div className="mt-2">
+                        {/* Score */}
+                        <div className="flex flex-col gap-2">
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                                Score Range
+                            </span>
+
+                            <div className="px-1 pt-2">
                                 <RangeSlider
                                     min={0}
                                     max={100}
@@ -351,11 +336,11 @@ const InterviewHistory = () => {
                             </div>
                         </div>
 
-                        {/* Column 3: Dates */}
-                        <div className="flex flex-col">
-                            <label className="mb-2 block text-[14px] font-medium text-dark">
+                        {/* Dates */}
+                        <div className="flex flex-col gap-2">
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                                 Date Range
-                            </label>
+                            </span>
 
                             <div className="flex items-center gap-2">
                                 <input
@@ -363,13 +348,13 @@ const InterviewHistory = () => {
                                     value={fromDate}
                                     onChange={(e) => setFromDate(e.target.value)}
                                     className="
-                                        h-10 flex-1 rounded-xl border border-border px-3.5 text-[14px]
-                                        outline-none focus:border-primary-light
+                                        w-full rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5
+                                        text-xs text-slate-700 outline-none focus:border-primary-light focus:bg-white
                                     "
                                 />
 
-                                <span className="text-muted">
-                                    <IoIosArrowForward size={18} />
+                                <span className="text-slate-300">
+                                    <IoIosArrowForward size={14} />
                                 </span>
 
                                 <input
@@ -377,11 +362,27 @@ const InterviewHistory = () => {
                                     value={toDate}
                                     onChange={(e) => setToDate(e.target.value)}
                                     className="
-                                        h-10 flex-1 rounded-xl border border-border px-3.5 text-[14px]
-                                        outline-none focus:border-primary-light
+                                        w-full rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5
+                                        text-xs text-slate-700 outline-none focus:border-primary-light focus:bg-white
                                     "
                                 />
                             </div>
+                        </div>
+
+                        {/* Reset */}
+                        <div className="flex items-end justify-start lg:justify-end">
+                            <button
+                                type="button"
+                                onClick={resetFilters}
+                                className="
+                                    flex w-full items-center justify-center gap-2 rounded-lg border border-red-200
+                                    bg-red-50 px-4 py-2 text-sm font-semibold text-red-600 transition
+                                    hover:bg-red-100 hover:text-red-700 sm:w-auto
+                                "
+                            >
+                                <TbReload size={16} />
+                                Reset
+                            </button>
                         </div>
                     </div>
                 </div>
