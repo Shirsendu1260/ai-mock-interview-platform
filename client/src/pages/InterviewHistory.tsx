@@ -250,7 +250,7 @@ const InterviewHistory = () => {
                     Interview History
                 </SectionHeading>
 
-                <div className="mt-6 flex flex-col gap-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div className="mt-6 flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                     {/*Top Row: Search & Sort*/}
                     <div className="flex flex-col gap-4 sm:flex-row">
                         <div className="relative flex-1">
@@ -288,7 +288,7 @@ const InterviewHistory = () => {
                     <div className="h-px w-full bg-slate-100" />
 
                     {/*Bottom Row: Filters*/}
-                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         {/* Difficulty */}
                         <div className="flex flex-col gap-2">
                             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
