@@ -260,7 +260,7 @@ const InterviewHistory = () => {
                                 onChange={(e) => setSearch(e.target.value)}
                                 placeholder="Search past interviews by role..."
                                 className="
-                                    w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4
+                                    w-full rounded-lg border border-slate-200 bg-slate-50 py-2 pl-10 pr-3.5
                                     text-sm text-slate-700 outline-none transition
                                     focus:border-primary-light focus:bg-white focus:ring-1 focus:ring-primary-light
                                 "
@@ -272,7 +272,7 @@ const InterviewHistory = () => {
                                 value={sort}
                                 onChange={(e) => setSort(e.target.value)}
                                 className="
-                                    w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 px-4
+                                    w-full rounded-lg border border-slate-200 bg-slate-50 py-2 px-3.5
                                     text-sm text-slate-700 outline-none transition
                                     focus:border-primary-light focus:bg-white focus:ring-1 focus:ring-primary-light
                                 "
@@ -288,7 +288,7 @@ const InterviewHistory = () => {
                     <div className="h-px w-full bg-slate-100" />
 
                     {/*Bottom Row: Filters*/}
-                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                         {/* Difficulty */}
                         <div className="flex flex-col gap-2">
                             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
@@ -305,7 +305,7 @@ const InterviewHistory = () => {
                                             type="button"
                                             onClick={() => toggleDifficulty(difficulty)}
                                             className={`
-                                                rounded-md px-3 py-1.5 text-xs font-semibold capitalize transition-colors
+                                                rounded-md px-3.5 py-2 text-xs font-semibold capitalize transition-colors
                                                 ${
                                                     active
                                                     ? "bg-primary-light text-white"
@@ -326,14 +326,12 @@ const InterviewHistory = () => {
                                 Score Range
                             </span>
 
-                            <div className="px-1 pt-2">
-                                <RangeSlider
-                                    min={0}
-                                    max={100}
-                                    values={scoreRange}
-                                    onChange={setScoreRange}
-                                />
-                            </div>
+                            <RangeSlider
+                                min={0}
+                                max={100}
+                                values={scoreRange}
+                                onChange={setScoreRange}
+                            />
                         </div>
 
                         {/* Dates */}
@@ -348,12 +346,12 @@ const InterviewHistory = () => {
                                     value={fromDate}
                                     onChange={(e) => setFromDate(e.target.value)}
                                     className="
-                                        w-full rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5
+                                        w-full rounded-md border border-slate-200 bg-slate-50 px-3.5 py-2
                                         text-xs text-slate-700 outline-none focus:border-primary-light focus:bg-white
                                     "
                                 />
 
-                                <span className="text-slate-300">
+                                <span className="text-slate-500">
                                     <IoIosArrowForward size={14} />
                                 </span>
 
@@ -362,7 +360,7 @@ const InterviewHistory = () => {
                                     value={toDate}
                                     onChange={(e) => setToDate(e.target.value)}
                                     className="
-                                        w-full rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5
+                                        w-full rounded-md border border-slate-200 bg-slate-50 px-3.5 py-2
                                         text-xs text-slate-700 outline-none focus:border-primary-light focus:bg-white
                                     "
                                 />
@@ -376,7 +374,7 @@ const InterviewHistory = () => {
                                 onClick={resetFilters}
                                 className="
                                     flex w-full items-center justify-center gap-2 rounded-lg border border-red-200
-                                    bg-red-50 px-4 py-2 text-sm font-semibold text-red-600 transition
+                                    bg-red-50 px-3.5 py-2 text-sm font-semibold text-red-600 transition
                                     hover:bg-red-100 hover:text-red-700 sm:w-auto
                                 "
                             >
