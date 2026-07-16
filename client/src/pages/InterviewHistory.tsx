@@ -211,7 +211,7 @@ const InterviewHistory = () => {
             {
                 // Trigger loading a little before the user reaches the bottom of the page
                 // Which helps getting data a bit early before reaching bottom
-                rootMargin: '250px'
+                rootMargin: '100px'
             }
         );
 
