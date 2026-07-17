@@ -10,7 +10,13 @@ const generateInterviewReportPdf = async (interviewReportData: IInterviewReportD
 
     // Launch an invisible Chromium browser
     // headless:true means - browser runs in the background, no browser window appears
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ 
+        headless: true,
+        args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox"
+        ]
+    });
 
     try {
         // Create one empty browser tab (like opening a new Chrome tab)

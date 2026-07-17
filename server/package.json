@@ -10,7 +10,8 @@
     "db:generate": "drizzle-kit generate --config=src/config/drizzle.config.ts",
     "db:migrate": "drizzle-kit migrate --config=src/config/drizzle.config.ts",
     "db:push": "drizzle-kit push --config=src/config/drizzle.config.ts",
-    "db:studio": "drizzle-kit studio --config=src/config/drizzle.config.ts"
+    "db:studio": "drizzle-kit studio --config=src/config/drizzle.config.ts",
+    "postinstall": "npx puppeteer browsers install chrome"
   },
   "keywords": [
     "TypeScript",
