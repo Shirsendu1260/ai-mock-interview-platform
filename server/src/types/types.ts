@@ -1,5 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 import type { DIFFICULTIES, INTERVIEW_STATUS, PAID_PLANS } from "../constants.js";
+import type { Interview } from "../db/schema/interviews.js";
+import type { InterviewFeedback } from "../db/schema/interviewFeedbacks.js";
+import type { InterviewQuestion } from "../db/schema/interviewQuestions.js";
 
 interface IErrorMessage {
 	[key: string]: string; // key can be any string // value must be a string
@@ -114,6 +117,25 @@ interface IBookmarkedJobResponse {
     page: number;
 }
 
+interface IInterviewReportData {
+    user: PublicUser;
+    interview: Interview;
+    overallFeedback: InterviewFeedback;
+    questionResults: InterviewQuestion[];
+}
+
+interface PublicUser {
+    id: string;
+    fullName: string;
+    email: string;
+    avatarUrl: string | null;
+    credit: number;
+    plan: string;
+    authProvider: string;
+    createdAt: string | Date;
+    updatedAt: string | Date;
+};
+
 export type {
 	IErrorMessage,
 	AsyncControllerFunction,
@@ -131,5 +153,7 @@ export type {
     AdzunaJob,
     IJobSearchData,
     IBookmarkJob,
-    IBookmarkedJobResponse
+    IBookmarkedJobResponse,
+    IInterviewReportData,
+    PublicUser
 };

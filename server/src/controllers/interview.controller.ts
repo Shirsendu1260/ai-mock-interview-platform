@@ -7,7 +7,7 @@ import type { NewInterview } from '../db/schema/interviews.js';
 import { interviewQuestions, type NewInterviewQuestion, type InterviewQuestion } from '../db/schema/interviewQuestions.js';
 import { interviewFeedbacks, type NewInterviewFeedback } from '../db/schema/interviewFeedbacks.js';
 import { eq, and, asc, desc, count, ilike, gte, lte, inArray } from 'drizzle-orm';
-import type { AnswerDataOfQuestion, Difficulty, IErrorMessage } from '../types/types.js';
+import type { AnswerDataOfQuestion, Difficulty, IErrorMessage, IInterviewReportData } from '../types/types.js';
 import Joi from 'joi';
 import { CREDIT_COST, PAGINATION_LIMIT, TIME_PER_QUESTION } from '../constants.js';
 import { generateQuestions } from '../services/ai/generateQuestions.js';
@@ -1003,9 +1003,51 @@ const downloadInterviewReport = asyncHandler(async (req, res) => {
     }
 
     const authUser = req.user;
+    const interviewId = req.params.interviewId;
+
+    if(!interviewId) {
+        throw new ApiError(404, 'Invaid interview id.');
+    }
+
+    // Fetch the interview first
+    const [interview] = await db.select()
+                                .from(interviews)
+                                .where(and(
+                                    eq(interviews.id, interviewId),
+                                    eq(interviews.userId, authUser.id)
+                                ))
+                                .limit(1);
+
+    if(!interview) {
+        throw new ApiError(404, 'Interview not found.');
+    }
+
+    // Fetch the overall interview evaluation
+    const [overallFeedback] = await db.select()
+                                        .from(interviewFeedbacks)
+                                        .where(eq(interviewFeedbacks.interviewId, interviewId))
+                                        .limit(1);
+
+    if(!overallFeedback) {
+        throw new ApiError(404, 'Interview evaluation could not be found.');
+    }
+
+    // Fetch every interview question.
+    const questionResults = await db.select()
+                                    .from(interviewQuestions)
+                                    .where(eq(interviewQuestions.interviewId, interviewId))
+                                    .orderBy(asc(interviewQuestions.position));
+
+    // Prepare the object that contains everything required to build the report.
+    const reportData: IInterviewReportData = {
+        user: authUser,
+        interview,
+        overallFeedback,
+        questionResults
+    };
 
     // Create the PDF document and returns a Uint8Array
-    const pdfBytes = await generateInterviewReportPdf();
+    const pdfBytes = await generateInterviewReportPdf(reportData);
 
     // Set this response header to let browser know this is a PDF file
     res.setHeader('Content-Type', 'application/pdf');

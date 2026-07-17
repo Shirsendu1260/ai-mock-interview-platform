@@ -1,3 +1,4 @@
+export const APP_NAME = "CodeInterviewerAI"; // Just a name of my choice
 export const DATA_LIMIT = "24kb";
 // export const UPLOAD_DIR = '/public/temp';
 export const UPLOAD_DIR = '/tmp/uploads';
