@@ -11,7 +11,7 @@ const generateInterviewReportHtml = (interviewReportData: IInterviewReportData):
         <div class="question-card">
             <div class="question-header">
                 <span class="question-number">Question ${question.position}</span>
-                <span class="score-badge">${question.score ?? 0}/10</span>
+                <span class="score-badge">${question.score ?? 0}/100</span>
             </div>
             <div class="section">
                 <h4>Question</h4>
