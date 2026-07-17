@@ -260,17 +260,22 @@ const InterviewResult = () => {
                 </Card>
 
                 <div className="mt-10 flex flex-wrap justify-center gap-4">
-                    <Button onClick={handleDownloadReport}>
+                    <Button onClick={handleDownloadReport} disabled={isDownloading}>
                         {
                             isDownloading
                             ? (
+                                <>                                
                                 <Spinner size="sm" />
+                                <span>Generating your PDF</span>
+                                </>
                             )
                             : (
+                                <>
                                 <FaDownload className="text-lg" />
+                                <span>Download Report</span>
+                                </>
                             )
                         }
-                        Download Report
                     </Button>
 
                     <Button
