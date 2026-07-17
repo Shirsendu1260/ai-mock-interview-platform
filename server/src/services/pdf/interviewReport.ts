@@ -1,6 +1,7 @@
 // This converts our HTML report into a PDF
 
-import puppeteer from "puppeteer";
+import chromium from "@sparticuz/chromium";
+import puppeteer from "puppeteer-core";
 import type { IInterviewReportData } from "../../types/types.js";
 import { generateInterviewReportHtml } from "./interviewReportHtml.js";
 
@@ -11,12 +12,9 @@ const generateInterviewReportPdf = async (interviewReportData: IInterviewReportD
     // Launch an invisible Chromium browser
     // headless:true means - browser runs in the background, no browser window appears
     const browser = await puppeteer.launch({ 
-        executablePath: await puppeteer.executablePath(),
+        executablePath: await chromium.executablePath(),
         headless: true,
-        args: [
-            "--no-sandbox",
-            "--disable-setuid-sandbox"
-        ]
+        args: chromium.args
     });
 
     try {
