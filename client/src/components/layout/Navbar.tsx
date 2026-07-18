@@ -19,7 +19,7 @@ const Navbar = () => {
 			initial={{ opacity: 0, y: -15 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.4 }}
-			className='sticky top-0 z-50 border-b border-border bg-white/90 py-1 backdrop-blur-md'
+			className='sticky top-0 z-50 border-b border-border bg-background/90 py-1 backdrop-blur-md'
 		>
 			<div className={`${LAYOUT.maxWidth} ${LAYOUT.paddingX} mx-auto`} >
 				<div className='flex h-16 items-center justify-between'>
@@ -44,7 +44,7 @@ const Navbar = () => {
 
 						<button
 							onClick={() => setIsMenuOpen(prev => !prev)}
-							className='rounded-xl border border-border bg-white p-2 transition hover:bg-background'
+							className='rounded-xl border border-border bg-background p-2 transition hover:bg-primary hover:text-white'
 						>
 							{
 								isMenuOpen ? <HiX size={22} /> : <RiMenuFill size={22} />
