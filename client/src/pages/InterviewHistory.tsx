@@ -98,10 +98,18 @@ const InterviewHistory = () => {
     ]);
 
 
-    // Whenever page changes, fetch interviews of that page
+    // Whenever page/filter/search/sort changes, fetch interviews of that page
     useEffect(() => {
         loadHistory(page);
-    }, [page]);
+    }, [
+        page,
+        debouncedSearch,
+        selectedDifficulties,
+        scoreRange,
+        fromDate,
+        toDate,
+        sort
+    ]);
 
 
     // Loads interviews from the backend based on page number
