@@ -9,7 +9,7 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 // Because if we accidentally forget ThemeProvider, we immediately get error -
 // useTheme must be used inside ThemeProvider
 
-const ThemeProvider = ({ children }: ThemeProviderProps) = {
+const ThemeProvider = ({ children }: ThemeProviderProps) => {
     // Default theme is light
     const [theme, setTheme] = useState<Theme>('light');
 
