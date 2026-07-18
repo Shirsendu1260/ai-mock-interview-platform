@@ -8,6 +8,7 @@ import { RiMenuFill } from 'react-icons/ri';
 import { HiX } from 'react-icons/hi';
 import { useAuthStore } from '../../stores/auth.store.js';
 import UserDropdown from './UserDropdown.jsx';
+import ThemeToggle from '../ui/ThemeToggle.jsx';
 
 const Navbar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -30,10 +31,13 @@ const Navbar = () => {
 					{/* Large screens, shown as flex, else hidden */}
 					<nav className='hidden md:flex items-center gap-5'>
 						<NavbarLinks />
+						<ThemeToggle />
 					</nav>
 
 					{/* Mobile screens, flex initially, else hidden for large screens */}
 					<div className='flex items-center gap-5 md:hidden'>
+						<ThemeToggle />
+
 						{
 							isAuthenticated && (<UserDropdown/>)
 						}

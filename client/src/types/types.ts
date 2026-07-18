@@ -527,6 +527,17 @@ interface RangeSliderProps {
     onChange: (values: number[]) => void;
 }
 
+type Theme = 'light' | 'dark';
+
+interface ThemeContextValue {
+    theme: Theme;
+    toggleTheme: () => void;
+}
+
+interface ThemeProviderProps {
+    children: ReactNode;
+}
+
 export type {
 	CardProps,
 	PageContainerProps,
@@ -600,5 +611,8 @@ export type {
     SearchSummaryCardProps,
     IBookmarkedJobResponse,
     IInterviewHistoryFilters,
-    RangeSliderProps
+    RangeSliderProps,
+    ThemeContextValue,
+    Theme,
+    ThemeProviderProps
 };

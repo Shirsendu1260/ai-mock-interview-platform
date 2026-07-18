@@ -4,19 +4,42 @@
 @theme {
 	--font-sans: "Inter", sans-serif;
 
-	--color-primary: #1E3A5F; /* Deep Sapphire Blue */
-	--color-primary-light: #2B4C78;
+	--color-primary: var(--primary);
+	--color-primary-light: var(--primary-light);
+	--color-dark: var(--dark);
+	--color-dark-light: var(--dark-light);
+	--color-accent: var(--accent);
+	--color-accent-light: var(--accent-light);
+	--color-background: var(--background);
+	--color-border: var(--border);
+	--color-muted: var(--muted);
+}
 
-	--color-dark: #0B1120; /* Rich Midnight */
-	--color-dark-light: #1E293B;
+/* Light theme values */
+html.light {
+	--primary: #1E3A5F;
+	--primary-light: #2B4C78;
+	--dark: #0B1120;
+	--dark-light: #1E293B;
+	--accent: #7C3AED;
+	--accent-light: #A78BFA;
+	--background: #F8FAFC;
+	--border: #E2E8F0;
+	--muted: #64748B;
+}
 
-	--color-accent: #7C3AED; /* Premium Violet */
-	--color-accent-light: #A78BFA;
 
-	--color-background: #F8FAFC; /* Soft White */
-
-	--color-border: #E2E8F0;
-	--color-muted: #64748B;
+/* Dark theme values */
+html.dark {
+	--primary: #60A5FA;
+	--primary-light: #3B82F6;
+	--dark: #F8FAFC;
+	--dark-light: #CBD5E1;
+	--accent: #A78BFA;
+	--accent-light: #C4B5FD;
+	--background: #0F172A;
+	--border: #334155;
+	--muted: #94A3B8;
 }
 
 html,
