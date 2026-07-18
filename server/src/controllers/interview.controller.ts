@@ -861,7 +861,6 @@ const getInterviewHistory = asyncHandler(async (req, res) => {
         page: Joi.number().integer().min(1).default(1),
         search: Joi.string().trim().allow('').default(''),
         difficulty: Joi.string()
-                        .valid('easy', 'medium', 'hard')
                         .allow('')
                         .default(''),
         minScore: Joi.number().min(0).max(100).optional(),

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { FaHistory } from 'react-icons/fa';
 import PageContainer from '../components/ui/PageContainer.jsx';
@@ -19,13 +19,13 @@ import { IoIosArrowForward } from 'react-icons/io';
 
 const InterviewHistory = () => {
 	const [interviews, setInterviews] = useState<IInterviewHistory[]>([]);
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(false); // for page-1 loading
 	const [page, setPage] = useState(1); // Current page loaded from backend (first we load page 1, i.e. default)
 	const [hasMore, setHasMore] = useState(true); // Whether backend has more interviews to show
 
     // Prevent duplicate requests (true when frontend is still requesting data)
-    // Without this, Intersection Observer may trigger repeatedly
-	const [isFetchingMore, setIsFetchingMore] = useState(false);
+    // Unlike React state, refs update instantly and don't wait for a re-render
+    const loadingRef = useRef(false);
 
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState(''); // state to prevent hitting the backend on every keystroke
@@ -39,6 +39,7 @@ const InterviewHistory = () => {
     // When this element becomes visible on screen,
     // Intersection Observer knows the user has reached the bottom
 	const loadMoreRef = useRef<HTMLDivElement>(null);
+    const [isFetchingMore, setIsFetchingMore] = useState(false);
 
 
     // Toggle function to add or remove a difficulty from an array state
@@ -80,13 +81,13 @@ const InterviewHistory = () => {
 
 
     // Reset pagination whenever filters change
-    // Whenever the search changes - clear old interviews, start again from page 1, enable infinite scrolling again
+    // Whenever the search or any filters or sort changes - clear old interviews, start again from page 1,
+    // enable infinite scrolling again
     useEffect(() => {
-        setInterviews([]);
+        setInterviews([]); // staring again freshly as filter/sort/search applied
         setPage(1);
         setHasMore(true);
         setIsLoading(false);
-        loadHistory(1);
     }, [
         debouncedSearch, // we are using 'debouncedSearch' to prevent API call on every keystroke
         selectedDifficulties,
@@ -97,17 +98,30 @@ const InterviewHistory = () => {
     ]);
 
 
-    // Loads interviews from the backend based on page number
-    const loadHistory = useCallback(async (currentPage: number) => {
-        // Don't send request, when already fetching another page
-        if(isFetchingMore) return;
+    // Whenever page changes, fetch interviews of that page
+    useEffect(() => {
+        loadHistory(page);
+    }, [page]);
 
+
+    // Loads interviews from the backend based on page number
+    const loadHistory = async (currentPage: number) => {
         // Don't send request, if backend already told us there are no more pages to return
         if(!hasMore) return;
 
+        // Another request is already running
+        if(loadingRef.current) return;
+
+        // Lock immediately before sending the request (denotes a request is ongoing)
+        loadingRef.current = true;
+
         try {
-            setIsFetchingMore(true);
-            setIsLoading(true);
+            if(currentPage === 1) {
+                setIsLoading(true);
+            }
+            else {
+                setIsFetchingMore(true);
+            }
 
             const params: IInterviewHistoryFilters = {
                 page: currentPage,
@@ -141,17 +155,20 @@ const InterviewHistory = () => {
             // Load interviews of current page
             const response = await getInterviewHistoryHandler(params);
 
-            // Keep previous interviews and append the new ones
-            setInterviews(prev => [
-                ...prev,
-                ...response.data.interviews
-            ]);
+            // For fresh start or search/sort/filter
+            if(currentPage === 1){
+                setInterviews(response.data.interviews);
+            }
+            // Load more request
+            else{
+                setInterviews(prev => [
+                    ...prev,
+                    ...response.data.interviews
+                ]);
+            }
 
             // Backend tells us whether another page exists or not
             setHasMore(response.data.hasMore);
-
-            // Only increment page for next request if there is actually more data left to fetch
-            if(response.data.hasMore) setPage(currentPage + 1);;
         }
         catch(error) {
             if(error instanceof ApiError) {
@@ -162,32 +179,17 @@ const InterviewHistory = () => {
             }
         }
         finally {
-            setIsLoading(false);
-            setIsFetchingMore(false);
+            if(currentPage === 1){
+                setIsLoading(false);
+            }
+            else {
+                setIsFetchingMore(false);
+            }
+
+            // Release the lock after request finishes
+            loadingRef.current = false;
         }
-    }, [
-        isFetchingMore,
-        hasMore,
-        debouncedSearch,
-        selectedDifficulties,
-        scoreRange,
-        fromDate,
-        toDate,
-        sort
-    ]); // Recreate the function in memory only when these values change
-    // useCallback remembers (memoizes) this function between renders.
-    // Normally, whenever this component re-renders, React creates a brand new
-    // loadHistory() function again. Most of the time that's perfectly fine.
-    // But here, loadHistory() is also used inside useEffect().
-    // Since useEffect compares function references (memory addresses),
-    // creating a new function every render makes React think the dependency
-    // has changed, causing the effect to run again unnecessarily.
-    // useCallback prevents that.
-    // React keeps using the same loadHistory() function object until one of
-    // the dependencies below changes.
-    // In short:
-    // Same dependencies -> Same function reference
-    // Dependency changed -> React creates a new function
+    };
 
 
     // Observe the invisible div placed at the bottom of the page
@@ -202,8 +204,13 @@ const InterviewHistory = () => {
             // Runs when the visibility of the observed element changes (i.e. visible-hidden or hidden-visible)
             (entries) => {
                 // entries[0] is our only target div element and check if it has reached the viewport
-                if(entries[0].isIntersecting) {
-                    loadHistory(page); // it already knows what page to fetch
+                // And also check if more data can be loaded (using hasMore)
+                // And also check any request is not ongoing
+                if(entries[0].isIntersecting && hasMore && !loadingRef.current) {
+                    setPage(prev => prev + 1);
+                    // The actual API request happens inside the page effect
+                    // Observer should not know how to fetch, it should just update page number
+                    // And corresponsding useEffect should handle API call
                 }
             },
 
@@ -211,7 +218,7 @@ const InterviewHistory = () => {
             {
                 // Trigger loading a little before the user reaches the bottom of the page
                 // Which helps getting data a bit early before reaching bottom
-                rootMargin: '100px'
+                rootMargin: '250px'
             }
         );
 
@@ -220,9 +227,7 @@ const InterviewHistory = () => {
 
         // Disconnect the observer when the component unmounts
         return () => observer.disconnect();
-    }, [loadHistory, page]);
-    // loadHistory's reference changed means isFetchingMore, hasMore, debouncedSearch, selectedDifficulties, scoreRange, fromDate, or toDate also changed
-    // (hint: useCallback())
+    }, [hasMore]);
 
 
     if(isLoading) {
@@ -237,9 +242,9 @@ const InterviewHistory = () => {
     /*
     Intersection Observer flow here:
 
-    Page loads -> Observer created -> Observer watches trigger div -> User scrolls -> Trigger becomes visible ->
-    Browser runs callback -> isIntersecting ? -> Yes -> isFetchingMore ? -> No -> hasMore ? -> Yes ->
-    Fetch next page -> Append cards -> Trigger moves downward -> Repeat
+    Page loads -> Observer created -> Observer watches trigger div -> User scrolls -> Trigger becomes visible
+    -> Browser runs callback -> isIntersecting ? -> Yes -> loadingRef.current === true ? -> No -> hasMore ?
+    -> Yes -> Update page -> Fetch next page -> Append cards -> Trigger moves downward -> Repeat
     */
 
 
