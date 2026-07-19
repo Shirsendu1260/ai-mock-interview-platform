@@ -83,32 +83,32 @@ const UserDropdown = () => {
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
-                            transition={{ duration: 0.13 }}
-                            className='absolute right-0 top-14 z-50 w-72 rounded-3xl border
-                            border-border bg-white p-3 shadow-lg'
+                            transition={{ duration: 0.18 }}
+                            className='absolute right-0 top-16 z-50 w-80 rounded-3xl border
+                            border-border bg-background p-4 shadow-lg'
                         >
-                            <div className='border-b border-border p-2'>
-                                <div className='flex flex-row gap-3 items-center mb-2'>
+                            <div className='border-b border-border pb-4'>
+                                <div className='flex items-center gap-4 mb-2'>
                                     <UserAvatar size={9} />
-                                    <p className='font-semibold text-dark'>
+                                    <p className='text-lg font-semibold text-dark'>
                                         {user?.fullName}
                                     </p>
                                 </div>
 
-                                <p className='mt-1 text-sm text-muted'>
+                                <p className='mt-2 text-sm text-muted'>
                                     {user?.email}
                                 </p>
-                                <p className='mt-1 mb-2 text-sm text-muted'>
+                                <p className='mt-1 text-sm text-muted'>
                                     Joined {formatDate(user?.createdAt as string)}
                                 </p>
                             </div>
 
-                            <div className='mt-3 flex flex-col gap-2'>
+                            <div className='mt-4 flex flex-col gap-1'>
                                 <Link
                                     to='/dashboard/user/profile'
                                     onClick={() => setIsDropdownOpen(false)}
-                                    className='flex items-center gap-2 rounded-2xl px-3 py-2 text-sm
-                                    font-medium transition hover:bg-surface hover:cursor-pointer'
+                                    className='flex items-center gap-3 rounded-2xl px-4 py-3 text-sm
+                                    font-medium transition hover:bg-accent/8 hover:cursor-pointer'
                                 >
                                     <FaUser size={17}/>
                                     Profile
@@ -117,8 +117,8 @@ const UserDropdown = () => {
                                 <Link
                                     to='/dashboard/payments/history'
                                     onClick={() => setIsDropdownOpen(false)}
-                                    className='flex items-center gap-2 rounded-2xl px-3 py-2 text-sm
-                                    font-medium transition hover:bg-surface hover:cursor-pointer'
+                                    className='flex items-center gap-3 rounded-2xl px-4 py-3 text-sm
+                                    font-medium transition hover:bg-accent/8 hover:cursor-pointer'
                                 >
                                     <FaRupeeSign size={17}/>
                                     Payments History
@@ -127,8 +127,8 @@ const UserDropdown = () => {
                                 <Link
                                     to='/dashboard/payments/credit-history'
                                     onClick={() => setIsDropdownOpen(false)}
-                                    className='flex items-center gap-2 rounded-2xl px-3 py-2 text-sm
-                                    font-medium transition hover:bg-surface hover:cursor-pointer'
+                                    className='flex items-center gap-3 rounded-2xl px-4 py-3 text-sm
+                                    font-medium transition hover:bg-accent/8 hover:cursor-pointer'
                                 >
                                     <RiCopperCoinFill size={17} className='text-yellow-400' />
                                     Credits History
@@ -139,8 +139,8 @@ const UserDropdown = () => {
                                         await handleSignOut();
                                         setIsDropdownOpen(false)
                                     }}
-                                    className='flex items-center gap-2 rounded-2xl px-3 py-2
-                                    text-sm font-medium text-red-500 transition dark:hover:bg-red-950/40 hover:bg-red-50
+                                    className='flex items-center gap-3 rounded-2xl px-4 py-3
+                                    text-sm font-medium text-red-500 transition hover:bg-red-50 dark:hover:bg-red-950/40
                                     hover:cursor-pointer'
                                 >
                                     <IoLogOut size={17}/>
