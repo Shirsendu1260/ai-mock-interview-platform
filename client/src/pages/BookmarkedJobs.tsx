@@ -145,7 +145,7 @@ const BookmarkedJobs = () => {
 
     if(isLoading) {
         return (
-            <PageContainer className="flex min-h-[60vh] items-center justify-center">
+            <PageContainer>
                 <Spinner size="lg" />
             </PageContainer>
         );
@@ -154,7 +154,7 @@ const BookmarkedJobs = () => {
 
     if(jobs.length === 0) {
         return (
-            <PageContainer className="flex min-h-[60vh] items-center justify-center">
+            <PageContainer>
                 <EmptyState
                     icon={<FaBookmark />}
                     title="No Bookmarked Jobs"
@@ -166,7 +166,7 @@ const BookmarkedJobs = () => {
 
 
     return (
-        <PageContainer className="flex min-h-[60vh] items-center justify-center">
+        <PageContainer>
             <div className={`mx-auto w-full ${LAYOUT.maxWidth}`}>
                 <SectionHeading
                     description="All your saved jobs in one place."
