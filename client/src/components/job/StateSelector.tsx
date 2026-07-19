@@ -19,7 +19,7 @@ const StateSelector = ({
                 <select
                     className="
                         w-full rounded-xl border border-border
-                        bg-white px-4 py-3 appearance-none outline-none
+                        bg-surface px-4 py-3 appearance-none outline-none
                         focus:border-accent text-sm
                     "
                     value={stateName}

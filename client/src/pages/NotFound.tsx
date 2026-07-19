@@ -9,7 +9,7 @@ const NotFound = () => {
 
     return (
         <PageContainer>
-            <div className='w-full max-w-xl'>
+            <div className='w-full max-w-2xl'>
                 <EmptyState
                     title='Page Not Found'
                     description='The page you are looking for does not exist or may have been removed.'
@@ -21,7 +21,7 @@ const NotFound = () => {
                             Go Home
                         </Button>
                     }
-                    icon={<TbError404 size={40} />}
+                    icon={<TbError404 size={52} />}
                 />
             </div>
         </PageContainer>

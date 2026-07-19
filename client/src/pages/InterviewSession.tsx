@@ -282,7 +282,7 @@ const InterviewSession = () => {
 
     return (
         <PageContainer>
-            <div className={`w-full ${LAYOUT.maxWidth} space-y-6`}>
+            <div className={`w-full ${LAYOUT.maxWidth} space-y-8`}>
                 <InterviewInfoCard
                     role={interview.role}
                     difficulty={interview.difficulty}
@@ -299,18 +299,18 @@ const InterviewSession = () => {
                     )
                 }
 
-                <div className='grid gap-6 lg:grid-cols-[280px_1fr]'>
+                <div className='grid gap-7 lg:grid-cols-[300px_1fr]'>
                     <QuestionNavigation
                         qtnsCount={interview.qtnsCount}
                         currentPosition={currentPosition}
                         onQtnClick={handleQtnNavigation}
                     />
 
-                    <Card className='max-w-full'>
+                    <Card className='max-w-full p-8'>
                         {
                             isChangingQtn
                             ? (
-                                <div className='py-10 flex justify-center'>
+                                <div className='py-16 flex justify-center'>
                                     <Spinner />
                                 </div>
                             )
@@ -323,27 +323,27 @@ const InterviewSession = () => {
                                         onStop={() => stopSpeaking()}
                                     />
 
-                                    <div className='mt-6'>
+                                    <div className='mt-7'>
                                         <ResponseCard ans={ans} onAnsChange={setAns} />
                                     </div>
 
-                                    <div className='mt-8 flex flex-col gap-3 sm:flex-row sm:justify-between'>
+                                    <div className='mt-9 flex flex-col gap-4 border-t border-border pt-8 sm:flex-row sm:items-center sm:justify-between'>
                                         <Button
                                             variant='ghost'
                                             type='button'
                                             onClick={handlePreviousQtn}
                                             disabled={currentPosition === 1}
-                                            className='sm:w-40'
+                                            className='sm:min-w-40'
                                         >
                                             Back
                                         </Button>
 
-                                        <div className='flex gap-3'>
+                                        <div className='flex flex-col gap-3 sm:flex-row'>
                                             {currentPosition < interview.qtnsCount && (
                                                 <Button
                                                     type='button'
                                                     onClick={handleNextQtn}
-                                                    className='sm:w-40'
+                                                    className='sm:min-w-40'
                                                 >
                                                     Continue
                                                 </Button>
@@ -351,7 +351,7 @@ const InterviewSession = () => {
 
                                             <Button
                                                 type='button'
-                                                className='sm:w-48'
+                                                className='sm:min-w-48'
                                                 isLoading={isSubmitting}
                                                 onClick={() => setIsConfirmationModalOpen(true)}
                                             >

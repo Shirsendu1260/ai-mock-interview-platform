@@ -12,10 +12,10 @@ const Profile = () => {
 
     return (
         <PageContainer>
-            <div className={`w-full ${LAYOUT.maxWidth}`}>
+            <div className={`w-full mx-auto ${LAYOUT.maxWidth}`}>
                 <SectionHeading description="Manage your account information.">Profile</SectionHeading>
 
-                <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_340px]">
+                <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_360px]">
                     <ProfileInfoCard user={user} />
                     <DangerZoneCard />
                 </div>

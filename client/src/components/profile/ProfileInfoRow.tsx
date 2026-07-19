@@ -15,7 +15,7 @@ const ProfileInfoRow = ({ icon, label, value }: ProfileInfoRowProps) => {
                 <span className="text-muted">{label}</span>
             </div>
 
-            <span className="font-medium text-dark">{value}</span>
+            <span className="font-medium text-dark dark:text-white">{value}</span>
         </motion.div>
     );
 };

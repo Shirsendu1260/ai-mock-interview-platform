@@ -10,7 +10,7 @@ const GitHubSignInButton = ({ onClick }: ThirdPartySignInButtonProps) => {
 
 	return (
 		<Button
-			className='bg-primary flex items-center justify-center gap-3'
+			className='flex items-center justify-center gap-3 bg-primary shadow-sm hover:shadow-md'
 			onClick={onClick}
 			disabled={isAuthenticating}
 			isLoading={authenticatingProvider === 'GitHub'}

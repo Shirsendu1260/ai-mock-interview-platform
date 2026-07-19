@@ -49,7 +49,7 @@ const PaymentHistory = () => {
             {
                 isLoading
                 ? (
-                    <div className="flex justify-center py-20">
+                    <div className="flex items-center justify-center py-24">
                         <Spinner size="lg" />
                     </div>
                 )
@@ -70,8 +70,8 @@ const PaymentHistory = () => {
                     )
                     : (
                         <EmptyState
-                            title="No Payments Yet"
-                            description="Your payment history will appear here after purchasing a plan."
+                            title="No Payment History"
+                            description="Your completed payments will appear here once you purchase credits."
                         />
                     )
             }

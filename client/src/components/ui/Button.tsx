@@ -10,9 +10,9 @@ const Button = ({
 	...props
 }: ButtonProps) => {
 	const variantClasses = {
-		primary: "bg-accent text-white",
-		secondary: "bg-primary text-white",
-		ghost: "border border-border border-2 bg-white text-dark",
+		primary: "bg-accent text-white hover:bg-accent-light",
+	    secondary: "bg-primary text-white hover:bg-primary-light",
+	    ghost: "border-2 border-border bg-background text-dark hover:bg-border",
 	};
 
 	const variantClass = variantClasses[variant] ?? variantClasses.primary;

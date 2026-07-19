@@ -50,7 +50,7 @@ const QuestionResultCard = ({ qtnResult }: QuestionResultCardProps) => {
             {/*Feedback*/}
             <div className="mt-8">
                 <div className="flex items-center gap-2">
-                    <FaStar className="text-yellow-500" />
+                    <FaStar className="text-yellow-400" />
                     <h4 className="font-semibold text-dark">AI Feedback</h4>
                 </div>
 

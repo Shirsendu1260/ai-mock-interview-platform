@@ -26,7 +26,7 @@ const ResponseCard = ({ ans, onAnsChange }: ResponseCardProps) => {
                 placeholder="Explain your thoughts..."
                 className="
                     mt-6 w-full resize-none rounded-2xl border border-border
-                    bg-white p-5 leading-7 outline-none transition focus:border-accent
+                    bg-surface text-dark p-5 leading-7 outline-none transition focus:border-accent
                 "
             />
 

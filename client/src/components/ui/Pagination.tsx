@@ -19,8 +19,8 @@ const Pagination = ({
             >
                 <FaChevronLeft size={15} />
             </Button>
-            <span className="min-w-[3.5rem] text-center text-sm font-medium text-slate-600">
-                {page} <span className="text-slate-400">/</span> {totalPages || 1}
+            <span className="min-w-[3.5rem] text-center text-sm font-medium text-dark">
+                {page} <span className="text-muted">/</span> {totalPages || 1}
             </span>
             <Button
                 disabled={!hasNextPage}

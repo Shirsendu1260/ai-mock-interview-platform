@@ -66,8 +66,8 @@ const ResumeUploader = ({ resumePdfFile, setResumePdfFile, error, setErrors }: R
                             {/* Remove button */}
                             <button
                                 type='button'
-                                className='rounded-xl border border-red-200 px-4 py-2 text-sm font-medium
-                                text-red-500 transition hover:bg-red-50'
+                                className='rounded-xl border border-red-500/30 px-4 py-2 text-sm font-medium
+                                text-red-500 transition hover:bg-red-500/10'
                                 onClick={(event) => {
                                     // Prevent parent div click from reopening file picker
                                     event.stopPropagation();

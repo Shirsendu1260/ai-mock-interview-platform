@@ -32,7 +32,7 @@ const RoleSelect = ({ role, setRole, error, setErrors }: RoleSelectorProps) => {
                 <div className="relative">
                     <select
                         className='
-                            w-full rounded-xl border border-border bg-white px-4 py-3 outline-none
+                            w-full rounded-xl border border-border bg-surface text-dark px-4 py-3 outline-none
                             focus:border-accent appearance-none text-sm
                         '
                         onChange={handleJobRoleSelectEvent}

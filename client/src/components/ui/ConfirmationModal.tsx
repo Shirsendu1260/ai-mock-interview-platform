@@ -38,7 +38,7 @@ const ConfirmationModal = ({
                             -translate-y-1/2 outline-none"
                         >
                             <motion.div
-                                className="rounded-2xl border border-border bg-white p-6 shadow-2xl"
+                                className="rounded-2xl border border-border bg-background p-6 shadow-2xl"
                                 initial={{ opacity: 0, scale: 0.96 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.96 }}
@@ -47,9 +47,9 @@ const ConfirmationModal = ({
                                 <div className="flex items-start gap-4">
                                     <div
                                         className="flex h-12 w-12 shrink-0 items-center justify-center
-                                        rounded-full bg-red-100"
+                                        rounded-full bg-red-500/10"
                                     >
-                                        <FaExclamationTriangle className="text-xl text-red-600" />
+                                        <FaExclamationTriangle className="text-xl text-red-500" />
                                     </div>
 
                                     <div className="flex-1">

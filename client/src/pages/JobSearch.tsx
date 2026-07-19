@@ -18,6 +18,7 @@ import { useAuthStore } from "../stores/auth.store.js";
 import Spinner from "../components/ui/Spinner.js";
 import EmptyState from "../components/ui/EmptyState.js";
 import { PiBriefcaseFill } from 'react-icons/pi';
+import { LAYOUT } from '../constants/design.js';
 
 const JobSearch = () => {
     const [stateName, setStateName] = useState("");
@@ -216,16 +217,16 @@ const JobSearch = () => {
 
     return (
         <PageContainer>
-            <div className="mx-auto max-w-5xl">
+            <div className={`mx-auto ${LAYOUT.maxWidth}`}>
                 <SectionHeading
                     description="Upload your resume and instantly discover relevant jobs."
                 >
                     Job Search
                 </SectionHeading>
 
-                <Card className="mt-8">
-                    <form className="space-y-6" onSubmit={handleSearchJobs} >
-                        <div className="grid gap-5 md:grid-cols-2">
+                <Card className="mt-10">
+                    <form className="space-y-8" onSubmit={handleSearchJobs} >
+                        <div className="grid gap-6 md:grid-cols-2">
                             <StateSelector
                                 stateName={stateName}
                                 setStateName={setStateName}
@@ -252,7 +253,7 @@ const JobSearch = () => {
 
                         <Button
                             type="submit"
-                            className="w-full flex items-center justify-center gap-3"
+                            className="w-full py-3 flex items-center justify-center gap-3 text-base"
                             disabled={isLoadingMore || isSearching}
                             isLoading={isLoadingMore || isSearching}
                         >
@@ -266,10 +267,10 @@ const JobSearch = () => {
 
                 {
                     searchData && (
-                        <div className="mt-10 space-y-8">
+                        <div className="mt-14 space-y-10">
                             <SearchSummaryCard searchData={searchData} />
 
-                            <div className="grid gap-5 md:grid-cols-2">
+                            <div className="grid gap-7 md:grid-cols-2">
                                 {
                                     jobs.map(job => (
                                         <JobCard
@@ -285,7 +286,7 @@ const JobSearch = () => {
 
                             {
                                 jobs.length === 0 && (
-                                    <div className="py-3 text-center">
+                                    <div className="py-10 text-center">
                                         <EmptyState
                                             title="No matching jobs found"
                                             description="Try another state or upload a different resume."
@@ -297,14 +298,14 @@ const JobSearch = () => {
 
                             {
                                 jobs.length > 0 && (
-                                    <div className="mt-8 flex justify-center">
+                                    <div className="mt-10 flex justify-center">
                                         {
                                             hasMore ? (
                                                 <Button
                                                     onClick={handleLoadMore}
                                                     disabled={isLoadingMore || isSearching}
                                                     isLoading={isLoadingMore || isSearching}
-                                                    className="flex items-center justify-center gap-3"
+                                                    className="min-w-56 flex items-center justify-center gap-3"
                                                 >
                                                     {
                                                         isLoadingMore && (<Spinner size="sm" />)
@@ -312,7 +313,7 @@ const JobSearch = () => {
                                                     Load More Jobs
                                                 </Button>
                                             ) : (
-                                                <p className="text-center text-sm text-muted">
+                                                <p className="text-center text-base text-muted">
                                                     You've reached the end of the results.
                                                 </p>
                                             )

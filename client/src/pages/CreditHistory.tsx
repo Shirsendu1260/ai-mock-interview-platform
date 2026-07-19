@@ -49,14 +49,16 @@ const CreditHistory = () => {
             {
                 isLoading
                 ? (
-                    <div className="flex justify-center py-20">
+                    <div className="flex min-h-[40vh] items-center justify-center">
                         <Spinner size="lg" />
                     </div>
                 )
                 : creditHistory && creditHistory.items.length > 0
                     ? (
                         <>
-                            <CreditHistoryTable page={creditHistory.page} items={creditHistory.items} />
+                            <div className="mt-10">
+                                <CreditHistoryTable page={creditHistory.page} items={creditHistory.items} />
+                            </div>
 
                             <Pagination
                                 page={creditHistory.page}
@@ -69,10 +71,12 @@ const CreditHistory = () => {
                         </>
                     )
                     : (
-                        <EmptyState
-                            title="No Credit Transactions"
-                            description="Credit transactions will appear here once you start using the platform."
-                        />
+                        <div className="mt-10">
+                            <EmptyState
+                                title="No Credit Transactions"
+                                description="Credit transactions will appear here once you start using the platform."
+                            />
+                        </div>
                     )
             }
         </PageContainer>

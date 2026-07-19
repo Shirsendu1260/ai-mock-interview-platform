@@ -15,6 +15,7 @@ import { createInterviewHandler } from "../handlers/interview.handler.js";
 import { useNavigate } from "react-router-dom";
 import { ApiError } from "../utils/ApiError.js";
 import { showErrorToastWithToastId, showLoadingToast, showSuccessToastWithToastId } from "../utils/toast.js";
+import { LAYOUT } from "../constants/design.js";
 
 // This page will show the form and ask for required informations from user to start the interview
 const StartInterview = () => {
@@ -101,16 +102,16 @@ const StartInterview = () => {
 
     return (
         <PageContainer>
-            <div className='mx-auto max-w-4xl'>
+            <div className={`mx-auto ${LAYOUT.maxWidth}`}>
                 <SectionHeading
-                    description='Configure your interview settings and upload your resume.'
+                    description='Configure your interview and let AI tailor questions using your resume.'
                 >
                     Start Interview
                 </SectionHeading>
 
-                <Card className='mt-8 max-w-full'>
-                    <form className='space-y-6' onSubmit={handleStartInterview} >
-                        <div className="grid md:grid-cols-2 gap-5">
+                <Card className='mt-10 max-w-full p-8'>
+                    <form className='space-y-8' onSubmit={handleStartInterview} >
+                        <div className="grid gap-6 md:grid-cols-2">
                             <RoleSelector
                                 role={role}
                                 setRole={setRole}
@@ -134,7 +135,7 @@ const StartInterview = () => {
                             />
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-5">
+                        <div className="grid gap-6 md:grid-cols-2">
                             <DifficultySelector
                                 difficulty={difficultyState}
                                 setDifficulty={setDifficultyState}
@@ -158,7 +159,7 @@ const StartInterview = () => {
 
                         <CreditCostCard interviewCost={interviewCost} />
 
-                        <Button type='submit' className='w-full' isLoading={isSubmitting} >
+                        <Button type='submit' className='w-full text-base' isLoading={isSubmitting} >
                             Start Interview
                         </Button>
                     </form>

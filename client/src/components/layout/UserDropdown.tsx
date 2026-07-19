@@ -108,7 +108,7 @@ const UserDropdown = () => {
                                     to='/dashboard/user/profile'
                                     onClick={() => setIsDropdownOpen(false)}
                                     className='flex items-center gap-2 rounded-2xl px-3 py-2 text-sm
-                                    font-medium transition hover:bg-background hover:cursor-pointer'
+                                    font-medium transition hover:bg-surface hover:cursor-pointer'
                                 >
                                     <FaUser size={17}/>
                                     Profile
@@ -118,7 +118,7 @@ const UserDropdown = () => {
                                     to='/dashboard/payments/history'
                                     onClick={() => setIsDropdownOpen(false)}
                                     className='flex items-center gap-2 rounded-2xl px-3 py-2 text-sm
-                                    font-medium transition hover:bg-background hover:cursor-pointer'
+                                    font-medium transition hover:bg-surface hover:cursor-pointer'
                                 >
                                     <FaRupeeSign size={17}/>
                                     Payments History
@@ -128,7 +128,7 @@ const UserDropdown = () => {
                                     to='/dashboard/payments/credit-history'
                                     onClick={() => setIsDropdownOpen(false)}
                                     className='flex items-center gap-2 rounded-2xl px-3 py-2 text-sm
-                                    font-medium transition hover:bg-background hover:cursor-pointer'
+                                    font-medium transition hover:bg-surface hover:cursor-pointer'
                                 >
                                     <RiCopperCoinFill size={17} className='text-yellow-400' />
                                     Credits History
@@ -140,7 +140,7 @@ const UserDropdown = () => {
                                         setIsDropdownOpen(false)
                                     }}
                                     className='flex items-center gap-2 rounded-2xl px-3 py-2
-                                    text-sm font-medium text-red-500 transition hover:bg-red-50
+                                    text-sm font-medium text-red-500 transition dark:hover:bg-red-950/40 hover:bg-red-50
                                     hover:cursor-pointer'
                                 >
                                     <IoLogOut size={17}/>

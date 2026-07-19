@@ -26,7 +26,7 @@ const PlanCard = ({
                     ${
                         isCurrentPlan
                         ? "border-primary shadow-xl"
-                        : "border-gray-200 hover:border-primary-light"
+                        : "border-border hover:border-primary-light"
                     }
                 `}
             >
@@ -50,11 +50,11 @@ const PlanCard = ({
                 }
 
                 <div className="flex h-full flex-col">
-                    <h2 className="text-2xl font-bold capitalize">{plan}</h2>
-                    <p className="mt-5 text-4xl font-bold">₹{USER_PLANS_CREDITS[plan].price / 100}</p>
-                    <p className="mt-2 text-gray-600">{USER_PLANS_CREDITS[plan].credits} Credits</p>
+                    <h2 className="text-2xl font-bold capitalize text-dark dark:text-white">{plan}</h2>
+                    <p className="mt-5 text-4xl font-bold text-dark dark:text-white">₹{USER_PLANS_CREDITS[plan].price / 100}</p>
+                    <p className="mt-2 text-muted">{USER_PLANS_CREDITS[plan].credits} Credits</p>
                     <div className="mt-8 flex-1">
-                        <ul className="space-y-2 text-sm text-gray-600">
+                        <ul className="space-y-2 text-sm text-muted">
                             <li>&#10003; AI Interviews</li>
                             <li>&#10003; Resume Based Questions</li>
                             <li>&#10003; AI Feedback</li>

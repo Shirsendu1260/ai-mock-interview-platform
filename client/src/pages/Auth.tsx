@@ -65,14 +65,14 @@ const Auth = () => {
 	return (
 		<PageContainer>
 			<Card>
-				<div className="space-y-3">
-					<header className="flex justify-center flex-col mb-7">
+				<div className="space-y-5">
+					<header className="mb-8 flex flex-col items-center">
 						<Logo size="lg" />
 					</header>
 
-					<section className="mb-7">
-						<h2 className="mb-1 text-xl font-semibold">Welcome</h2>
-						<p className="text-gray-500">Sign in to continue.</p>
+					<section className="mb-8 text-center">
+						<h2 className="mb-2 text-2xl font-bold tracking-tight text-dark">Welcome</h2>
+						<p className="text-sm leading-6 text-muted">Sign in to continue.</p>
 					</section>
 
 					<GoogleSignInButton onClick={() => handleOAuthSignIn('Google')} />

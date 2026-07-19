@@ -77,7 +77,7 @@ const DashboardSidebar = () => {
 
 			{/* Desktop sidebar */}
 			<aside
-				className='hidden min-h-screen w-64 flex-shrink-0 border-r border-border bg-white py-7 px-4 md:block'
+				className='hidden min-h-screen w-64 flex-shrink-0 border-r border-border bg-background py-7 px-4 md:block'
 			>
 				<div className='space-y-3'>
 					{
@@ -96,7 +96,7 @@ const DashboardSidebar = () => {
 			{/* Mobile sidebar */}
 			<aside
 				className={`
-					fixed left-0 top-0 z-50 h-screen w-64 border-r border-border bg-white px-4 py-20
+					fixed left-0 top-0 z-50 h-screen w-64 border-r border-border bg-background px-4 py-20
 					transition-transform duration-250 md:hidden
 					${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
 				`}

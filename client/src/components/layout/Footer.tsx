@@ -20,7 +20,7 @@ const Footer = () => {
 							<p>&copy; {new Date().getFullYear()} {APP_NAME}</p>
 							<p>
 								Built by{' '}
-								<span className='font-semibold text-dark'>{DEVELOPER.name}</span>
+								<span className='font-semibold text-dark dark:text-white'>{DEVELOPER.name}</span>
 							</p>
 						</div>
 					</div>
@@ -33,7 +33,7 @@ const Footer = () => {
 							rel='noopener noreferrer'
 							className='
 								flex h-12 w-12 items-center justify-center
-								rounded-xl border border-2 border-border bg-white
+								rounded-xl border border-2 border-border bg-background
 								transition-all duration-200
 								hover:border-accent hover:text-accent
 							'
@@ -47,7 +47,7 @@ const Footer = () => {
 							rel='noopener noreferrer'
 							className='
 								flex h-12 w-12 items-center justify-center
-								rounded-xl border border-2 border-border bg-white
+								rounded-xl border border-2 border-border bg-background
 								transition-all duration-200
 								hover:border-accent hover:text-accent
 							'

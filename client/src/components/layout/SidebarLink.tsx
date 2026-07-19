@@ -20,7 +20,7 @@ const SidebarLink = ({ to, icon, label }: SidebarLinkProps) => {
 				${
 					isActive
 					? 'border-accent bg-accent text-white'
-					: 'border-border bg-white text-muted hover:border-accent hover:text-accent'
+					: 'border-border bg-background text-muted hover:border-accent hover:text-accent'
 				}`
 			}
 		>

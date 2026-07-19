@@ -13,14 +13,12 @@ const UserAvatar = ({ size }: UserAvatarSizeProps) => {
             <img
                 src={user?.avatarUrl ?? ''}
                 alt={user?.fullName}
-                className={`h-${heightWidthSize} w-${heightWidthSize} rounded-full border border-border
-                object-cover`}
+                className={`h-${heightWidthSize} w-${heightWidthSize} rounded-full border-2 border-border object-cover shadow-sm`}
                 onError={() => setIsImgError(true)}
             />
         ) : (
             <div
-                className={`flex items-center justify-center rounded-full bg-accent text-sm
-                font-semibold text-white h-${heightWidthSize} w-${heightWidthSize}`}
+                className={`flex h-${heightWidthSize} w-${heightWidthSize} items-center justify-center rounded-full bg-accent text-sm font-bold text-white shadow-sm`}
             >
                 {user?.fullName.charAt(0)}
             </div>

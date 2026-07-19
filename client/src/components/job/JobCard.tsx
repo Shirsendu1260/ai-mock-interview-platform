@@ -64,21 +64,21 @@ const JobCard = ({
             </div>
 
             <div className="mt-5 flex flex-wrap gap-3 text-sm">
-                <div className="flex items-center gap-2 rounded-full bg-gray-100 px-3 py-1.5">
+                <div className="flex items-center gap-2 rounded-full bg-surface px-3 py-1.5">
                     <FaLocationDot size={12} className="text-accent" />
                     <span>{job.location}</span>
                 </div>
 
                 {
                     job.salary && (
-                        <div className="flex items-center gap-2 rounded-full bg-green-100 px-3 py-1.5 font-medium text-green-700">
+                        <div className="flex items-center gap-2 rounded-full bg-green-100 dark:bg-green-900/25 px-3 py-1.5 font-medium text-green-700 dark:text-green-400">
                             <FaIndianRupeeSign size={11} />
                             <span>{job.salary}</span>
                         </div>
                     )
                 }
 
-                <div className="flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1.5">
+                <div className="flex items-center gap-2 rounded-full bg-blue-50 dark:bg-blue-900/25 px-3 py-1.5">
                     <FaBuilding size={11} className="text-accent" />
                     <span>{job.company}</span>
                 </div>
@@ -95,8 +95,8 @@ const JobCard = ({
                     target="_blank"
                     rel="noopener noreferrer nofollow"
                     className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-semibold
-                    text-sm bg-accent text-white hover:scale-[1.02] active:scale-[0.98] transition-transform
-                    duration-200 shadow-sm hover:shadow-md"
+text-sm bg-accent text-white hover:scale-[1.02] active:scale-[0.98]
+transition-transform duration-200 shadow-sm hover:shadow-md"
                 >
                     Apply
                     <FaArrowUpRightFromSquare size={13} />

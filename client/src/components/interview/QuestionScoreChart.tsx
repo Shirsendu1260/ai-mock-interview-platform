@@ -17,13 +17,13 @@ const QuestionScoreChart = ({ qtnData }: QuestionScoreChartProps) => {
                     }}
                 >
                     {/*Light grid behind bars*/}
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                    <CartesianGrid strokeDasharray="3 3" stroke={COLORS.border} />
 
                     {/*Score axis*/}
-                    <XAxis type="number" domain={[0, 10]} tick={{ fontSize: 13 }} />
+                    <XAxis type="number" domain={[0, 10]} tick={{ fontSize: 13, fill: COLORS.muted }} />
 
                     {/*Question numbers*/}
-                    <YAxis dataKey="question" type="category" tick={{ fontSize: 13 }} width={45} />
+                    <YAxis dataKey="question" type="category" tick={{ fontSize: 13, fill: COLORS.muted }} width={45} />
 
                     {/* Hover tooltip */}
                     <Tooltip/>

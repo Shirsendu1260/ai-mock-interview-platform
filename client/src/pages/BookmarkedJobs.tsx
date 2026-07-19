@@ -145,7 +145,7 @@ const BookmarkedJobs = () => {
 
     if(isLoading) {
         return (
-            <PageContainer>
+            <PageContainer className="flex min-h-[60vh] items-center justify-center">
                 <Spinner size="lg" />
             </PageContainer>
         );
@@ -154,7 +154,7 @@ const BookmarkedJobs = () => {
 
     if(jobs.length === 0) {
         return (
-            <PageContainer>
+            <PageContainer className="flex min-h-[60vh] items-center justify-center">
                 <EmptyState
                     icon={<FaBookmark />}
                     title="No Bookmarked Jobs"
@@ -166,8 +166,8 @@ const BookmarkedJobs = () => {
 
 
     return (
-        <PageContainer>
-            <div className={`w-full ${LAYOUT.maxWidth}`}>
+        <PageContainer className="flex min-h-[60vh] items-center justify-center">
+            <div className={`mx-auto w-full ${LAYOUT.maxWidth}`}>
                 <SectionHeading
                     description="All your saved jobs in one place."
                 >
@@ -177,7 +177,7 @@ const BookmarkedJobs = () => {
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="mt-8 grid gap-5 md:grid-cols-2"
+                    className="mt-10 grid gap-7 md:grid-cols-2 xl:gap-8"
                 >
                     {
                         jobs.map(job => (
@@ -199,7 +199,7 @@ const BookmarkedJobs = () => {
                                 initial={{ opacity: 0, y: 12 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -12 }}
-                                className="flex justify-center py-10"
+                                className="flex justify-center py-14"
                             >
                                 <Spinner size="lg" />
                             </motion.div>
@@ -213,7 +213,7 @@ const BookmarkedJobs = () => {
                         // When this becomes visible, the next page loads automatically
                         <div
                             ref={loadMoreRef}
-                            className="h-8"
+                            className="h-16"
                         />
                     )
                 }

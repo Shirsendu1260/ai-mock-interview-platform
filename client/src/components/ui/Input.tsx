@@ -13,7 +13,7 @@ const Input = ({ id, className = '', label, error, ...props }: InputProps) => {
 			<input
 				id={id}
 				className={`
-					h-12 w-full rounded-xl border border-border bg-white
+					h-12 w-full rounded-xl border border-border bg-background
 					px-4 text-dark outline-none transition focus:border-accent ${className}
 				`}
 

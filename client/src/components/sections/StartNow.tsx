@@ -24,7 +24,7 @@ const StartNow = () => {
 						Ready To Ace Your Next Interview?
 					</h2>
 
-					<p className='mx-auto mt-5 max-w-2xl text-gray-300 leading-8'>
+					<p className='mx-auto mt-5 max-w-2xl text-white/80 leading-8'>
 						Practice with AI-generated interviews, receive feedback,
 						and prepare with confidence for your dream software
 						engineering role.

@@ -23,14 +23,14 @@ const RangeSlider = ({ min, max, values, onChange }: RangeSliderProps) => {
 
                 <Slider.Thumb
                     className="
-                        block h-5 w-5 rounded-full border-2 border-primary-light bg-white shadow-md
+                        block h-5 w-5 rounded-full border-2 border-primary-light bg-background shadow-md
                         transition hover:scale-110 focus:outline-none focus:ring-4 focus:ring-primary-light/20
                     "
                 />
 
                 <Slider.Thumb
                     className="
-                        block h-5 w-5 rounded-full border-2 border-primary-light bg-white shadow-md
+                        block h-5 w-5 rounded-full border-2 border-primary-light bg-background shadow-md
                         transition hover:scale-110 focus:outline-none focus:ring-4 focus:ring-primary-light/20
                     "
                 />

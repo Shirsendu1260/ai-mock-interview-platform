@@ -125,11 +125,11 @@ const InterviewResult = () => {
                     Interview Result
                 </SectionHeading>
 
-                <Card className="text-center">
+                <Card className="text-center py-8">
                     <p className="text-sm text-muted">Overall Score</p>
-                    <h2 className="mt-2 text-6xl font-bold text-accent">
+                    <h2 className="mt-2 text-7xl tracking-tight font-bold text-accent">
                         {result.overallFeedback.overallScore}
-                        <span className="text-3xl">/100</span>
+                        <span className="text-3xl font-semibold">/100</span>
                     </h2>
                 </Card>
 
@@ -144,11 +144,11 @@ const InterviewResult = () => {
                     >
                         <Card className='h-full'>
                             <div className="flex items-center gap-3">
-                                <FaCheckCircle className="text-2xl text-green-600" />
-                                <h3 className="text-lg font-semibold">Strengths</h3>
+                                <FaCheckCircle className="text-3xl text-green-600" />
+                                <h3 className="text-2xl font-bold text-dark">Strengths</h3>
                             </div>
 
-                            <p className="mt-4 text-muted leading-7">
+                            <p className="mt-5 text-muted leading-8">
                                 {result.overallFeedback.strengths}
                             </p>
                         </Card>
@@ -163,11 +163,11 @@ const InterviewResult = () => {
                     >
                         <Card className='h-full'>
                             <div className="flex items-center gap-3">
-                                <FaTimesCircle className="text-2xl text-red-500" />
-                                <h3 className="text-lg font-semibold">Weaknesses</h3>
+                                <FaTimesCircle className="text-3xl text-red-500" />
+                                <h3 className="text-2xl font-bold text-dark">Weaknesses</h3>
                             </div>
 
-                            <p className="mt-4 text-muted leading-7">
+                            <p className="mt-5 text-muted leading-8">
                                 {result.overallFeedback.weaknesses}
                             </p>
                         </Card>
@@ -182,11 +182,11 @@ const InterviewResult = () => {
                     >
                         <Card className='h-full'>
                             <div className="flex items-center gap-3">
-                                <FaLightbulb className="text-2xl text-yellow-500" />
-                                <h3 className="text-lg font-semibold">Suggestions</h3>
+                                <FaLightbulb className="text-3xl text-yellow-500" />
+                                <h3 className="text-2xl font-bold text-dark">Suggestions</h3>
                             </div>
 
-                            <p className="mt-4 text-muted leading-7">
+                            <p className="mt-5 text-muted leading-8">
                                 {result.overallFeedback.suggestions}
                             </p>
                         </Card>
@@ -200,9 +200,9 @@ const InterviewResult = () => {
                     transition={{ duration: 0.45 }}
                 >
                     <Card>
-                        <h2 className="text-xl font-semibold text-dark">Interview Performance</h2>
-                        <div className="mt-8 flex flex-col items-center gap-6 lg:flex-row">
-                            <div className="h-44 w-44">
+                        <h2 className="text-4xl font-bold tracking-tight text-dark">Interview Performance</h2>
+                        <div className="mt-10 flex flex-col items-center gap-6 lg:flex-row">
+                            <div className="h-48 w-48">
                                 <CircularProgressbar
                                     value={result.overallFeedback.overallScore}
                                     text={`${result.overallFeedback.overallScore}`}
@@ -217,10 +217,10 @@ const InterviewResult = () => {
                             </div>
 
                             <div className="flex-1">
-                                <h3 className="text-3xl font-bold" style={{ color: performance.color }} >
+                                <h3 className="text-3xl font-semibold font-bold" style={{ color: performance.color }} >
                                     {performance.title}
                                 </h3>
-                                <p className="mt-3 text-muted leading-7">
+                                <p className="mt-4 text-muted leading-8">
                                     {result.overallFeedback.overallFeedback}
                                 </p>
                             </div>
@@ -230,13 +230,13 @@ const InterviewResult = () => {
 
                 {/*Bar chart for question scores*/}
                 <Card>
-                    <h3 className="mb-6 text-xl font-semibold">Question-wise Performance</h3>
+                    <h3 className="mb-8 text-2xl font-bold text-dark">Question-wise Performance</h3>
 
                     <QuestionScoreChart qtnData={qtnChartData} />
 
                     {/*Individual question results*/}
-                    <div className="space-y-6">
-                        <SectionHeading description="Detailed feedback for every interview question.">
+                    <div className="space-y-8">
+                        <SectionHeading description="Detailed AI evaluation for every interview question.">
                             Question Analysis
                         </SectionHeading>
 
@@ -259,14 +259,14 @@ const InterviewResult = () => {
                     </div>
                 </Card>
 
-                <div className="mt-10 flex flex-wrap justify-center gap-4">
+                <div className="mt-14 flex flex-wrap justify-center items-center gap-4">
                     <Button onClick={handleDownloadReport} disabled={isDownloading}>
                         {
                             isDownloading
                             ? (
                                 <>                                
                                 <Spinner size="sm" />
-                                <span>Generating your PDF</span>
+                                <span>Preparing your report...</span>
                                 </>
                             )
                             : (
@@ -290,7 +290,7 @@ const InterviewResult = () => {
                         variant="secondary"
                         onClick={() => navigate('/dashboard/interviews/history')}
                     >
-                        <FaHistory className="text-base" />
+                        <FaHistory className="text-lg" />
                         Interview History
                     </Button>
                 </div>

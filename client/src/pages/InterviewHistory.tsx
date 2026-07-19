@@ -263,19 +263,19 @@ const InterviewHistory = () => {
                     Interview History
                 </SectionHeading>
 
-                <div className="mt-6 flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div className="mt-6 flex flex-col gap-4 rounded-3xl border border-border bg-surface p-6 shadow-soft">
                     {/*Top Row: Search & Sort*/}
                     <div className="flex flex-col gap-4 sm:flex-row">
                         <div className="relative flex-1">
-                            <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                            <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
                             <input
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 placeholder="Search past interviews by role..."
                                 className="
-                                    w-full rounded-lg border border-slate-200 bg-slate-50 py-2 pl-10 pr-3.5
-                                    text-sm text-slate-700 outline-none transition
-                                    focus:border-primary-light focus:bg-white focus:ring-1 focus:ring-primary-light
+                                    w-full rounded-xl border border-border bg-surface-alt py-2 pl-10 pr-3.5
+                                    text-sm text-dark outline-none transition
+                                    focus:border-accent focus:bg-surface focus:ring-4 focus:ring-accent/15
                                 "
                             />
                         </div>
@@ -285,9 +285,9 @@ const InterviewHistory = () => {
                                 value={sort}
                                 onChange={(e) => setSort(e.target.value)}
                                 className="
-                                    w-full rounded-lg border border-slate-200 bg-slate-50 py-2 px-3.5
-                                    text-sm text-slate-700 outline-none transition
-                                    focus:border-primary-light focus:bg-white focus:ring-1 focus:ring-primary-light
+                                    w-full rounded-xl border border-border bg-surface-alt py-2 px-3.5
+                                    text-sm text-dark outline-none transition
+                                    focus:border-accent focus:bg-surface focus:ring-4 focus:ring-accent/15
                                 "
                             >
                                 <option value="newest">Sort By: Newest First</option>
@@ -298,13 +298,13 @@ const InterviewHistory = () => {
                         </div>
                     </div>
 
-                    <div className="h-px w-full bg-slate-100" />
+                    <div className="h-px w-full bg-border" />
 
                     {/*Bottom Row: Filters*/}
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         {/* Difficulty */}
                         <div className="flex flex-col gap-2">
-                            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                            <span className="text-xs font-semibold uppercase tracking-wide text-muted">
                                 Difficulty
                             </span>
 
@@ -321,8 +321,8 @@ const InterviewHistory = () => {
                                                 rounded-md px-3.5 py-2 text-xs font-semibold capitalize transition-colors
                                                 ${
                                                     active
-                                                    ? "bg-primary-light text-white"
-                                                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                                                    ? "bg-accent text-white shadow-soft"
+                                                    : "bg-surface-alt text-muted hover:bg-accent/10 hover:text-accent"
                                                 }
                                             `}
                                         >
@@ -335,7 +335,7 @@ const InterviewHistory = () => {
 
                         {/* Score */}
                         <div className="flex flex-col gap-2">
-                            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                            <span className="text-xs font-semibold uppercase tracking-wide text-muted">
                                 Score Range
                             </span>
 
@@ -349,7 +349,7 @@ const InterviewHistory = () => {
 
                         {/* Dates */}
                         <div className="flex flex-col gap-2">
-                            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                            <span className="text-xs font-semibold uppercase tracking-wide text-muted">
                                 Date Range
                             </span>
 
@@ -359,12 +359,12 @@ const InterviewHistory = () => {
                                     value={fromDate}
                                     onChange={(e) => setFromDate(e.target.value)}
                                     className="
-                                        w-full rounded-md border border-slate-200 bg-slate-50 px-3.5 py-2
-                                        text-xs text-slate-700 outline-none focus:border-primary-light focus:bg-white
+                                        w-full rounded-md border border-border bg-surface-alt px-3.5 py-2
+                                        text-xs text-dark outline-none focus:border-accent focus:bg-surface
                                     "
                                 />
 
-                                <span className="text-slate-500">
+                                <span className="text-muted">
                                     <IoIosArrowForward size={14} />
                                 </span>
 
@@ -373,8 +373,8 @@ const InterviewHistory = () => {
                                     value={toDate}
                                     onChange={(e) => setToDate(e.target.value)}
                                     className="
-                                        w-full rounded-md border border-slate-200 bg-slate-50 px-3.5 py-2
-                                        text-xs text-slate-700 outline-none focus:border-primary-light focus:bg-white
+                                        w-full rounded-md border border-border bg-surface-alt px-3.5 py-2
+                                        text-xs text-dark outline-none focus:border-accent focus:bg-surface
                                     "
                                 />
                             </div>
@@ -386,9 +386,9 @@ const InterviewHistory = () => {
                                 type="button"
                                 onClick={resetFilters}
                                 className="
-                                    flex w-full items-center justify-center gap-2 rounded-lg border border-red-200
-                                    bg-red-50 px-3.5 py-2 text-sm font-semibold text-red-600 transition
-                                    hover:bg-red-100 hover:text-red-700 sm:w-auto
+                                    flex w-full items-center justify-center gap-2 rounded-xl border border-red-300
+                                    bg-red-50/70 px-3.5 py-2 text-sm font-semibold text-red-600 transition
+                                    hover:bg-red-100/80 hover:text-red-700 sm:w-auto
                                 "
                             >
                                 <TbReload size={16} />
@@ -400,7 +400,7 @@ const InterviewHistory = () => {
 
                 {
                     interviews.length === 0 ? (
-                        <div className="mt-12">
+                        <div className="mt-16">
                             <EmptyState
                                 icon={<FaHistory />}
                                 title={
@@ -430,7 +430,7 @@ const InterviewHistory = () => {
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                className="mt-8 grid gap-6 sm:grid-cols-2"
+                                className="mt-10 grid gap-8 sm:grid-cols-2"
                             >
                                 {
                                     interviews.map((interview, index) => (
@@ -451,7 +451,7 @@ const InterviewHistory = () => {
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: -16 }}
                                             transition={{ duration: 0.25 }}
-                                            className="py-10 flex justify-center"
+                                            className="py-14 flex justify-center"
                                         >
                                             <Spinner size="lg" />
                                         </motion.div>

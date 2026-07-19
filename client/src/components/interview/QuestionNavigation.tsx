@@ -10,7 +10,7 @@ const QuestionNavigation = ({
                                     .fill(null)
                                     .map((_, index) => index + 1);
     return (
-        <div className='flex flex-col gap-2 p-4 bg-white rounded-2xl border border-border h-fit'>
+        <div className='flex flex-col gap-2 p-4 bg-surface rounded-2xl border border-border h-fit'>
             <p className='text-sm font-medium text-muted mb-1'>Questions</p>
             <div className='flex flex-wrap gap-2'>
                 {btnNumbersArray.map((position) => (

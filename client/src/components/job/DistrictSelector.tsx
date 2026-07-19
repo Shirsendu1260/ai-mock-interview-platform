@@ -31,9 +31,9 @@ const DistrictSelector = ({
                         }));
                     }}
                     className="
-                        w-full rounded-xl border border-border text-sm
-                        bg-white px-4 py-3 appearance-none outline-none
-                        focus:border-accent disabled:bg-gray-100 disabled:text-gray-400
+                        w-full rounded-xl border border-border text-sm text-dark
+                        bg-surface px-4 py-3 appearance-none outline-none disabled:opacity-60
+                        focus:border-accent disabled:bg-surface disabled:text-muted
                     "
                 >
                     <option value="">

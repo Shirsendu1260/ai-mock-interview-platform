@@ -68,7 +68,7 @@ const HowItWorksSection = () => {
 											<div className='text-2xl text-primary'>
 												<Icon />
 											</div>
-											<h3 className='text-lg font-semibold'>
+											<h3 className='text-lg font-semibold text-dark'>
 												{step.title}
 											</h3>
 										</div>

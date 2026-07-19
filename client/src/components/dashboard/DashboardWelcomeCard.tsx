@@ -7,7 +7,7 @@ const DashboardWelcomeCard = () => {
 
 	return (
 		<Card className='max-w-full'>
-			<div className='flex items-center justify-between gap-5'>
+			<div className='flex items-center justify-between gap-6'>
 				<div>
 					<h1 className='text-3xl font-bold text-dark'>
 						Welcome back,
@@ -18,7 +18,7 @@ const DashboardWelcomeCard = () => {
 					</p>
 				</div>
 
-				<div className='hidden rounded-3xl bg-accent p-4 text-white md:block'>
+				<div className='hidden rounded-3xl bg-accent p-5 shadow-lg text-white md:block'>
 					<PiBriefcaseFill size={31} />
 				</div>
 			</div>

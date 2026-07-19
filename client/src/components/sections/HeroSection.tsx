@@ -109,7 +109,7 @@ const HeroSection = () => {
 										whileHover={{ y: -4 }}
 										className='
 											rounded-3xl border border-border
-											bg-white p-6 shadow-sm
+											bg-background p-6 shadow-sm
 										'
 									>
 										<div
@@ -121,7 +121,7 @@ const HeroSection = () => {
 											<Icon />
 										</div>
 
-										<h3 className='font-semibold'>{item.title}</h3>
+										<h3 className='font-semibold text-dark'>{item.title}</h3>
 									</motion.div>
 								);
 							})

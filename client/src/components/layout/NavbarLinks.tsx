@@ -42,7 +42,7 @@ const NavbarLinks = ({ isMobile = false }: NavbarLinksProps) => {
 							<>
 								<div
 									className='flex items-center gap-1 rounded-xl border border-border
-									bg-surface px-3 py-2 text-sm font-medium'
+									bg-background px-3 py-2 text-sm font-medium'
 								>
 									<RiCopperCoinFill size={16} className='text-yellow-400' />
 									{user?.credit}

@@ -89,14 +89,14 @@ const PaymentPage = () => {
 
     return (
         <PageContainer>
-            <div className={`mx-auto ${LAYOUT.maxWidth}`}>
+            <div className={`mx-auto w-full ${LAYOUT.maxWidth}`}>
                 <SectionHeading
                     description="Choose a plan to purchase additional credits."
                 >
                     Upgrade Plan
                 </SectionHeading>
 
-                <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="mt-11 grid gap-9 md:grid-cols-2">
                     {
                         USER_PLANS.map((plan) => (
                             <PlanCard

@@ -18,13 +18,13 @@ const Logo = ({ size = 'md' }: LogoProps) => {
 			subtitleClass: 'text-[11px]'
 		},
 		md: {
-			logoClass: 'h-12 w-12',
-			titleClass: 'text-2xl',
+			logoClass: 'h-13 w-13',
+			titleClass: 'text-[1.65rem]',
 			subtitleClass: 'text-xs'
 		},
 		lg: {
-			logoClass: 'h-16 w-16',
-			titleClass: 'text-4xl',
+			logoClass: 'h-17 w-17',
+			titleClass: 'text-5xl',
 			subtitleClass: 'text-sm'
 		}
 	};
@@ -32,20 +32,20 @@ const Logo = ({ size = 'md' }: LogoProps) => {
 	const currentSize = sizeMap[size];
 
 	return (
-		<div className='flex items-center gap-3'>
+		<div className='flex items-center gap-4'>
 			{/* Brand icon */}
 			<img
 				src={logo}
 				alt={`${APP_NAME} logo`}
-				className={`${currentSize.logoClass} rounded-2xl`}
+				className={`${currentSize.logoClass} rounded-2xl shadow-sm`}
 			/>
 
 			{/* Brand text */}
 			<div className='leading-tight'>
-				<h1 className={`font-bold tracking-tight text-dark ${currentSize.titleClass}`} >
+				<h1 className={`font-extrabold tracking-tight text-dark ${currentSize.titleClass}`} >
 					{APP_NAME}
 				</h1>
-				<p className={`font-medium text-muted ${currentSize.subtitleClass}`} >
+				<p className={`font-medium tracking-wide text-muted ${currentSize.subtitleClass}`} >
 					AI-Powered Interview Practice
 				</p>
 			</div>

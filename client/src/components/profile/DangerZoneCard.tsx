@@ -44,7 +44,7 @@ const DangerZoneCard = () => {
     return (
         <>
             <Card>
-                <h2 className="text-xl font-semibold text-red-600">Danger Zone</h2>
+                <h2 className="text-xl font-semibold text-red-500 dark:text-red-400">Danger Zone</h2>
 
                 <p className="mt-3 text-muted">
                     Permanently delete your account, interview history and interview results.

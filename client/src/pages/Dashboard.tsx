@@ -52,7 +52,7 @@ const Dashboard = () => {
 	// Show loader until stats load
 	if(isLoading) {
         return (
-            <div className="flex justify-center items-center">
+            <div className="flex min-h-[50vh] items-center justify-center">
                 <Spinner size="lg" />
             </div>
         );
@@ -63,7 +63,7 @@ const Dashboard = () => {
 		<div className='space-y-6'>
 			<DashboardWelcomeCard/>
 			
-			<div className='grid gap-5 md:grid-cols-3 justify-start'>
+			<div className='grid gap-6 sm:grid-cols-2 xl:grid-cols-3'>
 				<StatsCard title='Credits' value={user?.credit ?? 0} />
 				<StatsCard title='Interviews Created' value={totalInterviews} />
 				<StatsCard title='Completed Interviews' value={completedInterviews} />
