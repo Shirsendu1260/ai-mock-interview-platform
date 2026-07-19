@@ -1,4 +1,4 @@
-import { FcGoogle } from "react-icons/fc";
+import { BsGoogle } from "react-icons/bs";
 import Button from '../ui/Button.jsx';
 import type { ThirdPartySignInButtonProps } from '../../types/types.js';
 import { useAuthStore } from '../../stores/auth.store.js';
@@ -25,7 +25,7 @@ const GoogleSignInButton = ({ onClick }: ThirdPartySignInButtonProps) => {
 					)
 					: (
 						<>
-							<FcGoogle size={20} />
+							<BsGoogle size={20} />
 							<span>Continue with Google</span>
 						</>
 					)

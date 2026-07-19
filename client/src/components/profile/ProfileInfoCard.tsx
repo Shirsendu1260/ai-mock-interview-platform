@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { FaEnvelope, FaCalendarAlt } from "react-icons/fa";
 import { MdVerified } from "react-icons/md";
-import { FcGoogle } from "react-icons/fc";
+import { BsGoogle } from "react-icons/bs";
 import { BsGithub } from "react-icons/bs";
 import { RiCopperCoinFill } from "react-icons/ri";
 import Card from "../ui/Card.jsx";
@@ -44,7 +44,7 @@ const ProfileInfoCard = ({ user }: ProfileInfoCardProps) => {
                     value={String(user.plan).charAt(0).toUpperCase() + String(user.plan).slice(1)}
                 />
                 <ProfileInfoRow
-                    icon={user.authProvider === "Google" ? <FcGoogle /> : <BsGithub />}
+                    icon={user.authProvider === "Google" ? <BsGoogle /> : <BsGithub />}
                     label="Signed in with"
                     value={ user.authProvider === "Google" ? "Google" : "GitHub" }
                 />
