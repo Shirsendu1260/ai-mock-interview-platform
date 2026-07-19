@@ -1,60 +1,59 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght=0,14..32,100..900;1,14..32,100..900&display=swap');
 @import "tailwindcss";
 
 @theme {
-	--font-sans: "Inter", sans-serif;
+    --font-sans: "Inter", sans-serif;
 
-	--color-primary: var(--primary);
-	--color-primary-light: var(--primary-light);
-	--color-dark: var(--dark);
-	--color-dark-light: var(--dark-light);
-	--color-accent: var(--accent);
-	--color-accent-light: var(--accent-light);
-	--color-background: var(--background);
-	--color-border: var(--border);
-	--color-muted: var(--muted);
+    --color-primary: var(--primary);
+    --color-primary-light: var(--primary-light);
+    --color-dark: var(--dark);
+    --color-dark-light: var(--dark-light);
+    --color-accent: var(--accent);
+    --color-accent-light: var(--accent-light);
+    --color-background: var(--background);
+    --color-border: var(--border);
+    --color-muted: var(--muted);
 }
 
-/* Light theme values */
+/* Light theme values - Premium Slate & Indigo */
 html.light {
-	--primary: #1E3A5F;
-	--primary-light: #2B4C78;
-	--dark: #0B1120;
-	--dark-light: #1E293B;
-	--accent: #7C3AED;
-	--accent-light: #A78BFA;
-	--background: #F8FAFC;
-	--border: #E2E8F0;
-	--muted: #64748B;
+    --primary: #4f46e5;       /* Indigo 600 */
+    --primary-light: #6366f1; /* Indigo 500 */
+    --dark: #0f172a;          /* Slate 900 (Main text) */
+    --dark-light: #334155;    /* Slate 700 (Secondary text) */
+    --accent: #7c3aed;        /* Violet 600 */
+    --accent-light: #a78bfa;  /* Violet 400 */
+    --background: #f8fafc;    /* Slate 50 */
+    --border: #e2e8f0;        /* Slate 200 */
+    --muted: #64748b;         /* Slate 500 */
 }
 
-
-/* Dark theme values */
+/* Dark theme values - Premium Zinc & Sleek Indigo */
 html.dark {
-	--primary: #60A5FA;
-	--primary-light: #3B82F6;
-	--dark: #F8FAFC;
-	--dark-light: #CBD5E1;
-	--accent: #A78BFA;
-	--accent-light: #C4B5FD;
-	--background: #0F172A;
-	--border: #334155;
-	--muted: #94A3B8;
+    --primary: #6366f1;       /* Indigo 500 (Pops perfectly on dark) */
+    --primary-light: #818cf8; /* Indigo 400 */
+    --dark: #f4f4f5;          /* Zinc 100 (Main text) */
+    --dark-light: #d4d4d8;    /* Zinc 300 (Secondary text) */
+    --accent: #a78bfa;        /* Violet 400 */
+    --accent-light: #c4b5fd;  /* Violet 300 */
+    --background: #09090b;    /* Zinc 950 (Deep, premium canvas) */
+    --border: #27272a;        /* Zinc 800 (Subtle borders) */
+    --muted: #71717a;         /* Zinc 500 */
 }
 
 html,
 body,
 #root {
-	min-height: 100%;
+    min-height: 100%;
 }
 
 body {
-	font-family: var(--font-sans);
-	background-color: var(--color-background);
-	color: var(--color-dark);
+    font-family: var(--font-sans);
+    background-color: var(--color-background);
+    color: var(--color-dark);
 }
 
 ::selection {
-	background: var(--color-primary-light);
-	color: white;
+    background: var(--color-primary-light);
+    color: white;
 }
