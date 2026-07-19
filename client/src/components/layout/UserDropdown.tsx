@@ -66,7 +66,7 @@ const UserDropdown = () => {
         <div className='relative' ref={dropdownRef}>
             <button
                 onClick={() => setIsDropdownOpen(prev => !prev)}
-                className='cursor-pointer'
+                className='cursor-pointer flex h-10 w-10 items-center justify-center rounded-full'
             >
                 <UserAvatar size={10} />
             </button>

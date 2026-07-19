@@ -39,7 +39,7 @@ const NavbarLinks = ({ isMobile = false }: NavbarLinksProps) => {
 						</Link>
 
 						{!isMobile && (
-							<>
+							<div className='flex items-center gap-4'>
 								<div
 									className='flex items-center gap-1 rounded-xl border border-border
 									bg-background px-3 py-2 text-sm font-medium'
@@ -48,7 +48,7 @@ const NavbarLinks = ({ isMobile = false }: NavbarLinksProps) => {
 									{user?.credit}
 								</div>
 								<UserDropdown />
-							</>
+							</div>
 						)}
 					</>
 				) : (
