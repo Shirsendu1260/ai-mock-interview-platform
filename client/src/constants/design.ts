@@ -16,7 +16,7 @@ export const COLORS = {
 
 export const LAYOUT = {
 	// Max width of content containers
-	maxWidth: 'max-w-6xl mx-auto',
+	maxWidth: 'max-w-7xl mx-auto',
 
 	// Horizontal padding for responsive layouts
 	paddingX: 'px-3.5 sm:px-5 lg:px-7',
