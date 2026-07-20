@@ -239,7 +239,7 @@ const InterviewHistory = () => {
 
         // Disconnect the observer when the component unmounts
         return () => observer.disconnect();
-    }, [hasMore, page, loadHistory]);
+    }, [hasMore, page, loadHistory, interviews.length]); // Added interviews.length to trigger observation once data mounts
 
 
     if(isLoading) {
