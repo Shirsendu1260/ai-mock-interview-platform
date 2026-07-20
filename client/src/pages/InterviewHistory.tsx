@@ -259,6 +259,35 @@ const InterviewHistory = () => {
     -> Yes -> loadHistory(page + 1) -> Append cards -> page state updates -> Trigger moves downward -> Repeat
     */
 
+    /*
+      HOW THIS FILE WORKS:
+
+      1. STATE & FILTER MANAGEMENT
+      The component tracks all user filters in reactive states: search terms, selected difficulties,
+      score ranges, and date boundaries. To protect server resources, the search input uses a 400ms
+      debounce timer; it waits until the user finishes typing before triggering an actual backend request.
+      There is also a dedicated "Reset" handler to clear all selections back to their factory defaults.
+
+      2. DATA FETCHING ARCHITECTURE (`loadHistory`)
+      The core logic relies on a single, highly stable function wrapped in `useCallback` called `loadHistory`.
+      It gathers all active filter states, formats them into API parameters, and hits the backend.
+      It handles two operational modes based on a boolean flag (`isReset`):
+      - Fresh State (isReset = true): Overwrites the entire interview array (used on initial load, search, or filter changes).
+      - Append State (isReset = false): Keeps existing cards and stitches the new page data onto the end of the array.
+
+      3. THE FILTER-TRIGGER SYNC
+      A dedicated `useEffect` monitors every filter and sort option. The moment any filter value alters,
+      it tells `loadHistory` to immediately request Page 1 and overwrite the old results. This fixes race
+      conditions where asynchronous state updates might otherwise try to read or fetch mismatched page numbers.
+
+      4. INFINITE SCROLL (`IntersectionObserver`)
+      Instead of manual "Load More" pagination buttons, an `IntersectionObserver` tracks an invisible trigger
+      `<div>` pinned underneath the interview grid. When the user scrolls down and this element approaches the
+      viewport (with a 250px early-trigger safety margin), the observer automatically runs. If no request is
+      currently active and the backend confirms more records exist (`hasMore`), it automatically fetches and
+      appends the next page seamlessly.
+    */
+
 
     return (
         <PageContainer>
