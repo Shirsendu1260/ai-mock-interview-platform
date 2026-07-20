@@ -1,4 +1,4 @@
-import { pgTable, uuid, integer, varchar, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, integer, varchar, text, timestamp } from 'drizzle-orm/pg-core';
 import { users } from './users.js';
 
 export const payments = pgTable('payments', {
@@ -11,6 +11,10 @@ export const payments = pgTable('payments', {
     plan: varchar('plan', { length: 20 }).notNull(),
     amount: integer('amount').notNull(),
     status: varchar('status', { length: 20 }).notNull(),
+    failureCode: varchar('failure_code', { length: 128 }),
+    failureReason: text('failure_reason'),
+    failureSource: varchar('failure_source', { length: 128 }),
+    failureStep: varchar('failure_step', { length: 128 }),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
