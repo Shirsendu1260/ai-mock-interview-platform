@@ -52,7 +52,7 @@ const CreditHistoryTable = ({ items, page }: CreditHistoryTableProps) => {
                                                 <span className="text-red-600">-</span>
                                             )
                                         }
-                                        <span className="text-dark dark:text-white">{item.credits}</span>
+                                        <span className="text-dark">{item.credits}</span>
                                     </td>
                                     <td className="px-4 py-3">
                                         {

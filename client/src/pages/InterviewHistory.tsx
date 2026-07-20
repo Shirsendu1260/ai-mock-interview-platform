@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { FaHistory } from 'react-icons/fa';
 import PageContainer from '../components/ui/PageContainer.jsx';
@@ -18,10 +18,10 @@ import { TbReload } from 'react-icons/tb';
 import { IoIosArrowForward } from 'react-icons/io';
 
 const InterviewHistory = () => {
-	const [interviews, setInterviews] = useState<IInterviewHistory[]>([]);
-	const [isLoading, setIsLoading] = useState(false); // for page-1 loading
-	const [page, setPage] = useState(1); // Current page loaded from backend (first we load page 1, i.e. default)
-	const [hasMore, setHasMore] = useState(true); // Whether backend has more interviews to show
+    const [interviews, setInterviews] = useState<IInterviewHistory[]>([]);
+    const [isLoading, setIsLoading] = useState(false); // for page-1 loading
+    const [page, setPage] = useState(1); // Current page loaded from backend (first we load page 1, i.e. default)
+    const [hasMore, setHasMore] = useState(true); // Whether backend has more interviews to show
 
     // Prevent duplicate requests (true when frontend is still requesting data)
     // Unlike React state, refs update instantly and don't wait for a re-render
@@ -38,7 +38,7 @@ const InterviewHistory = () => {
     // Invisible element placed at the bottom of the page
     // When this element becomes visible on screen,
     // Intersection Observer knows the user has reached the bottom
-	const loadMoreRef = useRef<HTMLDivElement>(null);
+    const loadMoreRef = useRef<HTMLDivElement>(null);
     const [isFetchingMore, setIsFetchingMore] = useState(false);
 
 
@@ -80,51 +80,20 @@ const InterviewHistory = () => {
     }, [search]);
 
 
-    // Reset pagination whenever filters change
-    // Whenever the search or any filters or sort changes - clear old interviews, start again from page 1,
-    // enable infinite scrolling again
-    useEffect(() => {
-        setInterviews([]); // staring again freshly as filter/sort/search applied
-        setPage(1);
-        setHasMore(true);
-        setIsLoading(false);
-    }, [
-        debouncedSearch, // we are using 'debouncedSearch' to prevent API call on every keystroke
-        selectedDifficulties,
-        scoreRange,
-        fromDate,
-        toDate,
-        sort
-    ]);
-
-
-    // Whenever page/filter/search/sort changes, fetch interviews of that page
-    useEffect(() => {
-        loadHistory(page);
-    }, [
-        page,
-        debouncedSearch,
-        selectedDifficulties,
-        scoreRange,
-        fromDate,
-        toDate,
-        sort
-    ]);
-
-
     // Loads interviews from the backend based on page number
-    const loadHistory = async (currentPage: number) => {
+    // Wrapped in useCallback because it's now called directly from two
+    // different places (the filter-reset useEffect AND the load-more useEffect),
+    // so it needs a stable identity + access to the latest filter values
+    // 'requestedPage' tells the function which page to ask the backend for
+    const loadHistory = useCallback(async (requestedPage: number, isReset: boolean) => {
         // Don't send request, if backend already told us there are no more pages to return
         if(!hasMore) return;
-
-        // Another request is already running
-        if(loadingRef.current) return;
 
         // Lock immediately before sending the request (denotes a request is ongoing)
         loadingRef.current = true;
 
         try {
-            if(currentPage === 1) {
+            if(requestedPage === 1) {
                 setIsLoading(true);
             }
             else {
@@ -132,7 +101,7 @@ const InterviewHistory = () => {
             }
 
             const params: IInterviewHistoryFilters = {
-                page: currentPage,
+                page: requestedPage,
                 sort
             };
 
@@ -163,11 +132,11 @@ const InterviewHistory = () => {
             // Load interviews of current page
             const response = await getInterviewHistoryHandler(params);
 
-            // For fresh start or search/sort/filter
-            if(currentPage === 1){
+            // For fresh start/search/filter/sort change -> replace the list
+            if(isReset){
                 setInterviews(response.data.interviews);
             }
-            // Load more request
+            // Load more request -> append to existing list
             else{
                 setInterviews(prev => [
                     ...prev,
@@ -177,6 +146,11 @@ const InterviewHistory = () => {
 
             // Backend tells us whether another page exists or not
             setHasMore(response.data.hasMore);
+
+            // Keep 'page' state in sync with what we actually loaded, so the
+            // next load-more request (triggered by Intersection Observer) asks
+            // for requestedPage + 1 instead of re-requesting the same page.
+            setPage(requestedPage);
         }
         catch(error) {
             if(error instanceof ApiError) {
@@ -187,7 +161,7 @@ const InterviewHistory = () => {
             }
         }
         finally {
-            if(currentPage === 1){
+            if(requestedPage === 1){
                 setIsLoading(false);
             }
             else {
@@ -197,11 +171,39 @@ const InterviewHistory = () => {
             // Release the lock after request finishes
             loadingRef.current = false;
         }
-    };
+    }, [debouncedSearch, selectedDifficulties, scoreRange, fromDate, toDate, sort]);
+
+
+    // Single effect that reacts to filter/sort/search changes.
+    // Old code had two effects both listening to the same filters (one to
+    // reset page/hasMore, another to fetch interviews) - they fired in the same render
+    // and raced against each other, so 'page' hadn't actually updated yet when the
+    // fetch effect read it. That's what broke Reset
+    // So what really happened earlier:
+    // Filter changes
+    // useEffect A says "set page to 1" (but this hasn't applied yet)
+    // useEffect B runs immediately after, still sees page = 3, and fetches page 3 of our new
+    // filtered results, which is garbage or empty
+    // This is why Reset looked broken, and why Load More broke after filtering
+    // Now, whenever a filter changes, we directly fetch page 1 and replace
+    // the list (isReset = true). We don't touch 'page' state beforehand
+    // loadHistory itself sets page to 1 once the fetch succeeds
+    useEffect(() => {
+        setHasMore(true); // assume there is more until this fetch tells us otherwise
+        loadHistory(1, true); // true means it's a filter/search/sort request
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [
+        debouncedSearch, // we are using 'debouncedSearch' to prevent API call on every keystroke
+        selectedDifficulties,
+        scoreRange,
+        fromDate,
+        toDate,
+        sort
+    ]);
 
 
     // Observe the invisible div placed at the bottom of the page
-    // Whenever this becomes visible, the next page is automatically loaded
+    // Whenever this becomes visible, load the next page (append mode)
     useEffect(() => {
         // If the element isn't mounted yet, we don't need to observe
         if(!loadMoreRef.current) return;
@@ -215,10 +217,11 @@ const InterviewHistory = () => {
                 // And also check if more data can be loaded (using hasMore)
                 // And also check any request is not ongoing
                 if(entries[0].isIntersecting && hasMore && !loadingRef.current) {
-                    setPage(prev => prev + 1);
-                    // The actual API request happens inside the page effect
-                    // Observer should not know how to fetch, it should just update page number
-                    // And corresponsding useEffect should handle API call
+                    // Fetch the next page directly (isReset = false -> append).
+                    // We no longer go through setPage() first; loadHistory
+                    // takes the page number as an argument and updates
+                    // 'page' state itself once the request succeeds
+                    loadHistory(page + 1, false);
                 }
             },
 
@@ -235,7 +238,7 @@ const InterviewHistory = () => {
 
         // Disconnect the observer when the component unmounts
         return () => observer.disconnect();
-    }, [hasMore]);
+    }, [hasMore, page, loadHistory]);
 
 
     if(isLoading) {
@@ -252,11 +255,11 @@ const InterviewHistory = () => {
 
     Page loads -> Observer created -> Observer watches trigger div -> User scrolls -> Trigger becomes visible
     -> Browser runs callback -> isIntersecting ? -> Yes -> loadingRef.current === true ? -> No -> hasMore ?
-    -> Yes -> Update page -> Fetch next page -> Append cards -> Trigger moves downward -> Repeat
+    -> Yes -> loadHistory(page + 1) -> Append cards -> page state updates -> Trigger moves downward -> Repeat
     */
 
 
-	return (
+    return (
         <PageContainer>
             <div className={`w-full ${LAYOUT.maxWidth}`}>
                 <SectionHeading description="Review your previous interview performances.">

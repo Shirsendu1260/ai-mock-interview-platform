@@ -51,10 +51,10 @@ const PaymentHistoryTable = ({ items, page }: PaymentHistoryTableProps) => {
                                             minute: '2-digit'
                                         })}
                                     </td>
-                                    <td className="px-4 py-3 text-sm font-medium capitalize text-dark dark:text-white">
+                                    <td className="px-4 py-3 text-sm font-medium capitalize text-dark">
                                         {item.plan}
                                     </td>
-                                    <td className="px-4 py-3 text-sm font-medium text-dark dark:text-white">
+                                    <td className="px-4 py-3 text-sm font-medium text-dark">
                                         ₹{(item.amount / 100).toFixed(2)}
                                     </td>
                                     <td className="px-4 py-3">
