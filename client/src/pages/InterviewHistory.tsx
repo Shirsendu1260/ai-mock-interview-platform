@@ -86,8 +86,9 @@ const InterviewHistory = () => {
     // so it needs a stable identity + access to the latest filter values
     // 'requestedPage' tells the function which page to ask the backend for
     const loadHistory = useCallback(async (requestedPage: number, isReset: boolean) => {
-        // Don't send request, if backend already told us there are no more pages to return
-        if(!hasMore) return;
+        // If we are resetting filters, we must allow the API call to run
+        // even if hasMore was previously false. Otherwise, the user gets permanently locked out.
+        if(!hasMore && !isReset) return;
 
         // Lock immediately before sending the request (denotes a request is ongoing)
         loadingRef.current = true;
@@ -171,7 +172,7 @@ const InterviewHistory = () => {
             // Release the lock after request finishes
             loadingRef.current = false;
         }
-    }, [debouncedSearch, selectedDifficulties, scoreRange, fromDate, toDate, sort]);
+    }, [debouncedSearch, selectedDifficulties, scoreRange, fromDate, toDate, sort, hasMore]);
 
 
     // Single effect that reacts to filter/sort/search changes.
@@ -226,9 +227,9 @@ const InterviewHistory = () => {
             },
 
             // OPTIONS
+            // Trigger loading a little before the user reaches the bottom of the page
+            // Which helps getting data a bit early before reaching bottom
             {
-                // Trigger loading a little before the user reaches the bottom of the page
-                // Which helps getting data a bit early before reaching bottom
                 rootMargin: '250px'
             }
         );
