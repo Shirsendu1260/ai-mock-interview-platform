@@ -192,7 +192,6 @@ const InterviewHistory = () => {
     useEffect(() => {
         setHasMore(true); // assume there is more until this fetch tells us otherwise
         loadHistory(1, true); // true means it's a filter/search/sort request
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         debouncedSearch, // we are using 'debouncedSearch' to prevent API call on every keystroke
         selectedDifficulties,

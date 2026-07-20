@@ -50,8 +50,8 @@ const PlanCard = ({
                 }
 
                 <div className="flex h-full flex-col">
-                    <h2 className="text-2xl font-bold capitalize text-dark dark:text-white">{plan}</h2>
-                    <p className="mt-5 text-4xl font-bold text-dark dark:text-white">₹{USER_PLANS_CREDITS[plan].price / 100}</p>
+                    <h2 className="text-2xl font-bold capitalize text-dark">{plan}</h2>
+                    <p className="mt-5 text-4xl font-bold text-dark">₹{USER_PLANS_CREDITS[plan].price / 100}</p>
                     <p className="mt-2 text-muted">{USER_PLANS_CREDITS[plan].credits} Credits</p>
                     <div className="mt-8 flex-1">
                         <ul className="space-y-2 text-sm text-muted">

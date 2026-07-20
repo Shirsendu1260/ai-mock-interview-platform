@@ -16,7 +16,7 @@ const ProfileInfoCard = ({ user }: ProfileInfoCardProps) => {
         <Card>
             <div className="flex flex-col items-center">
                 <UserAvatar size={24}/>
-                <h2 className="mt-5 text-2xl font-semibold text-dark dark:text-white">{user.fullName}</h2>
+                <h2 className="mt-5 text-2xl font-semibold text-dark">{user.fullName}</h2>
                 <p className="text-muted">{APP_NAME} User</p>
             </div>
 
