@@ -20,7 +20,7 @@ const Footer = () => {
 							<p>&copy; {new Date().getFullYear()} {APP_NAME}</p>
 							<p>
 								Built by{' '}
-								<span className='font-semibold text-dark dark:text-white'>{DEVELOPER.name}</span>
+								<span className='font-semibold text-dark'>{DEVELOPER.name}</span>
 							</p>
 						</div>
 					</div>
