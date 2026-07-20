@@ -3,7 +3,10 @@ import { LAYOUT } from "../../constants/design.js";
 
 const PageContainer = ({ children }: PageContainerProps) => {
 	return (
-		<div className={`py-7 bg-background ${LAYOUT.paddingX} flex flex-col items-center justify-center`}>
+		<div className={`
+			bg-background ${LAYOUT.maxWidth} ${LAYOUT.paddingX} ${LAYOUT.paddingY} flex flex-col
+			items-center justify-center
+		`}>
 			{children}
 		</div>
 	)

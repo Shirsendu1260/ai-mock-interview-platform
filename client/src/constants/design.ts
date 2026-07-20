@@ -16,11 +16,11 @@ export const COLORS = {
 
 export const LAYOUT = {
 	// Max width of content containers
-	maxWidth: 'max-w-7xl',
+	maxWidth: 'max-w-6xl mx-auto',
 
 	// Horizontal padding for responsive layouts
-	paddingX: 'px-4 sm:px-6 lg:px-8',
+	paddingX: 'px-3.5 sm:px-5 lg:px-7',
 
 	// Vertical padding for responsive layouts between sections
-	paddingY: 'py-12 md:py-16'
+	paddingY: 'py-9 md:py-13'
 };
