@@ -385,12 +385,12 @@ const InterviewHistory = () => {
                         </div>
 
                         {/* Reset */}
-                        <div className="flex items-end justify-start lg:justify-end">
+                        <div className="flex items-end justify-end">
                             <button
                                 type="button"
                                 onClick={resetFilters}
                                 className="
-                                    flex w-full items-center justify-center gap-2 rounded-md border border-red-200/60
+                                    flex w-full items-center justify-center gap-2 rounded-md border border-border
                                     bg-surface-alt px-3.5 py-2 text-xs font-semibold text-red-500 transition-colors
                                     hover:bg-red-50 hover:text-red-600 sm:w-auto
                                 "
