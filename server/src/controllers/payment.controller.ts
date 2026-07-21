@@ -7,7 +7,7 @@ import { PAID_PLANS, USER_PLANS_CREDITS } from '../constants.js';
 import { razorpay } from '../config/razorpay.config.js';
 import { payments, type NewPayment } from '../db/schema/payments.js';
 import Joi from 'joi';
-import type { IErrorMessage, IRazorpayPaymentCapturedWebhook, PaidPlan } from '../types/types.js';
+import type { IErrorMessage, IRazorpayWebhook, PaidPlan } from '../types/types.js';
 import crypto from 'crypto';
 import { users } from '../db/schema/users.js';
 import { creditTransactions, type NewCreditTransaction } from '../db/schema/creditTransactions.js';
@@ -329,12 +329,13 @@ const razorpayWebhook = asyncHandler(async (req, res) => {
 
 
     // Verified now, now parse JSON
-    const webhookPayload: IRazorpayPaymentCapturedWebhook = JSON.parse(rawBody.toString('utf8'));
+    const webhookPayload: IRazorpayWebhook = JSON.parse(rawBody.toString('utf8'));
 
 
-    // To only process payment captured (payment success) event,
+    // To only process payment captured (payment success) or failed event,
     // ignore all others
-    if(webhookPayload.event !== 'payment.captured') {
+    const event = webhookPayload.event;
+    if(event !== 'payment.captured' && event !== 'payment.failed') {
         return res.status(200).json(
             new ApiResponse(200, {}, 'Event ignored.')
         );
@@ -342,8 +343,10 @@ const razorpayWebhook = asyncHandler(async (req, res) => {
 
 
     // Collect payment information
-    const razorpayOrderId = webhookPayload.payload.payment.entity.order_id;
-    const razorpayPaymentId = webhookPayload.payload.payment.entity.id;
+    // Both events (success/failed) can contain the payment entity
+    const paymentEntity = webhookPayload.payload.payment.entity;
+    const razorpayOrderId = paymentEntity.order_id;
+    const razorpayPaymentId = paymentEntity.id;
 
 
     // Find our payment row
@@ -375,8 +378,44 @@ const razorpayWebhook = asyncHandler(async (req, res) => {
         );
     }
 
+    if(payment.status === 'failed') {
+        return res.status(200).json(
+            new ApiResponse(200, {}, 'Payment already marked as failed.')
+        );
+    }
+
+
+    // If payment was failed due to any reason
+    if(event === 'payment.failed') {
+        // If already paid, ignore
+        // A paid payment should never become failed
+        if(payment.status === 'paid') {
+            return res.status(200).json(
+                new ApiResponse(200, {}, 'Payment already completed.')
+            );
+        }
+
+        // Update row for failure status
+        await db.update(payments)
+                .set({
+                    status: 'failed',
+                    razorpayPaymentId: razorpayPaymentId,
+                    failureCode: paymentEntity.error_code ?? null,
+                    failureReason: paymentEntity.error_description ?? null,
+                    failureSource: paymentEntity.error_source ?? null,
+                    failureStep: paymentEntity.error_step ?? null,
+                    updatedAt: new Date()
+                })
+                .where(eq(payments.id, payment.id));
+
+        return res.status(200).json(
+            new ApiResponse(200, {}, 'Failed payment recorded.')
+        );
+    }
+
 
     // Store using transaction
+    // Now entire transaction is executed only for 'payment.captured'
     const purchasedCredits = USER_PLANS_CREDITS[payment.plan as PaidPlan].credits;
 
     await db.transaction(async (tx) => {
@@ -385,7 +424,6 @@ const razorpayWebhook = asyncHandler(async (req, res) => {
                                             .set({
                                                 status: 'paid',
                                                 razorpayPaymentId,
-                                                razorpaySignature,
                                                 updatedAt: new Date()
                                             })
                                             .where(eq(payments.id, payment.id))

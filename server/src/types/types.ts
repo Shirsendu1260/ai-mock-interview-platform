@@ -52,14 +52,27 @@ interface IInterviewEvaluationResult {
 
 type PaidPlan = typeof PAID_PLANS[number];
 
-interface IRazorpayPaymentCapturedWebhook {
-    event: string;
+interface RazorpayPaymentEntity {
+    id: string;
+    order_id: string;
+    amount: number;
+    currency: string;
+    status: string;
+    method?: string;
+    email?: string;
+    contact?: string;
+    error_code?: string | null;
+    error_description?: string | null;
+    error_source?: string | null;
+    error_step?: string | null;
+    error_reason?: string | null;
+}
+
+interface IRazorpayWebhook {
+    event: 'payment.captured' | 'payment.failed';
     payload: {
         payment: {
-            entity: {
-                id: string;
-                order_id: string;
-            };
+            entity: RazorpayPaymentEntity;
         };
     };
 }
@@ -145,7 +158,8 @@ export type {
 	AnswerEvaluationOfQuestion,
 	IInterviewEvaluationResult,
     PaidPlan,
-    IRazorpayPaymentCapturedWebhook,
+    RazorpayPaymentEntity,
+    IRazorpayWebhook,
     IGenerateAIQuestionResponse,
     IJobKeywordExtractionResponse,
     IJobSearchResult,
