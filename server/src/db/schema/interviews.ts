@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, integer, real, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, integer, real, timestamp, index } from 'drizzle-orm/pg-core';
 import { users } from './users.js';
 
 export const interviews = pgTable('interviews', {
@@ -29,7 +29,21 @@ export const interviews = pgTable('interviews', {
 
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull()
-});
+}, (table) => ({
+    // Used while fetching a user's interview history
+    // Speeds up loading a user's interview history because almost every query filters by userId
+    userIdIdx: index('interviews_user_id_idx').on(table.userId),
+
+    // Used for sorting by completion date
+    // Helps sorting interview history by completion date without scanning the whole table
+    completedAtIdx: index('interviews_completed_at_idx').on(table.completedAt),
+
+    // Used for filtering interviews by difficulty
+    difficultyIdx: index('interviews_difficulty_idx').on(table.difficulty),
+
+    // Used together with userId for interview history
+    userCompletedIdx: index('interviews_user_completed_idx').on(table.userId, table.completedAt)
+}));
 
 export type Interview = typeof interviews.$inferSelect;
 export type NewInterview = typeof interviews.$inferInsert;

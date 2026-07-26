@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, varchar, timestamp, unique } from "drizzle-orm/pg-core";
+import { pgTable, uuid, text, varchar, timestamp, unique, index } from "drizzle-orm/pg-core";
 import { users } from "./users.js";
 
 export const bookmarkedJobs = pgTable("bookmarked_jobs", {
@@ -18,12 +18,15 @@ export const bookmarkedJobs = pgTable("bookmarked_jobs", {
         uniqueBookmark: unique().on( // Creates a composite unique constraint in the table
             table.userId,
             table.jobId
-        ) // This combination of userId and jobId must be unique together
+        ), // This combination of userId and jobId must be unique together
 
         // It is created so that a user can only bookmark a specific job once
         // user1, job123 -> allowed
         // user1, job567 -> allowed
         // user1, job123 -> not allowed, it is duplicate, already created earlier
+
+        // Used while loading user's bookmarks faster
+        userIdIdx: index('bookmarked_jobs_user_idx').on(table.userId)
     }
 ));
 

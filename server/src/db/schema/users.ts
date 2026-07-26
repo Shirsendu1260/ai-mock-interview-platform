@@ -9,6 +9,8 @@ export const users = pgTable('users', {
 	fullName: varchar('full_name', { length: 128 }).notNull(),
 
 	// Email address, max 255 characters, must be unique across the entire table
+	// Helps quickly find a user by email during login, signup and Google OAuth
+	// Since email is unique, this also prevents duplicate accounts
 	email: varchar('email', { length: 255 }).notNull().unique(),
 
 	// Stores image url coming from Google/GitHub

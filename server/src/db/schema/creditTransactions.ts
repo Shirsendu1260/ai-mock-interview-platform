@@ -1,4 +1,4 @@
-import { pgTable, uuid, integer, varchar, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, integer, varchar, timestamp, index } from 'drizzle-orm/pg-core';
 import { users } from './users.js';
 import { payments } from './payments.js';
 
@@ -9,7 +9,10 @@ export const creditTransactions = pgTable('credit_transactions', {
     credits: integer('credits').notNull(),
     type: varchar('type', { length: 40 }).notNull(), // interview, purchase etc.
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull()
-});
+}, (table) => ({
+    // Used for faster credit history page fetching
+    userCreatedIdx: index('credit_transactions_user_created_idx').on(table.userId, table.createdAt)
+}));
 
 export type CreditTransaction = typeof creditTransactions.$inferSelect;
 export type NewCreditTransaction = typeof creditTransactions.$inferInsert;
