@@ -1,6 +1,7 @@
 import { db } from "../config/db.js";
 import { and, eq, lt } from "drizzle-orm";
 import { payments } from "../db/schema/payments.js";
+import { logger } from "../config/logger.js";
 
 export const cleanupExpiredCreatedPayments = async () => {
     // Get the date/time from 24 hrs ago
@@ -12,5 +13,5 @@ export const cleanupExpiredCreatedPayments = async () => {
                                 lt(payments.createdAt, time24HrsAgo) // older/less than 24 hrs
                             ));
 
-    console.log(`Deleted ${result.rowCount} expired payments.`);
+    logger.info({ deletedPayments: result.rowCount }, `Deleted ${result.rowCount} expired payments.`);
 };

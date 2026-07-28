@@ -1,6 +1,7 @@
 import type { AdzunaJob, IJobSearchResult } from '../../types/types.js';
 import { ApiError } from '../../utils/ApiError.js';
 import { JOBS_PER_PAGE } from '../../constants.js';
+import { logger } from '../../config/logger.js';
 
 const searchJobsFromAdzuna = async (
     role: string,
@@ -28,7 +29,9 @@ const searchJobsFromAdzuna = async (
                     `&where=${encodeURIComponent(location)}` +
                     `&content-type=application/json`;
 
-    console.log(url);
+    logger.debug({
+        url: url.replace(process.env.ADZUNA_APP_KEY!, 'ADZUNA_APP_KEY')
+    }, 'Adzuna job search request');
 
     const response = await fetch(url);
 

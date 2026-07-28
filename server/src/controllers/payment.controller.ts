@@ -14,6 +14,7 @@ import { creditTransactions, type NewCreditTransaction } from '../db/schema/cred
 import { cleanupExpiredCreatedPayments } from '../utils/paymentCleanup.js';
 import { PAYMENTS_CREDITS_PAGE_LIMIT } from '../constants.js';
 import { calculatePagination } from '../utils/pagination.js';
+import { logger } from '../config/logger.js';
 
 // - Frontend
 //   POST /payments/create-order
@@ -275,7 +276,8 @@ const verifyRazorpayPayment = asyncHandler(async (req, res) => {
 // i.e. POST /payments/verify. Our backend should be able to handle both. This is called
 // Idempotency.
 const razorpayWebhook = asyncHandler(async (req, res) => {
-    console.log('Razorpay webhook endpoint hit...');
+    logger.info({ url: req.url }, 'Razorpay webhook received');
+
 
     // Razorpay automatically sends a signature inside this header
     // This is generated using: Raw request body + our webhook secret
@@ -353,7 +355,7 @@ const razorpayWebhook = asyncHandler(async (req, res) => {
     // If the order genuinely doesn't exist, we will receive retries for hours
     // So intentionally ignoring it, no retries
     if(!payment) {
-        console.warn(`Webhook received for unknown order ${razorpayOrderId}`);
+        logger.warn({ razorpayOrderId }, `Webhook received for unknown order ${razorpayOrderId}`);
         return res.status(200).json(
             new ApiResponse(200, {}, 'Unknown payment ignored.')
         );
