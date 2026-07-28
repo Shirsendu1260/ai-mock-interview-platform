@@ -11,7 +11,10 @@ import { DATA_LIMIT } from './constants.js';
 import type { Request, Response, NextFunction } from 'express';
 import { ApiError } from './utils/ApiError.js';
 import { generalLimiter } from './middlewares/rateLimiter.middleware.js';
-import { httpLogger } from './middlewares/logger.middleware.js';
+import PinoHttp from 'pino-http';
+import { logger } from './config/logger.js';
+import { db } from './config/db.js';
+import { sql } from 'drizzle-orm';
 
 
 
@@ -44,8 +47,44 @@ app.use(cors({
 	// Allows browsers to send cookies, authorization headers
 }));
 
-// Setup HTTP logger
-app.use(httpLogger);
+// Request ID middleware
+// Assigns a unique ID (UUID) to every incoming request
+// This ID is attached to every log entry for that request via pino-http
+// In production, multiple users hit the server simultaneously
+// Without a request ID, log entries from different requests get mixed together
+// and we can't trace which log lines belong to which user's failing request
+// The X-Request-Id header is also returned in the response
+// so that the frontend can reference it when reporting bugs
+app.use((req: Request, res: Response, next: NextFunction) => {
+    // Use existing header if a gateway/proxy already set it, else generate a new one
+    const requestId = (req.headers['x-request-id'] as string) || crypto.randomUUID();
+    req.headers['x-request-id'] = requestId;
+    res.setHeader('X-Request-Id', requestId);
+    next();
+});
+
+// HTTP request logger using pino-http
+// Logs every incoming request and its response automatically
+// Each log line includes: method, url, statusCode, responseTime, requestId
+app.use(PinoHttp.pinoHttp({
+	// Use our existing Pino logger config
+    logger,
+
+    // Attach the request ID from our middleware above so every log line has it
+    genReqId: (req) => req.headers['x-request-id'] as string,
+
+    // Don't log health check requests, they would spam the logs every 30s
+    autoLogging: {
+        ignore: (req) => req.url === '/health'
+    },
+
+    // Customize what gets logged for each request/response
+    customLogLevel: (_, res) => {
+        if(res.statusCode >= 500) return 'error';
+        if(res.statusCode >= 400) return 'warn';
+        return 'info';
+    }
+}));
 
 // Webhook must come before express.json() as it is extracting raw Buffer data
 app.use(
@@ -93,6 +132,28 @@ app.use('/api/v1/jobs', jobRouter);
 
 
 
+// Health check endpoint
+// To confirm the server is alive and the database is reachable
+// This must be defined before the 404 handler so it doesn't get ignored
+app.get('/health', async (_: Request, res: Response) => {
+    try {
+        // Verify the database is reachable, not just that the server is running
+        await db.execute(sql`SELECT 1`);
+        return res.status(200).json({
+            status: 'ok',
+            timestamp: new Date().toISOString(),
+            uptime: process.uptime()
+        });
+    }
+    catch(error) {
+        logger.error({ err: error }, 'Health check: database unreachable');
+        return res.status(503).json({
+            status: 'error',
+            message: 'Database unreachable'
+        });
+    }
+});
+
 // 404 response for unknown routes
 app.use((_: Request, res: Response) => {
 	return res.status(404).json({
@@ -105,6 +166,25 @@ app.use((_: Request, res: Response) => {
 // Global error handler (with all 4 parameters for Express to treat it as error handler middleware)
 app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
 	if(err instanceof ApiError) {
+        // 4xx errors are expected (bad input, auth failures), log as warn, not error
+        // 5xx errors are unexpected server problems, log as error
+        if(err.statusCode >= 500) {
+            logger.error({
+                err,
+                statusCode: err.statusCode,
+                requestId: req.headers['x-request-id'],
+                url: req.url,
+                method: req.method
+            }, `Server error: ${err.message}`);
+        }
+        else {
+            logger.warn({
+                statusCode: err.statusCode,
+                requestId: req.headers['x-request-id'],
+                url: req.url
+            }, `Client error: ${err.message}`);
+        }
+
 		return res.status(err.statusCode).json({
 			statusCode: err.statusCode,
 			success: false,
@@ -113,13 +193,22 @@ app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
 		});
 	}
 
-	// If any unexpected error occurs such as server crashes, unknown bugs etc.
+	// Unexpected errors (not ApiError), these are bugs or crashes
+    logger.error({
+        err,
+        requestId: req.headers['x-request-id'],
+        url: req.url,
+        method: req.method
+    }, 'Unhandled error in request');
+
 	return res.status(500).json({
 		statusCode: 500,
 		success: false,
-		message: err instanceof Error ? err.message : 'Internal Server Error.'
+		message: 'Internal Server Error.'
+        // Never expose the raw error message for unexpected errors
 	});
 });
+
 
 
 
