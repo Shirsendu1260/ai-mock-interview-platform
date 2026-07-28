@@ -10,7 +10,14 @@ neonConfig.webSocketConstructor = ws;
 // The pool efficiently reuses database connections instead of
 // opening a brand new connection for every query
 const pool = new Pool({
-	connectionString: process.env.NEONDB_URI
+	connectionString: process.env.NEONDB_URI,
+	max: 6, // max. no. of db conections
+
+	// Close idle connections after 30s
+	idleTimeoutMillis: 30000,
+
+	// fail if connection cannot be acquired within 4s
+	connectionTimeoutMillis: 4000
 });
 
 // Create Drizzle database instance
