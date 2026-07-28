@@ -14,11 +14,9 @@ import { creditTransactions, type NewCreditTransaction } from "../db/schema/cred
 import { bookmarkedJobs } from "../db/schema/bookmarkedJobs.js";
 
 const searchJobs = asyncHandler(async (req, res) => {
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated to search jobs.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
     const { state, district, page = 1 } = req.body as {
         state: string,
@@ -198,11 +196,9 @@ const loadMoreJobs = asyncHandler(async (req, res) => {
 });
 
 const bookmarkJob = asyncHandler(async (req, res) => {
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated to bookmark a job.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
     const validatorSchema = Joi.object({
         jobId: Joi.string().required(),
@@ -253,11 +249,9 @@ const bookmarkJob = asyncHandler(async (req, res) => {
 });
 
 const removeBookmark = asyncHandler(async (req, res) => {
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated to remove a job bookmark.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
     const validatorSchema = Joi.object({
         jobId: Joi.string().required()
@@ -297,11 +291,9 @@ const removeBookmark = asyncHandler(async (req, res) => {
 });
 
 const getBookmarkedJobs = asyncHandler(async (req, res) => {
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated to get bookmarked jobs list.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
     const validatorSchema = Joi.object({
         page: Joi.number().integer().min(1).default(1)
@@ -360,11 +352,9 @@ const getBookmarkedJobs = asyncHandler(async (req, res) => {
 });
 
 const getBookmarkedJobIds = asyncHandler(async (req, res) => {
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated to get bookmarked jobs ids.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
     const jobs = await db.select({
                                 jobId: bookmarkedJobs.jobId

@@ -25,12 +25,9 @@ const createInterview = asyncHandler(async (req, res) => {
     };
 
 
-    // Auth check
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated to start a interview.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
 
     // Code to prevent user from creating new interview if there is any ongoing interview created by him/her
@@ -237,12 +234,9 @@ const getInterview = asyncHandler(async (req, res) => {
     const { interviewId } = req.params;
 
 
-    // Auth check
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated to access interview details.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
 
     // Validate interview id
@@ -326,12 +320,9 @@ const getInterviewQuestion = asyncHandler(async (req, res) => {
     const { interviewId, position } = req.params;
 
 
-    // Auth check
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated to access interview questions.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
 
     // Validate route params
@@ -431,12 +422,9 @@ const saveInterviewQuestionAnswer = asyncHandler(async (req, res) => {
     const { answer } = req.body as { answer: string };
 
 
-    // Auth check
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated to save interview answers.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
 
     // Validate route params and request body
@@ -558,12 +546,9 @@ const saveInterviewQuestionAnswer = asyncHandler(async (req, res) => {
 const submitInterview = asyncHandler(async (req, res) => {
     const { interviewId } = req.params;
 
-    // Auth check
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated to submit interview answers.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
 
     // Validate route param
@@ -688,12 +673,9 @@ const getInterviewResult = asyncHandler(async (req, res) => {
     const { interviewId } = req.params;
 
 
-    // Auth check
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated to view this interview\'s result.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
 
     // Validate route param
@@ -785,12 +767,9 @@ const getInterviewResult = asyncHandler(async (req, res) => {
 // App starts, calls /ongoing get endpoint, no interview, show dashboard
 // If ongoing interview exists, redirect user back to that interview
 const getOngoingInterview = asyncHandler(async (req, res) => {
-    // Auth check
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
 
     // Find ongoing interview
@@ -848,12 +827,9 @@ const getOngoingInterview = asyncHandler(async (req, res) => {
 });
 
 const getInterviewHistory = asyncHandler(async (req, res) => {
-    // Auth check
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated to view your interview history.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
 
     // For pagination
@@ -997,11 +973,10 @@ const getInterviewHistory = asyncHandler(async (req, res) => {
 });
 
 const downloadInterviewReport = asyncHandler(async (req, res) => {
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated to download this report.');
-    }
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
-    const authUser = req.user;
     const interviewId = req.params.interviewId;
 
     if(!interviewId) {

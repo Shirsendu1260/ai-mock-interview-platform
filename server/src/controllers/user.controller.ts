@@ -247,12 +247,9 @@ const signOutUser = asyncHandler(async (req, res) => {
 
 // DELETE ACCOUNT
 const deleteAccount = asyncHandler(async (req, res) => {
-    // Auth check
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated to delete your account.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
 
     // Using transaction to get success for all of the below db operations together

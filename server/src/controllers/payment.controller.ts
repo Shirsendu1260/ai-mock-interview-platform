@@ -23,12 +23,9 @@ import { calculatePagination } from '../utils/pagination.js';
 // - If valid, Razorpay create Order
 // - Backend stores payment data with Razorpay order data with status='created' in 'payments' table
 const createRazorpayOrder = asyncHandler(async (req, res) => {
-    // Auth check
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated to start payment.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
     // Delete expired created payment orders from DB
     await cleanupExpiredCreatedPayments();
@@ -117,12 +114,9 @@ const createRazorpayOrder = asyncHandler(async (req, res) => {
 //      invalid -> reject
 //      valid -> Updates DB, adds credits, updates plan in 'users'
 const verifyRazorpayPayment = asyncHandler(async (req, res) => {
-    // Auth check
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated to verify this payment.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
 
     // Env variable protection
@@ -474,12 +468,9 @@ const razorpayWebhook = asyncHandler(async (req, res) => {
 });
 
 const getPaymentHistory = asyncHandler(async (req, res) => {
-    // Auth check
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated to see payment history.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
 
     // Calculate page and skip offset for pagination
@@ -526,12 +517,9 @@ const getPaymentHistory = asyncHandler(async (req, res) => {
 });
 
 const getCreditTransactionHistory = asyncHandler(async (req, res) => {
-    // Auth check
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated to see credit history.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
 
     // Calculate page and skip offset for pagination

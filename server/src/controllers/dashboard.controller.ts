@@ -8,12 +8,9 @@ import { interviewFeedbacks } from '../db/schema/interviewFeedbacks.js';
 import { PAGINATION_LIMIT } from '../constants.js';
 
 const getInterviewStats = asyncHandler(async (req, res) => {
-    // Auth check
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
 
     // Calculate statistics
@@ -60,12 +57,9 @@ const getInterviewStats = asyncHandler(async (req, res) => {
 });
 
 const getRecentInterviews = asyncHandler(async (req, res) => {
-    // Auth check
-    if(!req.user) {
-        throw new ApiError(401, 'You need to be authenticated to view your recent interviews.');
-    }
-
-    const authUser = req.user;
+    // verifyJWT middleware guarantees req.user is set on all authenticated routes
+    // The non-null assertion (!) is done because no runtime check needed here
+    const authUser = req.user!;
 
 
     // Get a limited number of latest recent interviews
