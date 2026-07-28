@@ -12,6 +12,7 @@ import {
 } from '../controllers/interview.controller.js';
 import { upload } from '../middlewares/multer.middleware.js';
 import { verifyJWT } from '../middlewares/auth.middleware.js';
+import { aiOperationLimiter, reportDownloadLimiter } from '../middlewares/rateLimiter.middleware.js';
 
 
 
@@ -23,13 +24,13 @@ const router = Router();
 
 router.route('/ongoing').get(verifyJWT, getOngoingInterview);
 router.route('/history').get(verifyJWT, getInterviewHistory);
-router.route('/create').post(verifyJWT, upload.single('resume'), createInterview);
+router.route('/create').post(verifyJWT, aiOperationLimiter, upload.single('resume'), createInterview);
 router.route('/:interviewId').get(verifyJWT, getInterview);
 router.route('/:interviewId/questions/:position').get(verifyJWT, getInterviewQuestion);
 router.route('/:interviewId/questions/:position').patch(verifyJWT, saveInterviewQuestionAnswer);
-router.route('/:interviewId/submit').post(verifyJWT, submitInterview);
+router.route('/:interviewId/submit').post(verifyJWT, aiOperationLimiter, submitInterview);
 router.route('/:interviewId/result').get(verifyJWT, getInterviewResult);
-router.route('/:interviewId/report').get(verifyJWT, downloadInterviewReport);
+router.route('/:interviewId/report').get(verifyJWT, reportDownloadLimiter, downloadInterviewReport);
 
 
 

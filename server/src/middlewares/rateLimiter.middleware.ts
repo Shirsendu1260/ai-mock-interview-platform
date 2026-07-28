@@ -65,3 +65,35 @@ export const jobBookmarkLimiter = rateLimit({
 		message: 'Too many job bookmark requests, please try again after 15 minutes.'
 	}
 });
+
+
+// For interview report PDF download
+// Puppeteer/Chromium is CPU and memory intensive, one PDF can spike RAM significantly
+// On Render's free tier (512MB RAM), concurrent PDF generation would cause crashes
+// This limits each IP to 6 PDF downloads per 25 minutes, which is generous for real use
+// but tight enough to block abuse
+export const reportDownloadLimiter = rateLimit({
+    windowMs: 25 * 60 * 1000,
+    limit: 6,
+    standardHeaders: 'draft-8',
+    legacyHeaders: false,
+    message: {
+        statusCode: 429,
+        success: false,
+        message: 'Too many report download requests, please try again after 25 minutes.'
+    }
+});
+
+// For AI-heavy endpoints: interview creation and submission
+// These endpoints call the Gemini API and do multiple DB writes
+export const aiOperationLimiter = rateLimit({
+    windowMs: 60 * 60 * 1000, // 1 hour
+    limit: 32, // 32 interview create/submit operations per hour per IP
+    standardHeaders: 'draft-8',
+    legacyHeaders: false,
+    message: {
+        statusCode: 429,
+        success: false,
+        message: 'Too many AI operation requests, please try again after 1 hour.'
+    }
+});
