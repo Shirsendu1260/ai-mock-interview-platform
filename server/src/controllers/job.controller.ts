@@ -239,7 +239,7 @@ const bookmarkJob = asyncHandler(async (req, res) => {
     }
 
     await db.insert(bookmarkedJobs).values({
-        userId: req.user.id,
+        userId: authUser.id,
         ...job
     });
 

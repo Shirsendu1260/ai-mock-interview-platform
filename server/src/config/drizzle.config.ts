@@ -4,10 +4,6 @@
 
 import { defineConfig } from 'drizzle-kit';
 
-if(!process.env.NEONDB_URI) {
-	throw new Error('CRITICAL: NEONDB_URI is missing from your environment variables.');
-}
-
 // Tells Drizzle CLI on where to look for our TypeScript schema definitions, where to output raw SQL 
 // migrations, and how to connect directly to Neon to push migrations.
 export default defineConfig({
@@ -15,6 +11,6 @@ export default defineConfig({
 	schema: './src/db/schema/index.ts',
 	dialect: 'postgresql',
 	dbCredentials: {
-		url: process.env.NEONDB_URI
+		url: process.env.NEONDB_URI!
 	}
 });

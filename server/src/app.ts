@@ -11,6 +11,7 @@ import { DATA_LIMIT } from './constants.js';
 import type { Request, Response, NextFunction } from 'express';
 import { ApiError } from './utils/ApiError.js';
 import { generalLimiter } from './middlewares/rateLimiter.middleware.js';
+import { httpLogger } from './middlewares/logger.middleware.js';
 
 
 
@@ -34,7 +35,7 @@ if(process.env.NODE_ENV === 'production') app.set('trust proxy', 1);
 
 /****************************** MIDDLEWARES SETUP ******************************/
 
-// 1. Allow requests from frontend (CORS setup)
+// Allow requests from frontend (CORS setup)
 app.use(cors({
 	origin: process.env.CORS_ORIGIN,
 	// Must be a specific origin (cannot be '*') when credentials are enabled
@@ -43,32 +44,35 @@ app.use(cors({
 	// Allows browsers to send cookies, authorization headers
 }));
 
-// 2. Webhook must come before express.json() as it is extracting raw Buffer data
+// Setup HTTP logger
+app.use(httpLogger);
+
+// Webhook must come before express.json() as it is extracting raw Buffer data
 app.use(
     '/api/v1/payments/webhook',
     express.raw({ type: 'application/json' })
 );
 
-// 3. Parse incoming JSON request bodies (without this req.body would be undefined)
+// Parse incoming JSON request bodies (without this req.body would be undefined)
 app.use(express.json({
 	limit: DATA_LIMIT // Prevent very large payloads
 }));
 
-// 4. Parse URL-encoded request bodies
+// Parse URL-encoded request bodies
 app.use(express.urlencoded({
 	extended: true,  // Allow nested objects (without this "user[name]=Shiv" would not parse correctly)
 	limit: DATA_LIMIT
 }));
 
-// 5. Serve static files directly from "public" folder
+// Serve static files directly from "public" folder
 app.use(express.static('public'));
 
-// 6. Middleware that can access cookies from user's browser and set cookies in it
-//    Reads cookies from incoming HTTP requests (without this "req.cookies" would be undefined)
+// Middleware that can access cookies from user's browser and set cookies in it
+// Reads cookies from incoming HTTP requests (without this "req.cookies" would be undefined)
 app.use(cookieParser());
 
-// 7. With rate limiter middleware, restricting client how many max. requests he/she can make to
-//    our APIs within a time window
+// With rate limiter middleware, restricting client how many max. requests he/she can make to
+// our APIs within a time window
 app.use('/api/v1', generalLimiter);
 
 

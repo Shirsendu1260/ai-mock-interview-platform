@@ -181,8 +181,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
     try {
         // Verify the collected refresh token with one that resides in server (DB)
-        const secretKey = process.env.REFRESH_TOKEN_SECRET_KEY;
-        if(!secretKey) throw new ApiError(500, 'REFRESH_TOKEN_SECRET_KEY is not defined.');
+        const secretKey = process.env.REFRESH_TOKEN_SECRET_KEY!;
         const secret: Secret = secretKey;
 
         const decodedUserCollectedRefreshToken = jwt.verify(userCollectedRefreshToken, secret) as JwtPayload;

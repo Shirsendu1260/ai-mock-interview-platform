@@ -2,10 +2,6 @@ import type { AdzunaJob, IJobSearchResult } from '../../types/types.js';
 import { ApiError } from '../../utils/ApiError.js';
 import { JOBS_PER_PAGE } from '../../constants.js';
 
-if(!process.env.ADZUNA_APP_ID || !process.env.ADZUNA_APP_KEY) {
-    throw new Error('Adzuna credentials are missing.');
-}
-
 const searchJobsFromAdzuna = async (
     role: string,
     skills: string[],
@@ -25,8 +21,8 @@ const searchJobsFromAdzuna = async (
                         : 'India';
 
     const url = `https://api.adzuna.com/v1/api/jobs/in/search/${page}` +
-                    `?app_id=${process.env.ADZUNA_APP_ID}` +
-                    `&app_key=${process.env.ADZUNA_APP_KEY}` +
+                    `?app_id=${process.env.ADZUNA_APP_ID!}` +
+                    `&app_key=${process.env.ADZUNA_APP_KEY!}` +
                     `&results_per_page=${JOBS_PER_PAGE}` +
                     `&what=${encodeURIComponent(keywordQuery)}` +
                     `&where=${encodeURIComponent(location)}` +

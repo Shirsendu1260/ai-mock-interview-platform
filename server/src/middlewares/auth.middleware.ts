@@ -32,8 +32,7 @@ export const verifyJWT = asyncHandler(async (req: Request, _: Response, next: Ne
 		    throw new ApiError(401, 'Unauthorized: No token provided.');
 		}
 
-        const secretKey = process.env.ACCESS_TOKEN_SECRET_KEY;
-        if (!secretKey) throw new ApiError(500, "ACCESS_TOKEN_SECRET_KEY is not defined.");
+        const secretKey = process.env.ACCESS_TOKEN_SECRET_KEY!;
         const secret: Secret = secretKey; // now safe to assign, guaranteed string
 
 		// Decodes the token and returns the payload
@@ -85,8 +84,7 @@ export const verifyOptionalJWT = asyncHandler(async (req: Request, _: Response, 
             return next();
         }
 
-        const secretKey = process.env.ACCESS_TOKEN_SECRET_KEY;
-        if (!secretKey) throw new ApiError(500, "ACCESS_TOKEN_SECRET_KEY is not defined.");
+        const secretKey = process.env.ACCESS_TOKEN_SECRET_KEY!;
         const secret: Secret = secretKey;
 
         // Decodde the payload

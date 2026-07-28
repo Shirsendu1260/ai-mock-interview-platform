@@ -2,10 +2,6 @@ import { Pool, neonConfig } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-serverless';
 import ws from 'ws';
 
-if (!process.env.NEONDB_URI) {
-	throw new Error('CRITICAL: NEONDB_URI is missing from your environment variables.');
-}
-
 // Enable WebSocket support for Node.js
 // Neon uses WebSockets to support PostgreSQL transactions
 neonConfig.webSocketConstructor = ws;
