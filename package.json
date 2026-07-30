@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "concurrently -n \"SERVER,CLIENT\" -c \"green,blue\" \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
     "build": "npm run build --prefix server && npm run build --prefix client",
+    "start": "concurrently -n \"SERVER,CLIENT\" -c \"green,blue\" \"npm run start --prefix server\" \"npm run preview --prefix client\"",
     "db:generate": "npm run --prefix server db:generate",
     "db:migrate": "npm run --prefix server db:migrate",
     "db:push": "npm run --prefix server db:push",

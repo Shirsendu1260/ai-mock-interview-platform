@@ -52,3 +52,9 @@ catch(error: unknown) {
 
     process.exit(1);
 }
+
+// | Signal | Number | Meaning
+// | `SIGTERM` | 15 | Graceful shutdown request
+// | `SIGINT` | 2 | Interrupt (Ctrl+C)
+// | `SIGKILL` | 9 | Force kill immediately
+// | `SIGHUP` | 1 | Terminal closed / reload config
