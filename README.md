@@ -1,6 +1,6 @@
 # AI Mock Interview Platform
 
-A full-stack AI-powered mock interview platform built with React, Node.js, Express, TypeScript, PostgreSQL, and Drizzle ORM.
+A full-stack AI-powered mock interview platform built with React, Node.js, Express, TypeScript, PostgreSQL, Drizzle ORM, and Gemini AI.
 
 The idea behind this project was to build something that feels close to a real interview workflow rather than just generating questions. Users can upload their resume, generate role-specific interviews, answer questions one by one, receive AI-generated feedback, track previous interviews, manage credits, and discover relevant job opportunities based on their resume.
 
@@ -30,21 +30,23 @@ The idea behind this project was to build something that feels close to a real i
 - Drizzle ORM
 - Firebase Admin SDK
 - Google Gemini API
+- Adzuna API
 - Joi
 - JWT Authentication
-- Razorpay
+- Razorpay SDK
 - Express Rate Limit
 - Helmet
 
 ### Frontend
 
-- React
+- React (Vite)
 - TypeScript
 - React Router
 - Zustand
 - Axios
 - Tailwind CSS v4
 - Motion
+- Razorpay Checkout
 - Recharts
 
 ### External Services
@@ -59,45 +61,80 @@ The idea behind this project was to build something that feels close to a real i
 
 ## Project Structure
 
-```
+```text
 ai-mock-interview-platform/
 │
-├── client/             # React frontend
-├── server/             # Express backend
-├── package.json        # Workspace configuration
+├── client/              # React frontend
+├── server/              # Express backend
+├── scripts/
+│   └── setup.sh         # First-time project setup
+├── Makefile             # Common development commands
+├── package.json         # npm workspace configuration
 └── README.md
 ```
 
 ---
 
-## Getting Started
+## Prerequisites
 
-### Requirements
+Before running the project, make sure you have:
 
 - Node.js 20+
+- npm
+- Git
 - Neon PostgreSQL database
 - Firebase project
 - Google AI Studio API key
 - Razorpay account
 - Adzuna API credentials
 
+## Getting Started
+
 Clone the repository.
 
 ```bash
 git clone https://github.com/Shirsendu1260/ai-mock-interview-platform.git
-
 cd ai-mock-interview-platform
 ```
 
-Install dependencies for both workspaces.
+Make the setup script executable (only required once).
 
 ```bash
-npm install
+chmod +x scripts/setup.sh
+```
+
+Run the setup script.
+
+```bash
+./scripts/setup.sh
+```
+
+The setup script will automatically:
+
+- Check that the required tools are installed (Node.js and npm).
+- Install all project dependencies.
+- Create `client/.env` and `server/.env` from their respective `.env.example` files (if they don't already exist).
+- Check if OpenSSL is available for generating JWT secrets.
+- Display the remaining setup steps.
+
+After the script finishes:
+
+1. Fill in the generated `.env` files with your own credentials.
+2. Run the database migrations.
+3. Start the development server.
+
+```bash
+make db-migrate
+make dev
 ```
 
 ---
 
 ## Environment Variables
+
+The project includes `.env.example` files for both the client and server.
+
+During setup, `scripts/setup.sh` automatically creates the corresponding `.env` files if they don't already exist. These generated files contain placeholder values and must be updated with your own credentials before running the application.
 
 ### Client (`client/.env`)
 
@@ -145,45 +182,85 @@ ADZUNA_APP_KEY=
 
 ## Database
 
-Generate migrations
+The project uses **Drizzle ORM** for schema management and database migrations.
+
+### Generate a new migration
+
+After making changes to your Drizzle schema, generate a migration file.
 
 ```bash
-npm run db:generate
+make db-generate
 ```
 
-Push schema
+### Apply pending migrations
+
+Run all pending migrations against your database.
 
 ```bash
-npm run db:push
+make db-migrate
 ```
 
-Run migrations
+### Push schema directly to the database
+
+Useful during development when you don't need migration files.
 
 ```bash
-npm run db:migrate
+make db-push
 ```
 
-Open Drizzle Studio
+### Open Drizzle Studio
+
+Launch the visual database explorer.
 
 ```bash
-npm run db:studio
+make db-studio
 ```
 
 ---
 
 ## Running the Project
 
-Start both frontend and backend.
+### Start the development server
+
+Starts both the React frontend and Express backend with hot reload.
 
 ```bash
-npm run dev
+make dev
 ```
 
-Production build
+### Build for production
+
+Builds both the frontend and backend.
 
 ```bash
-npm run build
+make build
 ```
+
+---
+
+## Useful Commands
+
+The project includes a **Makefile** that provides shortcuts for common development tasks.
+
+| Command | Description |
+|---------|-------------|
+| `make help` | Show all available Makefile commands. |
+| `make dev` | Start both frontend and backend. |
+| `make build` | Build the entire project. |
+| `make install` | Install all project dependencies. |
+| `make server-dev` | Start only the backend server. |
+| `make server-build` | Build only the backend. |
+| `make server-start` | Start the production backend. |
+| `make db-generate` | Generate Drizzle migration files. |
+| `make db-migrate` | Apply pending database migrations. |
+| `make db-push` | Push schema directly to the database (development only). |
+| `make db-studio` | Open Drizzle Studio. |
+| `make health` | Check whether the local backend is healthy. |
+| `make health-prod RENDER_URL=<your-deployed-backend-url>` | Check the health of the deployed backend. |
+| `make logs` | View formatted backend logs using Pino Pretty. |
+| `make status` | Show Git status and recent commits. |
+| `make clean-build` | Remove generated build files only. |
+| `make clean` | Remove generated build files and all installed dependencies. |
 
 ---
 
@@ -225,8 +302,11 @@ Protected endpoints require a valid JWT stored in an HttpOnly cookie.
 
 ---
 
-## Developed by
+## Developed By
 
-**Shirsendu Mali**  
-Full Stack Developer  
-Kolkata, India
+**Shirsendu Mali**
+
+Full Stack Developer
+
+- LinkedIn: https://www.linkedin.com/in/shirsendu-mali/
+- Email: shirsendu1260@gmail.com
