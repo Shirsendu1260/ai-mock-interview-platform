@@ -139,9 +139,10 @@ health: ## Check local backend health
 # make health-prod RENDER_URL=https://our-app.onrender.com
 health-prod: ## Check production backend health
 	# -z -> True if the string is empty
+	# Exit with an error (0 = success, 1 = failure)
 	@if [ -z "$(RENDER_URL)" ]; then \
 		echo "Usage: make health-prod RENDER_URL=https://our-app.onrender.com"; \
-		exit 1; \  # Exit with an error (0 = success, 1 = failure)
+		exit 1; \
 	fi
 	@echo "Checking production health at $(RENDER_URL)/health ..."
 	# Same as the local health check, but uses our deployed URL
