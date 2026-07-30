@@ -125,27 +125,26 @@ db-studio: ## Open Drizzle Studio
 # ==============================================================================
 
 # Check if our local backend is running correctly
-# Calls the /health endpoint and prints the JSON response.
+# Calls the /health endpoint and prints the JSON response
+# curl -> Send an HTTP request
+# -f -> Fail if the server returns 4xx/5xx
+# python3 -m json.tool -> Format JSON for easier reading
+# || -> Run the next command only if the previous command fails
 health: ## Check local backend health
 	@echo "Checking server health..."
-	# curl -> Send an HTTP request
-	# -f -> Fail if the server returns 4xx/5xx
-	# python3 -m json.tool -> Format JSON for easier reading
-	# || -> Run the next command only if the previous command fails
 	@curl -f http://localhost:8000/health | python3 -m json.tool || echo "Server is not running or unhealthy"
 
 # Check the deployed (production) backend instead of localhost
 # Pass the production backend URL while running:
 # make health-prod RENDER_URL=https://our-app.onrender.com
+# -z -> True if the string is empty
+# Exit with an error (0 = success, 1 = failure)
 health-prod: ## Check production backend health
-	# -z -> True if the string is empty
-	# Exit with an error (0 = success, 1 = failure)
 	@if [ -z "$(RENDER_URL)" ]; then \
 		echo "Usage: make health-prod RENDER_URL=https://our-app.onrender.com"; \
 		exit 1; \
 	fi
 	@echo "Checking production health at $(RENDER_URL)/health ..."
-	# Same as the local health check, but uses our deployed URL
 	@curl -f $(RENDER_URL)/health | python3 -m json.tool || echo "Production server is not running or unhealthy"
 
 
@@ -155,12 +154,12 @@ health-prod: ## Check production backend health
 
 # Start the backend and display logs in a readable format
 # Press Ctrl + C to stop
+# 2>&1 -> Merge error output (stderr) with normal output (stdout)
+# | -> Send all logs to the next command
+# npx pino-pretty -> Convert Pino's JSON logs into readable logs
+# --colorize -> Add colors to log levels
 logs: ## Follow server logs in real time
 	@echo "Following server logs (Ctrl+C to stop)..."
-	# 2>&1 -> Merge error output (stderr) with normal output (stdout)
-	# | -> Send all logs to the next command
-	# npx pino-pretty -> Convert Pino's JSON logs into readable logs
-	# --colorize -> Add colors to log levels
 	@cd server && npm run dev 2>&1 | npx pino-pretty --colorize
 
 
@@ -170,14 +169,13 @@ logs: ## Follow server logs in real time
 
 # Remove everything that can be regenerated
 # Useful if our project behaves strangely or we want a fresh setup
+# rm -> Remove files/folders
+# -r -> Delete folders recursively
+# -f -> Force deletion without asking
 clean: ## Remove build files and all installed dependencies
 	@echo "Cleaning build files..."
-	# rm -> Remove files/folders
-	# -r -> Delete folders recursively
-	# -f -> Force deletion without asking
 	rm -rf client/dist server/dist
 	@echo "Removing node_modules..."
-	# Delete all installed packages
 	rm -rf node_modules client/node_modules server/node_modules
 	@echo "Clean complete. Run 'make install' to reinstall dependencies."
 
@@ -194,15 +192,15 @@ clean-build: ## Remove only build files
 
 # Quick overview of our repository
 # Helpful before committing or pushing changes
+# Shows modified, staged and untracked files
+# Print a blank line for better readability
+# git log -> Show commit history
+# --oneline -> One commit per line (short format)
+# -10 -> Show only the latest 10 commits
 status: ## Show Git status and recent commits
-	# Shows modified, staged and untracked files
 	@git status
-	# Print a blank line for better readability
 	@echo ""
 	@echo "Recent commits:"
-	# git log -> Show commit history
-	# --oneline -> One commit per line (short format)
-	# -10 -> Show only the latest 10 commits
 	@git log --oneline -10
 
 
