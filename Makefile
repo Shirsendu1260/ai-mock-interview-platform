@@ -217,21 +217,20 @@ status: ## Show Git status and recent commits
 #
 # Output:
 # make build          Build the project
+# $(MAKEFILE_LIST) is a built-in Make variable that contains
+# the path(s) of the current Makefile(s)
+# grep finds all lines containing "##" while reads one matching line at a time
+# cut extracts:
+#   - command name (before ':')
+#   - description (after '##')
+# printf prints everything in aligned columns
 help: ## Show this help message
 	@echo ""
 	@echo "AI Mock Interview Platform - Available Commands:"
 	@echo ""
-	# grep finds all lines containing "##" in this Makefile
-	# $(MAKEFILE_LIST) is a built-in variable that refers to this Makefile
 	@grep "##" $(MAKEFILE_LIST) | while IFS= read -r line; do \
-		# Get everything before ':' (the command name)
 		cmd=$$(echo "$$line" | cut -d: -f1); \
-		\
-		# Get everything after '##' (the command description)
 		desc=$$(echo "$$line" | cut -d'#' -f3-); \
-		\
-		# Print the command and description in aligned columns
-		# %-20s means: reserve 20 spaces for the command name
 		printf "  make %-20s %s\n" "$$cmd" "$$desc"; \
 	done
 	@echo ""
