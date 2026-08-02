@@ -1,0 +1,20 @@
+# Dependencies will be installed fresh inside container
+node_modules
+
+# Build output will be created fresh inside container
+dist
+
+# Environment files never go into container
+.env
+.env.*
+!.env.example
+
+# Ignore Git
+.git
+.gitignore
+
+# Ignore logs
+*.log
+
+# Ignore documentation
+*.md
