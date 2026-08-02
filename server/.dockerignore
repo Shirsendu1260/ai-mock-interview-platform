@@ -1,0 +1,30 @@
+# .dockerignore tells Docker to ignore these files and folders when executing copy (COPY . .) instructions
+
+
+# Ignore dependencies as they are installed again inside the Docker image
+node_modules
+
+# Ignore build output which are generated again during the builder stage
+dist
+
+# Never copy environment files into the Docker image
+.env
+.env.*
+!.env.example
+
+# Ignore log files
+logs
+*.log
+npm-debug.log*
+
+# Ignore development-only files
+nodemon.json
+*.md
+
+# Ignore Git metadata
+.git
+.gitignore
+
+# Ignore test files
+**/*.test.ts
+**/*.spec.ts
