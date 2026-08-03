@@ -130,9 +130,11 @@ db-studio: ## Open Drizzle Studio
 # -f -> Fail if the server returns 4xx/5xx
 # python3 -m json.tool -> Format JSON for easier reading
 # || -> Run the next command only if the previous command fails
+# -s -> Silent mode (hides progress bar)
+# -w "\n" -> Print a newline after the response so terminal prompt starts on a new line
 health: ## Check local backend health
 	@echo "Checking server health..."
-	@curl -f http://localhost:8000/health | python3 -m json.tool || echo "Server is not running or unhealthy"
+	@curl -f -s -w "\n" http://localhost:8000/health | python3 -m json.tool || echo "Server is not running or unhealthy"
 
 # Check the deployed (production) backend instead of localhost
 # Pass the production backend URL while running:
@@ -145,7 +147,7 @@ health-prod: ## Check production backend health
 		exit 1; \
 	fi
 	@echo "Checking production health at $(RENDER_URL)/health ..."
-	@curl -f $(RENDER_URL)/health | python3 -m json.tool || echo "Production server is not running or unhealthy"
+	@curl -f -s -w "\n" $(RENDER_URL)/health | python3 -m json.tool || echo "Production server is not running or unhealthy"
 
 
 # ==============================================================================
