@@ -1,0 +1,106 @@
+# Docker Compose file for this project
+# Build and start all containers for the first time or when code changes: docker compose up --build
+# Start all existing containers: docker compose up
+# Stop and clean up all containers: docker compose down
+# All of the containers are defined here
+
+# Build and start all services: docker compose up --build
+# Build and start all services in detached (in background) mode: docker compose up --build -d
+# Stop and remove all containers and networks: docker compose down
+# Stop containers and remove all associated images: docker compose down --rmi all
+# Stream live logs for all services: docker compose logs -f
+# Stream live logs for a specific service: docker compose logs -f backend
+# List all running services: docker compose ps
+# Restart a specific service: docker compose restart backend
+# Access a running container's shell: docker compose exec backend sh, docker compose exec frontend sh
+
+
+
+services:
+    # --------------- Backend Service --------------- #
+
+    # Service name
+    server:
+        # Build the backend docker image from the server/ directory
+        build:
+            context: ./server
+            dockerfile: Dockerfile
+
+        # Name the running container
+        container_name: ai-mock-interviewer-server
+
+        # Map host machine port 8000 to container port 8000
+        # Format: "host_port:container_port"
+        ports:
+            - "8000:8000"
+
+        # Environment variables injected at runtime
+        # These come from the .env file in the root directory
+        environment:
+            - PORT=${PORT}
+            - NEONDB_URI=${NEONDB_URI}
+            - CORS_ORIGIN=${CORS_ORIGIN}
+            - NODE_ENV=${NODE_ENV}
+            - ACCESS_TOKEN_SECRET_KEY=${ACCESS_TOKEN_SECRET_KEY}
+            - ACCESS_TOKEN_SECRET_KEY_EXPIRY=${ACCESS_TOKEN_SECRET_KEY_EXPIRY}
+            - REFRESH_TOKEN_SECRET_KEY=${REFRESH_TOKEN_SECRET_KEY}
+            - REFRESH_TOKEN_SECRET_KEY_EXPIRY=${REFRESH_TOKEN_SECRET_KEY_EXPIRY}
+            - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID}
+            - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET}
+            - RAZORPAY_WEBHOOK_SECRET=${RAZORPAY_WEBHOOK_SECRET}
+            - FIREBASE_SERVICE_ACCOUNT_JSON=${FIREBASE_SERVICE_ACCOUNT_JSON}
+            - GEMINI_API_KEY=${GEMINI_API_KEY}
+            - ADZUNA_APP_ID=${ADZUNA_APP_ID}
+            - ADZUNA_APP_KEY=${ADZUNA_APP_KEY}
+            - NPM_CONFIG_PRODUCTION=${NPM_CONFIG_PRODUCTION}
+
+        # Health check to verify the backend is ready before frontend starts
+        healthcheck:
+            test: ["CMD", "wget", "-qO-", "http://localhost:8000/health"]
+            interval: 30s
+            timeout: 20s
+            start_period: 40s
+            retries: 3
+
+        # Automatically restart the container if it crashes
+        # "unless-stopped" means: restart always, except when manually stopped
+        restart: unless-stopped
+
+
+
+    # --------------- Frontend Service --------------- #
+
+    client:
+        # Build the frontend docker image from the client/ directory
+        build:
+            context: ./client
+            dockerfile: Dockerfile
+
+            # Pass VITE_ variables at build time
+            # Vite injects these into the JavaScript bundle during npm run build
+            args:
+                - VITE_FIREBASE_API_KEY=${VITE_FIREBASE_API_KEY}
+                - VITE_FIREBASE_AUTH_DOMAIN=${VITE_FIREBASE_AUTH_DOMAIN}
+                - VITE_FIREBASE_PROJECT_ID=${VITE_FIREBASE_PROJECT_ID}
+                - VITE_FIREBASE_STORAGE_BUCKET=${VITE_FIREBASE_STORAGE_BUCKET}
+                - VITE_FIREBASE_MESSAGING_SENDER_ID=${VITE_FIREBASE_MESSAGING_SENDER_ID}
+                - VITE_FIREBASE_APP_ID=${VITE_FIREBASE_APP_ID}
+                - VITE_RAZORPAY_KEY_ID=${VITE_RAZORPAY_KEY_ID}
+                - VITE_API_BASE_URL=${VITE_API_BASE_URL}
+
+        # Name the running container
+        container_name: ai-mock-interviewer-client
+
+        # Map host port 3000 to container port 80 (Nginx default)
+        ports:
+            - "3000:80"
+
+        # Start frontend only after backend is healthy
+        # Without this, frontend might start before backend is ready
+        depends_on:
+            server:
+                condition: service_healthy
+
+        # Automatically restart the container if it crashes
+        # "unless-stopped" means: restart always, except when manually stopped
+        restart: unless-stopped

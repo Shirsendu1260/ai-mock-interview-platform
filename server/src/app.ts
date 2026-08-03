@@ -137,8 +137,10 @@ app.use('/api/v1/jobs', jobRouter);
 // This must be defined before the 404 handler so it doesn't get ignored
 app.get('/health', async (_: Request, res: Response) => {
     try {
-        // Verify the database is reachable, not just that the server is running
-        await db.execute(sql`SELECT 1`);
+        // Only checks if the server process is alive and responding
+        // DB connectivity is verified naturally on every real API request
+        // Neon's serverless WebSocket closes idle connections, making
+        // periodic DB pings unreliable and noisy in logs
         return res.status(200).json({
             status: 'ok',
             timestamp: new Date().toISOString(),
