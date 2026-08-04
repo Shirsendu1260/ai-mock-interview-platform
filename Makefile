@@ -42,6 +42,7 @@
 	db-generate db-migrate db-push db-studio \
 	health health-prod logs \
 	clean clean-build \
+	docker-build docker-up docker-down docker-logs docker-ps docker-restart \
 	status help
 
 
@@ -88,7 +89,7 @@ server-build: ## Build backend only
 	npm run build --prefix server
 
 # Start the already-built backend
-# Unlike dev mode, this does NOT watch for file changes
+# Unlike dev mode, this does not watch for file changes
 # Make sure to run `make server-build` first
 server-start: ## Start backend in production mode
 	npm run start --prefix server
@@ -163,6 +164,54 @@ health-prod: ## Check production backend health
 logs: ## Follow server logs in real time
 	@echo "Following server logs (Ctrl+C to stop)..."
 	@cd server && npm run dev 2>&1 | npx pino-pretty --colorize
+
+
+# ==============================================================================
+# Docker
+# ==============================================================================
+
+# Build Docker images for all services defined in docker-compose.yml
+# This reads each service's Dockerfile and creates fresh Docker images
+# Use this when:
+# - change a Dockerfile
+# - update project dependencies
+# - want to rebuild images from the latest source code
+#
+# --build forces Docker Compose to rebuild the images before starting containers
+# --no-start means - don't start the container
+docker-build: ## Build Docker images
+	@docker compose up --build --no-start
+
+# Build (if needed) and start all services
+# If containers already exist, Docker Compose starts them
+# If they do not exist, it creates them first
+# -d (detached mode) runs containers in the background, allowing the terminal to be used for other commands
+docker-up: ## Build and start all services
+	@docker compose up --build -d
+
+# Stop and remove all containers, networks and other temporary resources
+# created by Docker Compose
+# Images and volumes are kept unless additional flags are provided
+docker-down: ## Stop and remove all services
+	@docker compose down
+
+# Display live logs from every running service
+# -f (follow) keeps listening for new log messages until Ctrl+C is pressed
+docker-logs: ## Follow Docker logs
+	@docker compose logs -f
+
+# List all services managed by Docker Compose along with their current state,
+# such as running, exited or restarting
+docker-ps: ## Show Docker service status
+	@docker compose ps
+
+# Restart all running services without rebuilding the Docker images
+# Useful when:
+# - Environment variables change
+# - A service becomes unresponsive
+# - Want to quickly restart containers
+docker-restart: ## Restart all services
+	@docker compose restart
 
 
 # ==============================================================================

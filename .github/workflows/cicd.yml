@@ -79,12 +79,27 @@ jobs:
       # Step 5: Build backend Docker image
       # Verifies the Dockerfile works for the container and the app compiles correctly inside Docker
       # --no-cache command forces Docker to ignore all previously saved image layers,
-      # executing every single step of your Dockerfile from scratch
+      # executing every single step of our Dockerfile from scratch
       # By default, Docker uses a caching mechanism to speed up builds by reusing unchanged layers
+      # Every Git commit has a unique identifier called a SHA (Secure Hash Algorithm)
+      # Example full SHA: 8a72d1f2c31b7f5f4c6a9d8e123456789abcdef0
+      # Since the full SHA is long (40 characters), we usually use only its first 7 characters
+      # which are typically enough to uniquely identify a commit
+      # Why not use only the "latest" tag?
+      # The "latest" tag always points to the newest image
+      # Every new build updates this tag to point to the newest image
+      # so it doesn't tell us exactly which code version is deployed
+      # To solve this, we tag each image twice:
+      # latest   -> Easy to pull the newest image
+      # 8a72d1f  -> Unique version for that specific commit
+      # Both tags point to the same Docker image
+      # This makes debugging, deployment tracking, and rollbacks easier
+      # because every image can be traced back to its Git commit
       - name: Build backend Docker image
         run: |
           docker build --no-cache \
           -t ${{ secrets.DOCKERHUB_USERNAME }}/ai-mock-interview-server:latest \
+          -t ${{ secrets.DOCKERHUB_USERNAME }}/ai-mock-interview-server:${GITHUB_SHA::7} \
           ./server
 
       # ____________ Frontend checks ____________ #
@@ -103,7 +118,7 @@ jobs:
 
       # Step 8: Build frontend Docker image
       # Verifies nginx.conf is valid and React build succeeds
-      # VITE_ variables must be passed at build time (Vite bakes them into JS bundle)
+      # VITE_ variables must be passed at build time (Vite injects them into JS bundle)
       - name: Build frontend Docker image
         run: |
           docker build --no-cache \
@@ -116,6 +131,7 @@ jobs:
           --build-arg VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }} \
           --build-arg VITE_RAZORPAY_KEY_ID=${{ secrets.VITE_RAZORPAY_KEY_ID }} \
           -t ${{ secrets.DOCKERHUB_USERNAME }}/ai-mock-interview-client:latest \
+          -t ${{ secrets.DOCKERHUB_USERNAME }}/ai-mock-interview-client:${GITHUB_SHA::7} \
           ./client
 
 
@@ -158,8 +174,10 @@ jobs:
         run: |
           docker build \
           -t ${{ secrets.DOCKERHUB_USERNAME }}/ai-mock-interview-server:latest \
+          -t ${{ secrets.DOCKERHUB_USERNAME }}/ai-mock-interview-server:${GITHUB_SHA::7} \
           ./server
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/ai-mock-interview-server:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/ai-mock-interview-server:${GITHUB_SHA::7}
 
       # Step 4: Tell Render to redeploy the backend
       # Render gives a webhook URL
