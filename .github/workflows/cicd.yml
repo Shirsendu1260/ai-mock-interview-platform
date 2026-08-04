@@ -57,24 +57,28 @@ jobs:
         with:
           node-version: '22'
 
-          # Cache node_modules so we don't re-download packages every run
+          # Cache downloaded npm packages between workflow runs.
+          # Our project uses a single package-lock.json in the root
+          # because the repository is managed as an npm workspace.
+          # GitHub uses this lock file to determine when the cache
+          # should be reused or when a new cache should be created.
           cache: 'npm'
-          cache-dependency-path: server/package-lock.json
+          cache-dependency-path: package-lock.json
 
       # ____________ Backend checks ____________ #
 
       # Step 3: Install backend dependencies
+      # npm automatically reads the root package-lock.json and installs dependencies for this workspace
       - name: Install server dependencies
-        run: npm install
-        working-directory: server
+        run: npm install --workspace server
 
       # Step 4: TypeScript type-check (backend)
       # Compiles nothing, just checks for type errors
       # Catches broken TypeScript before it reaches production
       # --noEmit: Not to output any compiled files (like .js, .js.map, or .d.ts files)
+      # Using npm, execute the TypeScript compiler (tsc) from the server workspace, and pass --noEmit to it
       - name: TypeScript type-check (backend)
-        run: npx tsc --noEmit
-        working-directory: server
+        run: npm exec --workspace server tsc -- --noEmit
 
       # Step 5: Build backend Docker image
       # Verifies the Dockerfile works for the container and the app compiles correctly inside Docker
@@ -104,17 +108,16 @@ jobs:
 
       # ____________ Frontend checks ____________ #
 
-      # Step 6: Set up Node.js for frontend checks
-      # Separate setup because frontend has its own package.json
+      # Step 6: Install frontend dependencies
+      # npm automatically reads the root package-lock.json and installs dependencies for this workspace
       - name: Install client dependencies
-        run: npm install
-        working-directory: client
+        run: npm install --workspace client
 
       # Step 7: TypeScript type-check (frontend)
       # React + TypeScript errors caught here before Vercel deploys
+      # Using npm, execute the TypeScript compiler (tsc) from the client workspace, and pass --noEmit to it
       - name: TypeScript type-check (frontend)
-        run: npx tsc --noEmit
-        working-directory: client
+        run: npm exec --workspace client tsc -- --noEmit
 
       # Step 8: Build frontend Docker image
       # Verifies nginx.conf is valid and React build succeeds
