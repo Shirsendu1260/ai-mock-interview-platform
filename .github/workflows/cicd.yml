@@ -1,0 +1,181 @@
+# ============================================================
+# CI/CD Pipeline for this project
+# ============================================================
+#
+# FLOW:
+# Push code to the main branch
+# git push main
+#      V
+# Continuous Integration (CI)
+# Verify that the project is healthy before deployment
+# CI: TypeScript type check (backend + frontend)
+# CI: Docker build (backend + frontend)
+#      V
+# Deploy only if all CI checks pass
+# Continuous Deployment (CD)
+# CD: Backend -> Build & Push Docker Image -> Docker Hub -> Render
+# CD: Frontend -> Vercel Deploy Hook -> Vercel
+
+# If any CI step fails:
+# -> Backend is not deployed to Render
+# -> Frontend is not deployed to Vercel
+
+name: CI/CD Pipeline
+
+# ---------------------- TRIGGER ---------------------- #
+# Run this workflow on every push to the main branch
+# Pull requests to main also trigger CI (but not CD)
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# ---------------------- JOBS ---------------------- #
+jobs:
+  ####      Job 1: Continuous Integration (CI)      ####
+  # Runs on every push and every pull request
+  # Checks code quality and verifies Docker images build correctly
+  ci:
+    name: Check & Build
+
+    # GitHub provides a fresh Ubuntu machine to run these steps
+    # Destroyed automatically when job is done
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Download our code onto the runner machine
+      # Without this, the runner has no idea what our project looks like
+      # actions/checkout@v4 -> Pre-built action (step), written by someone from GitHub community
+      # It downloads and provides our source code to the GitHub runner machine
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js for backend checks
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+          # Cache node_modules so we don't re-download packages every run
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+
+      # ____________ Backend checks ____________ #
+
+      # Step 3: Install backend dependencies
+      - name: Install server dependencies
+        run: npm install
+        working-directory: server
+
+      # Step 4: TypeScript type-check (backend)
+      # Compiles nothing, just checks for type errors
+      # Catches broken TypeScript before it reaches production
+      # --noEmit: Not to output any compiled files (like .js, .js.map, or .d.ts files)
+      - name: TypeScript type-check (backend)
+        run: npx tsc --noEmit
+        working-directory: server
+
+      # Step 5: Build backend Docker image
+      # Verifies the Dockerfile works for the container and the app compiles correctly inside Docker
+      # --no-cache command forces Docker to ignore all previously saved image layers,
+      # executing every single step of your Dockerfile from scratch
+      # By default, Docker uses a caching mechanism to speed up builds by reusing unchanged layers
+      - name: Build backend Docker image
+        run: |
+          docker build --no-cache \
+          -t ${{ secrets.DOCKERHUB_USERNAME }}/ai-mock-interview-server:latest \
+          ./server
+
+      # ____________ Frontend checks ____________ #
+
+      # Step 6: Set up Node.js for frontend checks
+      # Separate setup because frontend has its own package.json
+      - name: Install client dependencies
+        run: npm install
+        working-directory: client
+
+      # Step 7: TypeScript type-check (frontend)
+      # React + TypeScript errors caught here before Vercel deploys
+      - name: TypeScript type-check (frontend)
+        run: npx tsc --noEmit
+        working-directory: client
+
+      # Step 8: Build frontend Docker image
+      # Verifies nginx.conf is valid and React build succeeds
+      # VITE_ variables must be passed at build time (Vite bakes them into JS bundle)
+      - name: Build frontend Docker image
+        run: |
+          docker build --no-cache \
+          --build-arg VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }} \
+          --build-arg VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }} \
+          --build-arg VITE_FIREBASE_AUTH_DOMAIN=${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }} \
+          --build-arg VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }} \
+          --build-arg VITE_FIREBASE_STORAGE_BUCKET=${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }} \
+          --build-arg VITE_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }} \
+          --build-arg VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }} \
+          --build-arg VITE_RAZORPAY_KEY_ID=${{ secrets.VITE_RAZORPAY_KEY_ID }} \
+          -t ${{ secrets.DOCKERHUB_USERNAME }}/ai-mock-interview-client:latest \
+          ./client
+
+
+  ####      Job 2: Continuous Deployment (CD)      ####
+  # Runs only on push to main (not on pull requests)
+  cd:
+    name: Push & Deploy
+
+    # GitHub provides a fresh Ubuntu machine to run these steps
+    # Destroyed automatically when job is done
+    runs-on: ubuntu-latest
+
+    # Only run CD after CI has passed successfully
+    # If CI fails, we never deploy broken code
+    needs: ci
+
+    # Only deploy on push to main, not on pull requests
+    # Pull requests are for review, we don't deploy them
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      # Step 1: Download our code onto the runner machine
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Login to Docker Hub
+      # Uses the access token stored in GitHub Secrets
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN_FOR_AI_INTERVIEWER_PROJECT_CICD_PIPELINE }}
+
+      # Step 3: Build and push backend image to Docker Hub
+      # We rebuild here because CI and CD jobs run on separate
+      # machines and do not share the filesystem or Docker layers
+      # docker build  -> creates the image
+      # docker push   -> uploads it to Docker Hub
+      - name: Build and push backend image
+        run: |
+          docker build \
+          -t ${{ secrets.DOCKERHUB_USERNAME }}/ai-mock-interview-server:latest \
+          ./server
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/ai-mock-interview-server:latest
+
+      # Step 4: Tell Render to redeploy the backend
+      # Render gives a webhook URL
+      # Calling this URL tells Render to pull the latest image and restart deployment
+      # curl -s              -> silent (no progress bar)
+      # --fail-with-body     -> fail this step if Render returns an error
+      - name: Trigger Render backend deployment
+        run: |
+          curl -s --fail-with-body "${{ secrets.RENDER_BACKEND_WEBHOOK }}"
+          echo "Render deployment triggered successfully"
+
+      # Step 5: Trigger Vercel frontend deployment
+      # Vercel auto-deploy is disabled (Ignored Build Step = exit 0)
+      # So we manually trigger it here, only after CI has passed
+      # This ensures broken code never reaches the frontend either
+      - name: Trigger Vercel frontend deployment
+        run: |
+          curl -s --fail-with-body -X POST "${{ secrets.VERCEL_FRONTEND_DEPLOY_HOOK }}"
+          echo "Vercel deployment triggered successfully"
