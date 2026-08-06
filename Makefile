@@ -9,11 +9,6 @@
 #   make build
 #   make health
 #
-# Why use a Makefile?
-# - Gives short, memorable commands instead of long terminal commands
-# - Works on Linux/macOS and is widely used in professional projects
-# - Keeps all common project commands in one place
-#
 # IMPORTANT:
 # Every command inside a target MUST start with a TAB character, not spaces
 # ==============================================================================
