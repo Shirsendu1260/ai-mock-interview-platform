@@ -15,7 +15,7 @@ export default defineConfig({
         setupFiles: [],
 
         // Show individual test results (not just summary)
-        reporter: 'verbose',
+        reporters: ['verbose']
 
         // Code coverage configuration
         coverage: {
