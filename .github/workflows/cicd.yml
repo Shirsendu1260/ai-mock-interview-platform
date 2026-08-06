@@ -32,6 +32,13 @@ on:
   pull_request:
     branches: [main]
 
+# This stops multiple runs from stacking up
+# If one workflow is already running for the same branch,
+# GitHub cancels the old one and keeps only the newest one
+concurrency:
+  group: ci-cd-${{ github.ref }}
+  cancel-in-progress: true
+
 # ---------------------- JOBS ---------------------- #
 jobs:
   ####      Job 1: Continuous Integration (CI)      ####
@@ -43,6 +50,9 @@ jobs:
     # GitHub provides a fresh Ubuntu machine to run these steps
     # Destroyed automatically when job is done
     runs-on: ubuntu-latest
+
+    # If a job exceeds the specified time, GitHub automatically cancels it and marks it as failed
+    timeout-minutes: 10
 
     steps:
       # Step 1: Download our code onto the runner machine
@@ -147,6 +157,9 @@ jobs:
     # GitHub provides a fresh Ubuntu machine to run these steps
     # Destroyed automatically when job is done
     runs-on: ubuntu-latest
+
+    # If a job exceeds the specified time, GitHub automatically cancels it and marks it as failed
+    timeout-minutes: 10
 
     # Only run CD after CI has passed successfully
     # If CI fails, we never deploy broken code
