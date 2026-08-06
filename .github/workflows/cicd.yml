@@ -26,6 +26,7 @@ name: CI/CD Pipeline
 # Run this workflow on every push to the main branch
 # Pull requests to main also trigger CI (but not CD)
 on:
+  workflow_dispatch:
   push:
     branches: [main]
   pull_request:
