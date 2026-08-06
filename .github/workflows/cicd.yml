@@ -17,8 +17,8 @@
 # CD: Frontend -> Vercel Deploy Hook -> Vercel
 
 # If any CI step fails:
-# -> Backend is not deployed to Render
-# -> Frontend is not deployed to Vercel
+# Backend is not deployed to Render
+# Frontend is not deployed to Vercel
 
 name: CI/CD Pipeline
 
