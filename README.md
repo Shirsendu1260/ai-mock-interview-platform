@@ -15,7 +15,10 @@ The idea behind this project was to build something that feels close to a real i
 - **Resume Processing**: PDF resume parsing with AI-based role and technical skill extraction.
 - **Job Search**: Personalized job recommendations using the Adzuna API with bookmarking support.
 - **Dashboard**: Interview history, score analytics, profile management, payment history, and credit history.
-- **Production Practices**: Joi validation, centralized error handling, Helmet, rate limiting, secure file uploads, reusable API response structure, and protected routes.
+- **Production Practices**: Joi validation, centralized error handling, structured logging with Pino, Helmet, rate limiting, secure file uploads, reusable API response structure, and protected routes.
+- **Containerization**: Multi-stage Docker builds for both frontend and backend, with Docker Compose for local orchestration and Nginx as a reverse proxy for the React frontend.
+- **CI/CD**: GitHub Actions pipeline covering TypeScript type checks, Docker image builds, Docker Hub pushes, and automated deployment hooks to Render and Vercel.
+- **Testing**: Unit and integration tests using Vitest and Supertest on the backend, and React Testing Library on the frontend.
 
 ---
 
@@ -36,6 +39,9 @@ The idea behind this project was to build something that feels close to a real i
 - Razorpay SDK
 - Express Rate Limit
 - Helmet
+- Pino (structured logging)
+- Vitest
+- Supertest
 
 ### Frontend
 
@@ -48,6 +54,14 @@ The idea behind this project was to build something that feels close to a real i
 - Motion
 - Razorpay Checkout
 - Recharts
+- React Testing Library
+
+### Infrastructure & DevOps
+
+- Docker & Docker Compose
+- Nginx
+- GitHub Actions (CI/CD)
+- Docker Hub
 
 ### External Services
 
@@ -56,6 +70,8 @@ The idea behind this project was to build something that feels close to a real i
 - Google AI Studio (Gemini)
 - Razorpay
 - Adzuna Jobs API
+- Render (backend hosting)
+- Vercel (frontend hosting)
 
 ---
 
@@ -64,12 +80,36 @@ The idea behind this project was to build something that feels close to a real i
 ```text
 ai-mock-interview-platform/
 │
-├── client/              # React frontend
-├── server/              # Express backend
+├── .github/
+│   └── workflows/
+│       └── cicd.yml         # GitHub Actions CI/CD pipeline
+│
+├── client/                  # React frontend
+│   ├── Dockerfile           # Multi-stage frontend Docker build
+│   ├── nginx.conf           # Nginx config for serving React SPA
+│   └── src/
+│
+├── server/                  # Express backend
+│   ├── Dockerfile           # Multi-stage backend Docker build
+│   └── src/
+│       ├── config/          # DB, Firebase, Razorpay, env validation, vitest config
+│       ├── controllers/     # Route handlers
+│       ├── db/              # Drizzle schema and migrations
+│       ├── middlewares/     # Auth, rate limiting, file upload
+│       ├── routes/          # Express routers
+│       ├── services/        # AI, PDF, job search logic
+│       ├── tests/
+│       │   ├── unit/        # Unit tests
+│       │   └── integration/ # Integration tests
+│       ├── types/           # TypeScript types
+│       └── utils/           # ApiResponse, ApiError, tokens etc.
+│
 ├── scripts/
-│   └── setup.sh         # First-time project setup
-├── Makefile             # Common development commands
-├── package.json         # npm workspace configuration
+│   └── setup.sh             # First-time project setup
+│
+├── docker-compose.yml       # Local multi-container setup
+├── Makefile                 # Common development commands
+├── package.json             # npm workspace configuration
 └── README.md
 ```
 
@@ -82,6 +122,7 @@ Before running the project, make sure you have:
 - Node.js 20+
 - npm
 - Git
+- Docker & Docker Compose (for containerized local development)
 - Neon PostgreSQL database
 - Firebase project
 - Google AI Studio API key
@@ -132,7 +173,7 @@ make dev
 
 ## Environment Variables
 
-The project includes `.env.example` files for both the client and server.
+The project includes `.env.example` files for both the client and server. A root-level `.env.example` is also provided for Docker Compose.
 
 During setup, `scripts/setup.sh` automatically creates the corresponding `.env` files if they don't already exist. These generated files contain placeholder values and must be updated with your own credentials before running the application.
 
@@ -150,8 +191,6 @@ VITE_API_BASE_URL=
 
 VITE_RAZORPAY_KEY_ID=
 ```
-
----
 
 ### Server (`server/.env`)
 
@@ -178,89 +217,90 @@ ADZUNA_APP_ID=
 ADZUNA_APP_KEY=
 ```
 
+> Generate secure JWT secrets with: `openssl rand -hex 32`
+
 ---
 
 ## Database
 
 The project uses **Drizzle ORM** for schema management and database migrations.
 
-### Generate a new migration
-
-After making changes to your Drizzle schema, generate a migration file.
-
 ```bash
-make db-generate
-```
-
-### Apply pending migrations
-
-Run all pending migrations against your database.
-
-```bash
-make db-migrate
-```
-
-### Push schema directly to the database
-
-Useful during development when you don't need migration files.
-
-```bash
-make db-push
-```
-
-### Open Drizzle Studio
-
-Launch the visual database explorer.
-
-```bash
-make db-studio
+make db-generate   # Generate migration files after schema changes
+make db-migrate    # Apply pending migrations
+make db-push       # Push schema directly (development only)
+make db-studio     # Open visual database explorer
 ```
 
 ---
 
 ## Running the Project
 
-### Start the development server
-
-Starts both the React frontend and Express backend with hot reload.
+### Standard development
 
 ```bash
-make dev
+make dev           # Start frontend + backend with hot reload
+make build         # Build both for production
 ```
 
-### Build for production
+### With Docker Compose
 
-Builds both the frontend and backend.
+Runs frontend (Nginx + React) and backend (Node.js) as containers. Requires a root `.env` file, copy from `.env.example`.
 
 ```bash
-make build
+docker compose up --build     # Build images and start all containers
+docker compose up             # Start existing containers
+docker compose down           # Stop and remove containers
+docker compose logs -f        # Stream live logs
+docker compose logs -f server # Stream backend logs only
 ```
+
+### Running tests
+
+```bash
+cd server
+npm test                # Run all tests once
+npm run test:watch      # Re-run tests on file save (development)
+npm run test:coverage   # Run tests and generate coverage report
+```
+
+---
+
+## CI/CD Pipeline
+
+Every push to `main` triggers the GitHub Actions pipeline:
+
+1. **TypeScript type-check**: backend and frontend.
+2. **Docker image build**: backend and frontend (verifies Dockerfiles and compilation).
+3. **Docker Hub push**: backend image uploaded.
+4. **Render deploy hook**: backend redeployment triggered.
+5. **Vercel deploy hook**: frontend redeployment triggered (Vercel auto-deploy is disabled; deployment only happens after CI passes).
+
+Pull requests trigger steps 1–2 only. Deployment never happens on unmerged code.
 
 ---
 
 ## Useful Commands
 
-The project includes a **Makefile** that provides shortcuts for common development tasks.
-
 | Command | Description |
 |---------|-------------|
-| `make help` | Show all available Makefile commands. |
-| `make dev` | Start both frontend and backend. |
-| `make build` | Build the entire project. |
-| `make install` | Install all project dependencies. |
-| `make server-dev` | Start only the backend server. |
-| `make server-build` | Build only the backend. |
-| `make server-start` | Start the production backend. |
-| `make db-generate` | Generate Drizzle migration files. |
-| `make db-migrate` | Apply pending database migrations. |
-| `make db-push` | Push schema directly to the database (development only). |
-| `make db-studio` | Open Drizzle Studio. |
-| `make health` | Check whether the local backend is healthy. |
-| `make health-prod RENDER_URL=<your-deployed-backend-url>` | Check the health of the deployed backend. |
-| `make logs` | View formatted backend logs using Pino Pretty. |
-| `make status` | Show Git status and recent commits. |
-| `make clean-build` | Remove generated build files only. |
-| `make clean` | Remove generated build files and all installed dependencies. |
+| `make help` | Show all available Makefile commands |
+| `make dev` | Start both frontend and backend |
+| `make build` | Build the entire project |
+| `make install` | Install all project dependencies |
+| `make server-dev` | Start only the backend server |
+| `make server-build` | Build only the backend |
+| `make server-start` | Start the production backend |
+| `make db-generate` | Generate Drizzle migration files |
+| `make db-migrate` | Apply pending database migrations |
+| `make db-push` | Push schema directly (development only) |
+| `make db-studio` | Open Drizzle Studio |
+| `make health` | Check local backend health |
+| `make health-prod RENDER_URL=<url>` | Check deployed backend health |
+| `make logs` | View formatted backend logs via Pino Pretty |
+| `make status` | Show Git status and recent commits |
+| `make clean-build` | Remove build files only |
+| `make clean` | Remove build files and all dependencies |
 
 ---
 
@@ -281,7 +321,7 @@ Protected endpoints require a valid JWT stored in an HttpOnly cookie.
 ```json
 {
   "statusCode": 200,
-  "data": {},
+  "data": { ... },
   "message": "Success",
   "success": true
 }
