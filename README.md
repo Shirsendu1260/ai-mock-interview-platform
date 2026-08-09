@@ -83,12 +83,10 @@ ai-mock-interview-platform/
 ├── .github/
 │   └── workflows/
 │       └── cicd.yml         # GitHub Actions CI/CD pipeline
-│
 ├── client/                  # React frontend
 │   ├── Dockerfile           # Multi-stage frontend Docker build
 │   ├── nginx.conf           # Nginx config for serving React SPA
 │   └── src/
-│
 ├── server/                  # Express backend
 │   ├── Dockerfile           # Multi-stage backend Docker build
 │   └── src/
@@ -103,10 +101,8 @@ ai-mock-interview-platform/
 │       │   └── integration/ # Integration tests
 │       ├── types/           # TypeScript types
 │       └── utils/           # ApiResponse, ApiError, tokens etc.
-│
 ├── scripts/
 │   └── setup.sh             # First-time project setup
-│
 ├── docker-compose.yml       # Local multi-container setup
 ├── Makefile                 # Common development commands
 ├── package.json             # npm workspace configuration
