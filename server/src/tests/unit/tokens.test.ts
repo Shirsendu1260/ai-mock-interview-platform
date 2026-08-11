@@ -236,9 +236,9 @@ describe('tokens', () => {
             // It navigates down to the final method: .limit()
             // We pass empty objects `{}` as dummy arguments to keep TypeScript happy
             // We cast it to `ReturnType<typeof vi.fn>` so Vitest recognizes .limit as a mock function
-            const limitMockFn = db.select({} as unknown)
-                                    .from({} as unknown)
-                                    .where({} as unknown)
+            const limitMockFn = db.select({} as never)
+                                    .from({} as never)
+                                    .where({} as never)
                                     .limit as ReturnType<typeof vi.fn>;
 
             // OVERRIDE ONLY THE FINAL RETURN VALUE FOR THIS SPECIFIC TEST
