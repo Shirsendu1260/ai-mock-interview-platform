@@ -1,6 +1,7 @@
 import { describe, test, expect, vi, beforeAll, afterEach, afterAll } from 'vitest';
 import request from 'supertest';
-import jwt from 'jsonwebtoken';
+import jwt, { type JwtPayload, type SignOptions } from 'jsonwebtoken';
+import type { Express } from "express";
 
 // // `describe.skip()` gives Vitest a valid test setup while making sure
 // // these tests do not run until we actually implement them
@@ -67,7 +68,11 @@ const ACCESS_SECRET  = 'test-access-secret-32chars-longxx';
 
 // Generate a real signed JWT, controller calls jwt.verify() which needs a real token
 const makeRefreshToken = (payload: object, expiresIn = '7d') => {
-    return jwt.sign(payload, REFRESH_SECRET, { expiresIn });
+    return jwt.sign(
+        payload as JwtPayload,
+        REFRESH_SECRET,
+        { expiresIn } as SignOptions
+    );
 }
 
 // Fake user stored in DB, must have refreshToken field matching what we send
@@ -88,7 +93,7 @@ const makeMockUser = (refreshToken: string) => ({
 // App setup //
 
 // app is loaded after mocks so the routes use the mocked dependencies
-let app: unknown;
+let app: Express;
 
 // Set test environment variables and load the app once before starting any tests
 beforeAll(async () => {

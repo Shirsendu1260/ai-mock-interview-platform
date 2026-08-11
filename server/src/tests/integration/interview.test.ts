@@ -3,7 +3,7 @@ import request from "supertest";
 import path from "path";
 import fs from "fs";
 import os from "os";
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction, Express } from "express";
 
 
 // Keep mocks at the top because Vitest hoists vi.mock() calls //
@@ -147,7 +147,7 @@ const { userId, ...interviewWithoutUserId } = mockInterview;
 
 // Import the app after mocks are registered so all dependencies are mocked
 // app is loaded after mocks so the routes use the mocked dependencies
-let app: unknown;
+let app: Express;
 
 // Set test environment variables and load the app once before starting any tests
 beforeAll(async () => {
@@ -374,7 +374,7 @@ describe("Interview Routes /api/v1/interviews", () => {
             } as never);
 
             // Mock the transaction used to create the interview and update credits
-            vi.mocked(db.transaction).mockImplementationOnce(async (callback: unknown) => {
+            vi.mocked(db.transaction).mockImplementationOnce(async (callback) => {
                 // Provide the DB methods used inside the controller's transaction
                 const tx = {
                     insert: vi.fn().mockReturnValue({
@@ -403,7 +403,7 @@ describe("Interview Routes /api/v1/interviews", () => {
                 };
 
                 // Run the controller's transaction callback with our fake DB
-                return await callback(tx);
+                return await callback(tx as never);
             });
 
             const response = await request(app)

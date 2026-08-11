@@ -1,5 +1,6 @@
 import { describe, test, expect, vi, beforeAll, afterAll, afterEach } from 'vitest';
 import request from 'supertest';
+import type { Express } from "express";
 
 
 // MOCKS //
@@ -128,7 +129,7 @@ const mockNewUser = {
 // We intentionally do not use here - import { app } from '../../app.js'
 // app.ts imports many routes and those routes' controllers import dependencies that we are mocking above
 // We therefore import app dynamically inside beforeAll after Vitest has registered all of our mocks
-let app: unknown;
+let app: Express;
 
 // beforeAll runs once before all tests in this file
 // We use it for setup that only needs to happen once
@@ -324,7 +325,7 @@ describe('POST /api/v1/user/sign-in/oauth', () => {
         //`tx` is the transaction object
         // We do not want to use the real database in this test
         // So we replace db.transaction() with our own fake version
-        vi.mocked(db.transaction).mockImplementationOnce(async (callback: unknown) => {
+        vi.mocked(db.transaction).mockImplementationOnce(async (callback) => {
             // This is the fake `tx.select()` chain
             // The controller uses it to check signupRewards
             // We return [] because this user has not received the signup reward before
