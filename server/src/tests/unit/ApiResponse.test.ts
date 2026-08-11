@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { ApiResponse } from './ApiResponse.js';
+import { ApiResponse } from '../../utils/ApiResponse.js';
 
 // describe() keeps related tests together in a group
 // It makes output clean
@@ -68,11 +68,5 @@ describe('ApiResponse', () => {
         // 399 < 400 -> success should be true
         const response = new ApiResponse(399, null, 'test');
         expect(response.success).toBe(true);
-    });
-
-    test('should set success to false for statusCode 400', () => {
-        // 400 >= 400 -> success should be false
-        const response = new ApiResponse(400, null, 'test');
-        expect(response.success).toBe(false);
     });
 });

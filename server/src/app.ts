@@ -13,8 +13,6 @@ import { ApiError } from './utils/ApiError.js';
 import { generalLimiter } from './middlewares/rateLimiter.middleware.js';
 import PinoHttp from 'pino-http';
 import { logger } from './config/logger.js';
-import { db } from './config/db.js';
-import { sql } from 'drizzle-orm';
 
 
 
@@ -73,7 +71,7 @@ app.use(PinoHttp.pinoHttp({
     // Attach the request ID from our middleware above so every log line has it
     genReqId: (req) => req.headers['x-request-id'] as string,
 
-    // Don't log health check requests, they would spam the logs every 30s
+    // Don't log health check requests, they would spam the logs
     autoLogging: {
         ignore: (req) => req.url === '/health'
     },
@@ -142,7 +140,8 @@ app.get('/health', async (_: Request, res: Response) => {
         // Neon's serverless WebSocket closes idle connections, making
         // periodic DB pings unreliable and noisy in logs
         return res.status(200).json({
-            status: 'ok',
+            status: true,
+            message: 'ok',
             timestamp: new Date().toISOString(),
             uptime: process.uptime()
         });
@@ -150,7 +149,7 @@ app.get('/health', async (_: Request, res: Response) => {
     catch(error) {
         logger.error({ err: error }, 'Health check: database unreachable');
         return res.status(503).json({
-            status: 'error',
+            status: false,
             message: 'Database unreachable'
         });
     }

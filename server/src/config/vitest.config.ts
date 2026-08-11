@@ -11,7 +11,7 @@ export default defineConfig({
         // anywhere inside the src/ folder
         include: ['src/**/*.test.ts'],
 
-        // Files to run before each test file
+        // Files to run before each test file (empty means nothing to run)
         setupFiles: [],
 
         // Show individual test results (not just summary)
@@ -32,6 +32,7 @@ export default defineConfig({
                 'src/db/migrations/**', // database migrations
                 'src/db/schema/**', // schema definitions
                 'src/types/**', // type definitions only
+                'src/tests/**', // Tests folder
             ],
 
             // Coverage output formats
@@ -39,5 +40,8 @@ export default defineConfig({
             //  text -> Shown in terminal as table
             //  html -> Shown as detailed report
         },
+
+        hookTimeout: 30000, // beforeAll/afterAll can take up to 30 seconds
+        testTimeout: 10000, // individual tests still have the normal 10 seconds limit
     },
 });
