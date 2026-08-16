@@ -90,7 +90,14 @@ jobs:
       - name: TypeScript type-check (backend)
         run: npm exec --workspace server tsc -- --noEmit
 
-      # Step 5: Build backend Docker image
+      # Step 5: Run backend tests
+      # Vitest runs all unit and integration tests
+      # If any test fails, CI fails here, Docker build never happens
+      # This ensures broken code is caught before it reaches production
+      - name: Run backend tests
+        run: npm test --workspace server
+
+      # Step 6: Build backend Docker image
       # Verifies the Dockerfile works for the container and the app compiles correctly inside Docker
       # --no-cache command forces Docker to ignore all previously saved image layers,
       # executing every single step of our Dockerfile from scratch
@@ -118,18 +125,24 @@ jobs:
 
       # ____________ Frontend checks ____________ #
 
-      # Step 6: Install frontend dependencies
+      # Step 7: Install frontend dependencies
       # npm automatically reads the root package-lock.json and installs dependencies for this workspace
       - name: Install client dependencies
         run: npm install --workspace client
 
-      # Step 7: TypeScript type-check (frontend)
+      # Step 8: TypeScript type-check (frontend)
       # React + TypeScript errors caught here before Vercel deploys
       # Using npm, execute the TypeScript compiler (tsc) from the client workspace, and pass --noEmit to it
       - name: TypeScript type-check (frontend)
         run: npm exec --workspace client tsc -- --noEmit
 
-      # Step 8: Build frontend Docker image
+      # Step 9: Run frontend tests
+      # Vitest runs component tests and unit tests
+      # If any test fails, CI fails here, Docker build never happens
+      - name: Run frontend tests
+        run: npm test --workspace client
+
+      # Step 10: Build frontend Docker image
       # Verifies nginx.conf is valid and React build succeeds
       # VITE_ variables must be passed at build time (Vite injects them into JS bundle)
       - name: Build frontend Docker image
