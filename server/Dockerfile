@@ -28,7 +28,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install all dependencies
-RUN npm install
+RUN npm ci
 
 # Now copy the entire project source code
 # First "."  -> our local project folder (/ai-mock-interview-platform/server/)
@@ -69,7 +69,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install only runtime dependencies (--omit=dev helps ignoring dev dependencies)
-RUN npm install --omit=dev
+RUN npm ci --omit=dev
 
 # Copy only the compiled JavaScript from the builder stage
 # --from=builder
