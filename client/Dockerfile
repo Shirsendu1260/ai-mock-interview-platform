@@ -13,7 +13,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install all dependencies
-RUN npm install
+RUN npm ci
 
 # Now copy the entire React project source code
 COPY . .
