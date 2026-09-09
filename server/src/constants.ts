@@ -5,7 +5,19 @@ export const UPLOAD_DIR = '/tmp/uploads';
 export const COOKIE_SEND_OPTIONS = {
     httpOnly: true, // Cookie not accessible via JavaScript in browser (XSS protection)
     secure: process.env.NODE_ENV === 'production', // Sent cookie only over HTTPS on production server
+
+    // In production, "none" allows cookies to be sent between
+    // different sites, which is required because our frontend
+    // and backend are hosted on different domains.
+    // In development, "strict" provides stronger CSRF protection
+    // because frontend and backend usually run locally.
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict' // CSRF
+
+    // Allows the browser to store the cookie as a partitioned third-party cookie.
+    // This is useful when the frontend and backend are on
+    // different sites and modern browsers apply third-party
+    // cookie restrictions.
+    partitioned: process.env.NODE_ENV === 'production'
 } as const;
 
 export const NO_OF_QUESTIONS = [5, 10, 15, 20] as const;
