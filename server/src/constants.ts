@@ -11,7 +11,7 @@ export const COOKIE_SEND_OPTIONS = {
     // and backend are hosted on different domains.
     // In development, "strict" provides stronger CSRF protection
     // because frontend and backend usually run locally.
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict' // CSRF
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict', // CSRF
 
     // Allows the browser to store the cookie as a partitioned third-party cookie.
     // This is useful when the frontend and backend are on
