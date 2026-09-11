@@ -26,10 +26,10 @@ WORKDIR /app
 # dependencies again, making future builds much faster
 # ./ means inside WORKDIR, i.e. /app/
 COPY package*.json ./
+COPY server/package.json ./server/
 
 # Install all dependencies
 RUN npm install
-COPY server/package.json ./server/
 
 # Now copy the entire project source code
 # First "."  -> our local project folder (/ai-mock-interview-platform/server/)
