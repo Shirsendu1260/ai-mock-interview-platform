@@ -204,9 +204,10 @@ jobs:
       - name: Build and push backend image
         run: |
           docker build \
+          -f server/Dockerfile \
           -t ${{ secrets.DOCKERHUB_USERNAME }}/ai-mock-interview-server:latest \
           -t ${{ secrets.DOCKERHUB_USERNAME }}/ai-mock-interview-server:${GITHUB_SHA::7} \
-          ./server
+          .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/ai-mock-interview-server:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/ai-mock-interview-server:${GITHUB_SHA::7}
 
