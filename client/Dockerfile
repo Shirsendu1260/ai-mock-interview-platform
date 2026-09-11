@@ -34,7 +34,7 @@ ARG VITE_FIREBASE_APP_ID
 ARG VITE_API_BASE_URL
 ARG VITE_RAZORPAY_KEY_ID
 
-RUN npm run build
+RUN npm run build --workspace client
 
 
 
@@ -54,7 +54,7 @@ RUN rm /etc/nginx/nginx.conf
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Copy the built React files from Stage 1 into Nginx's serving directory
-COPY --from=builder /app/dist /usr/share/nginx/html
+COPY --from=builder /app/client/dist /usr/share/nginx/html
 
 # Document that this container serves on port 80
 EXPOSE 80
