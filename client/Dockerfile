@@ -12,6 +12,7 @@ WORKDIR /app
 # If package.json hasn't changed, npm install won't re-run on next build as the layer is cached
 COPY package*.json ./
 COPY client/package.json ./client/
+COPY server/package.json ./server/
 
 # Install all dependencies
 RUN npm install
