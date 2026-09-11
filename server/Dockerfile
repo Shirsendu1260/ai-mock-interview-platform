@@ -26,6 +26,7 @@ WORKDIR /app
 # dependencies again, making future builds much faster
 # ./ means inside WORKDIR, i.e. /app/
 COPY package*.json ./
+COPY client/package.json ./client/
 COPY server/package.json ./server/
 
 # Install all dependencies
@@ -68,6 +69,7 @@ WORKDIR /app
 # ./ means inside WORKDIR, i.e. /app/
 # This is not the /app from stage 1, it is a completely new /app created in this stage
 COPY package*.json ./
+COPY client/package.json ./client/
 COPY server/package.json ./server/
 
 # Install only runtime dependencies (--omit=dev helps ignoring dev dependencies)
