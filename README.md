@@ -342,7 +342,5 @@ Protected endpoints require a valid JWT stored in an HttpOnly cookie.
 
 **Shirsendu Mali**
 
-Full Stack Developer
-
 - LinkedIn: https://www.linkedin.com/in/shirsendu-mali/
 - Email: shirsendu1260@gmail.com
