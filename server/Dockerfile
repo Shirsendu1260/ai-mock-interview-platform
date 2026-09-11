@@ -38,7 +38,7 @@ RUN npm install
 COPY . .
 
 # Compile the TypeScript project to JavaScript
-RUN npm run build
+RUN npm run build --workspace server
 
 
 
@@ -89,7 +89,7 @@ RUN npm install --omit=dev
 # - TypeScript files
 # - build tools
 # Only the compiled application is copied
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/server/dist ./dist
 
 # Inform Docker that the application listens on port 8000
 # This is documentation for Docker and people reading the image
