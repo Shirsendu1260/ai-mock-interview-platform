@@ -51,7 +51,7 @@ FROM nginx:alpine AS production
 RUN rm /etc/nginx/nginx.conf
 
 # Copy our custom Nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY client/nginx.conf /etc/nginx/nginx.conf
 
 # Copy the built React files from Stage 1 into Nginx's serving directory
 COPY --from=builder /app/client/dist /usr/share/nginx/html
